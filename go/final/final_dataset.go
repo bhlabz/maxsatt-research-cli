@@ -1,4 +1,4 @@
-package main
+package final
 
 import (
 	"encoding/csv"
@@ -7,6 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/forest-guardian/forest-guardian-api-poc/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/weather"
 	"github.com/gocarina/gocsv"
 )
 
@@ -19,13 +21,13 @@ type Sample struct {
 }
 
 type FinalData struct {
-	WeatherMetrics
-	DeltaData
+	weather.WeatherMetrics
+	delta.DeltaData
 	Label     *string   `csv:"label"`
 	CreatedAt time.Time `csv:"created_at"`
 }
 
-func createClimateGroupDataset(samples []DeltaData, weatherData HistoricalWeatherMetrics, outputFileName string) ([]FinalData, error) {
+func createFinalDataset(samples []delta.DeltaData, weatherData weather.HistoricalWeatherMetrics, outputFileName string) ([]FinalData, error) {
 	var mergedData []FinalData
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -33,17 +35,17 @@ func createClimateGroupDataset(samples []DeltaData, weatherData HistoricalWeathe
 
 	for _, sample := range samples {
 		wg.Add(1)
-		go func(sample DeltaData) {
+		go func(sample delta.DeltaData) {
 			defer wg.Done()
 
-			weatherRow := WeatherMetrics{}
+			weatherRow := weather.WeatherMetrics{}
 			found := false
 
-			for date, weather := range weatherData {
+			for date, data := range weatherData {
 				startDate := sample.StartDate
 				endDate := sample.EndDate
 				if !date.Before(startDate) && !date.After(endDate) {
-					weatherRow = weather
+					weatherRow = data
 					found = true
 					break
 				}

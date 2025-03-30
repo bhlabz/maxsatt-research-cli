@@ -1,9 +1,10 @@
-package main
+package sentinel
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"path/filepath"
 	"time"
@@ -11,9 +12,44 @@ import (
 	"github.com/lukeroth/gdal"
 )
 
+func GetValues(indexes map[string][][]float64, x, y int) (float64, float64, float64, float64, float64, float64, float64, float64) {
+	ndmiValue := indexes["ndmi"][y][x]
+	cldValue := indexes["cloud"][y][x]
+	sclValue := indexes["scl"][y][x]
+	ndreValue := indexes["ndre"][y][x]
+	psriValue := indexes["psri"][y][x]
+	b02Value := indexes["b02"][y][x]
+	b04Value := indexes["b04"][y][x]
+	ndviValue := indexes["ndvi"][y][x]
+	return ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue
+}
+
+func AreIndexesValid(psriValue, ndviValue, ndmiValue, ndreValue, cldValue, sclValue, b02Value, b04Value float64) bool {
+	invalidConditions := []struct {
+		Condition bool
+		Reason    string
+	}{
+		{math.IsNaN(psriValue), "PSRI value is NaN"},
+		{math.IsNaN(ndviValue), "NDVI value is NaN"},
+		{math.IsNaN(ndmiValue), "NDMI value is NaN"},
+		{math.IsNaN(ndreValue), "NDRE value is NaN"},
+		{cldValue > 0, "Cloud value is greater than 0"},
+		{sclValue == 3 || sclValue == 8 || sclValue == 9 || sclValue == 10, "SCL value is in [3, 8, 9, 10]"},
+		{(b04Value+b02Value)/2 > 0.9, "(B04 value + B02 value) / 2 is greater than 0.9"},
+		{psriValue == 0 && ndviValue == 0 && ndmiValue == 0 && ndreValue == 0, "All index values are 0"},
+	}
+
+	for _, condition := range invalidConditions {
+		if condition.Condition {
+			return false
+		}
+	}
+	return true
+}
+
 // GetImages retrieves satellite images based on the given parameters
-func GetImages(geometry map[string]any, farm, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[string]gdal.Dataset, error) {
-	images := make(map[string]gdal.Dataset)
+func GetImages(geometry map[string]any, farm, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[time.Time]gdal.Dataset, error) {
+	images := make(map[time.Time]gdal.Dataset)
 	imagesNotFoundFile := "images/images_not_found.json"
 
 	// Load images_not_found.json
@@ -52,7 +88,7 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 			if err != nil {
 				return nil, fmt.Errorf("failed to open %s: %v", fileName, err)
 			}
-			images[currentDate.Format("2006-01-02")] = data
+			images[currentDate] = data
 			continue
 		}
 
@@ -72,8 +108,8 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 		count := 0
 		for y := 0; y < 10; y++ { // Placeholder for height
 			for x := 0; x < 10; x++ { // Placeholder for width
-				_, _, _, _, _, _, _, _ = getValues(nil, x, y)
-				if !areIndexesValid(0, 0, 0, 0, 0, 0, 0, 0) {
+				_, _, _, _, _, _, _, _ = GetValues(nil, x, y)
+				if !AreIndexesValid(0, 0, 0, 0, 0, 0, 0, 0) {
 					count++
 				}
 			}
@@ -99,7 +135,7 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 			return nil, fmt.Errorf("failed to open %s: %v", fileName, err)
 		}
 
-		images[currentDate.Format("2006-01-02")] = data
+		images[currentDate] = data
 	}
 
 	return images, nil

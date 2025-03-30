@@ -1,4 +1,4 @@
-package main
+package weather
 
 import (
 	"encoding/json"
@@ -23,13 +23,13 @@ type WeatherResponse struct {
 	Daily  DailyData  `json:"daily"`
 }
 
-type DailyWeather struct {
-	Temperature   float64 `json:"temperature"`
-	Precipitation float64 `json:"precipitation"`
-	Humidity      float64 `json:"humidity"`
+type Weather struct {
+	Precipitation float64
+	Temperature   float64
+	Humidity      float64
 }
 
-type HistoricalWeather map[time.Time]DailyWeather
+type HistoricalWeather map[time.Time]Weather
 
 func calculateMeanHumidity(hourlyData HourlyData) map[string]float64 {
 	dailyHumidity := make(map[string][]float64)
@@ -52,7 +52,7 @@ func calculateMeanHumidity(hourlyData HourlyData) map[string]float64 {
 	return meanHumidity
 }
 
-func fetchWeather(latitude, longitude float64, startDate, endDate time.Time, retries int) (HistoricalWeather, error) {
+func FetchWeather(latitude, longitude float64, startDate, endDate time.Time, retries int) (HistoricalWeather, error) {
 	url := "https://archive-api.open-meteo.com/v1/archive"
 	params := fmt.Sprintf("?latitude=%f&longitude=%f&start_date=%s&end_date=%s&daily=temperature_2m_mean,precipitation_sum&hourly=relative_humidity_2m",
 		latitude, longitude, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
@@ -85,7 +85,7 @@ func fetchWeather(latitude, longitude float64, startDate, endDate time.Time, ret
 				if err != nil {
 					return nil, fmt.Errorf("failed to parse date: %v", err)
 				}
-				dataParsed[parsedDate] = DailyWeather{
+				dataParsed[parsedDate] = Weather{
 					Temperature:   weatherData.Daily.Temperature[i],
 					Precipitation: weatherData.Daily.Precipitation[i],
 					Humidity:      humidity[date],

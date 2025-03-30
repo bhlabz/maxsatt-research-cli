@@ -1,4 +1,4 @@
-package main
+package sentinel
 
 import (
 	"math"
@@ -6,7 +6,7 @@ import (
 	"github.com/lukeroth/gdal"
 )
 
-func getIndexesFromImage(dataset gdal.Dataset) map[string][][]float64 {
+func GetIndexesFromImage(dataset gdal.Dataset) map[string][][]float64 {
 	// Read bands
 	bands := map[string]gdal.RasterBand{
 		"B05": dataset.RasterBand(1),

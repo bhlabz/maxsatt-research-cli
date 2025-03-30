@@ -1,13 +1,10 @@
-package main
+package weather
 
 import (
 	"encoding/json"
 	"log"
 	"math"
-	"os"
 	"time"
-
-	"github.com/gocarina/gocsv"
 )
 
 type WeatherMetrics struct {
@@ -24,7 +21,7 @@ type WeatherMetrics struct {
 
 type HistoricalWeatherMetrics map[time.Time]WeatherMetrics
 
-func calculateMetrics(periodDays int, targetDate time.Time, historicalData HistoricalWeather) WeatherMetrics {
+func calculateWeatherMetrics(periodDays int, targetDate time.Time, historicalData HistoricalWeather) WeatherMetrics {
 	filteredHistoricalWeather := make(HistoricalWeather)
 	var metrics WeatherMetrics
 	var temperatures, humidities, precipitations []float64
@@ -137,7 +134,7 @@ func jsonToWeatherData(jsonData string) HistoricalWeather {
 	weatherData := make(HistoricalWeather)
 	for dateStr, values := range rawData {
 		date, _ := time.Parse("2006-01-02", dateStr)
-		weatherData[date] = DailyWeather{
+		weatherData[date] = Weather{
 			Precipitation: values["precipitation"],
 			Temperature:   values["temperature"],
 			Humidity:      values["humidity"],
@@ -146,22 +143,32 @@ func jsonToWeatherData(jsonData string) HistoricalWeather {
 	return weatherData
 }
 
-func createClimateDataset(dates []time.Time, historicalData HistoricalWeather, outputFileName string) {
-	var records []WeatherMetrics
+// func createClimateDataset(dates []time.Time, historicalData HistoricalWeather, outputFileName string) {
+// 	var records []WeatherMetrics
 
+// 	for _, date := range dates {
+// 		metrics := calculateMetrics(30, date, historicalData)
+// 		records = append(records, metrics)
+// 	}
+
+// 	file, err := os.Create(outputFileName)
+// 	if err != nil {
+// 		log.Fatalf("Error creating file: %v", err)
+// 	}
+// 	defer file.Close()
+
+// 	err = gocsv.MarshalFile(&records, file)
+// 	if err != nil {
+// 		log.Fatalf("Error writing to file: %v", err)
+// 	}
+// }
+
+func CalculateHistoricalWeatherMetricsByDates(dates []time.Time, historicalWeather HistoricalWeather) (historicalWeatherMetrics HistoricalWeatherMetrics) {
 	for _, date := range dates {
-		metrics := calculateMetrics(30, date, historicalData)
-		records = append(records, metrics)
+		if _, exists := historicalWeather[date]; exists {
+			historicalWeatherMetrics[date] = calculateWeatherMetrics(30, date, historicalWeather)
+		}
 	}
 
-	file, err := os.Create(outputFileName)
-	if err != nil {
-		log.Fatalf("Error creating file: %v", err)
-	}
-	defer file.Close()
-
-	err = gocsv.MarshalFile(&records, file)
-	if err != nil {
-		log.Fatalf("Error writing to file: %v", err)
-	}
+	return historicalWeatherMetrics
 }

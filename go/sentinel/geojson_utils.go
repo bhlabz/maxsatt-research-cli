@@ -1,4 +1,4 @@
-package main
+package sentinel
 
 import (
 	"encoding/json"
@@ -31,7 +31,7 @@ func flattenCoordinates(coordinates interface{}) [][]float64 {
 	return flatCoordinates
 }
 
-func getCentroidLatitudeLongitude(geometry map[string]interface{}) (float64, float64) {
+func GetCentroidLatitudeLongitude(geometry map[string]interface{}) (float64, float64) {
 	flatCoordinates := flattenCoordinates(geometry["coordinates"])
 
 	var latitude, longitude float64
@@ -46,7 +46,7 @@ func getCentroidLatitudeLongitude(geometry map[string]interface{}) (float64, flo
 	return latitude, longitude
 }
 
-func getGeometryFromGeoJSON(farm, plot string) (map[string]interface{}, error) {
+func GetGeometryFromGeoJSON(farm, plot string) (map[string]interface{}, error) {
 	filePath := fmt.Sprintf("geojsons/%s.geojson", farm)
 	file, err := os.Open(filePath)
 	if err != nil {

@@ -1,10 +1,12 @@
-package main
+package final
 
 import (
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/forest-guardian/forest-guardian-api-poc/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/weather"
 	"github.com/gocarina/gocsv"
 )
 
@@ -13,14 +15,8 @@ func isBetweenDates(date, startDate, endDate time.Time) bool {
 	return !date.Before(startDate) && !date.After(endDate)
 }
 
-// getClimateGroupData processes and retrieves climate group data.
-func getClimateGroupData(deltaDataset []DeltaData, historicalWeather HistoricalWeather, dateStr, farm, plot string, deltaDays, deltaDaysTrashHold int, cache bool, fileName string) ([]FinalData, error) {
-	// Parse the input date
-	date, err := parseDate(dateStr)
-	if err != nil {
-		return nil, err
-	}
-
+// GetFinalData processes and retrieves climate group data.
+func GetFinalData(deltaDataset []delta.DeltaData, historicalWeather weather.HistoricalWeather, date time.Time, farm, plot string, deltaDays, deltaDaysTrashHold int, cache bool, fileName string) ([]FinalData, error) {
 	// Construct the file name
 	name := farm + "_" + plot + "_" + date.Format("2006-01-02")
 	if fileName == "" {
@@ -39,7 +35,7 @@ func getClimateGroupData(deltaDataset []DeltaData, historicalWeather HistoricalW
 	endDate := date
 	startDate := endDate.AddDate(0, 0, -(deltaDays + deltaDaysTrashHold))
 
-	filteredDataset := make([]DeltaData, 0, len(deltaDataset))
+	filteredDataset := make([]delta.DeltaData, 0, len(deltaDataset))
 	for _, record := range deltaDataset {
 		if isBetweenDates(record.StartDate, startDate, endDate) || isBetweenDates(record.EndDate, startDate, endDate) {
 			filteredDataset = append(filteredDataset, record)
@@ -54,18 +50,8 @@ func getClimateGroupData(deltaDataset []DeltaData, historicalWeather HistoricalW
 	}
 
 	// Call external functions (placeholders for now)
-	climateDataset := filterWeatherData(dates, historicalWeather)
-	return createClimateGroupDataset(filteredDataset, climateDataset, fileName)
-}
-
-func filterWeatherData(dates []time.Time, historicalWeather HistoricalWeather) (historicalWeatherMetrics HistoricalWeatherMetrics) {
-	for _, date := range dates {
-		if _, exists := historicalWeather[date]; exists {
-			historicalWeatherMetrics[date] = calculateMetrics(30, date, historicalWeather)
-		}
-	}
-
-	return historicalWeatherMetrics
+	climateDataset := weather.CalculateHistoricalWeatherMetricsByDates(dates, historicalWeather)
+	return createFinalDataset(filteredDataset, climateDataset, fileName)
 }
 
 func readCSV(filePath string) ([]FinalData, error) {
