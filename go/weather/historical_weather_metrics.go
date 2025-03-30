@@ -164,6 +164,8 @@ func jsonToWeatherData(jsonData string) HistoricalWeather {
 // }
 
 func CalculateHistoricalWeatherMetricsByDates(dates []time.Time, historicalWeather HistoricalWeather) (historicalWeatherMetrics HistoricalWeatherMetrics) {
+	historicalWeatherMetrics = make(HistoricalWeatherMetrics)
+
 	for _, date := range dates {
 		if _, exists := historicalWeather[date]; exists {
 			historicalWeatherMetrics[date] = calculateWeatherMetrics(30, date, historicalWeather)
