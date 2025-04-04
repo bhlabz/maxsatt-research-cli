@@ -5,9 +5,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/sentinel"
-	"github.com/forest-guardian/forest-guardian-api-poc/weather"
-	"github.com/lukeroth/gdal"
+	"github.com/airbusgeo/godal"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
+
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -36,13 +37,13 @@ type PixelData struct {
 	Humidity      float64
 }
 
-func createPixelDataset(farm, plot string, images map[time.Time]gdal.Dataset, weather map[time.Time]weather.Weather) ([]PixelData, error) {
+func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset, weather map[time.Time]weather.Weather) ([]PixelData, error) {
 	var width, height, totalPixels int
 	var xRange, yRange []int
 
 	for _, imageData := range images {
-		width = imageData.RasterXSize()
-		height = imageData.RasterYSize()
+		width = imageData.Structure().SizeX
+		height = imageData.Structure().SizeY
 		xRange = makeRange(0, width)
 		yRange = makeRange(0, height)
 		totalPixels = width * height
@@ -78,12 +79,16 @@ func createPixelDataset(farm, plot string, images map[time.Time]gdal.Dataset, we
 	return fileResults, nil
 }
 
-func getData(farm, plot string, image gdal.Dataset, totalPixels, width, height, x, y int, date time.Time, weather weather.Weather) (*PixelData, error) {
+func getData(farm, plot string, image *godal.Dataset, totalPixels, width, height, x, y int, date time.Time, weather weather.Weather) (*PixelData, error) {
 	if totalPixels != 0 && totalPixels != width*height {
 		return nil, errors.New("different image size")
 	}
 
-	indexes := sentinel.GetIndexesFromImage(image)
+	indexes, err := sentinel.GetIndexesFromImage(image)
+	if err != nil {
+		return nil, err
+	}
+
 	ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue := sentinel.GetValues(indexes, x, y)
 
 	if sentinel.AreIndexesValid(psriValue, ndviValue, ndmiValue, ndreValue, cldValue, sclValue, b02Value, b04Value) {
@@ -113,7 +118,7 @@ func makeRange(min, max int) []int {
 	return r
 }
 
-func getSortedKeys(m map[time.Time]gdal.Dataset) []time.Time {
+func getSortedKeys(m map[time.Time]*godal.Dataset) []time.Time {
 	keys := make([]time.Time, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

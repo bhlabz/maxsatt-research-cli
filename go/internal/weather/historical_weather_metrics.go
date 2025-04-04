@@ -1,8 +1,6 @@
 package weather
 
 import (
-	"encoding/json"
-	"log"
 	"math"
 	"time"
 )
@@ -124,24 +122,24 @@ func sum(data []float64) float64 {
 	return total
 }
 
-func jsonToWeatherData(jsonData string) HistoricalWeather {
-	var rawData map[string]map[string]float64
-	err := json.Unmarshal([]byte(jsonData), &rawData)
-	if err != nil {
-		log.Fatalf("Error parsing JSON: %v", err)
-	}
+// func jsonToWeatherData(jsonData string) HistoricalWeather {
+// 	var rawData map[string]map[string]float64
+// 	err := json.Unmarshal([]byte(jsonData), &rawData)
+// 	if err != nil {
+// 		log.Fatalf("Error parsing JSON: %v", err)
+// 	}
 
-	weatherData := make(HistoricalWeather)
-	for dateStr, values := range rawData {
-		date, _ := time.Parse("2006-01-02", dateStr)
-		weatherData[date] = Weather{
-			Precipitation: values["precipitation"],
-			Temperature:   values["temperature"],
-			Humidity:      values["humidity"],
-		}
-	}
-	return weatherData
-}
+// 	weatherData := make(HistoricalWeather)
+// 	for dateStr, values := range rawData {
+// 		date, _ := time.Parse("2006-01-02", dateStr)
+// 		weatherData[date] = Weather{
+// 			Precipitation: values["precipitation"],
+// 			Temperature:   values["temperature"],
+// 			Humidity:      values["humidity"],
+// 		}
+// 	}
+// 	return weatherData
+// }
 
 // func createClimateDataset(dates []time.Time, historicalData HistoricalWeather, outputFileName string) {
 // 	var records []WeatherMetrics

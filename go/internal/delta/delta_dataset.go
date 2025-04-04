@@ -6,8 +6,8 @@ import (
 	"sort"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/weather"
-	"github.com/lukeroth/gdal"
+	"github.com/airbusgeo/godal"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
 type DeltaData struct {
@@ -130,7 +130,7 @@ func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData
 	return deltaDataset, nil
 }
 
-func CreateDeltaDataset(farm, plot string, date time.Time, images map[time.Time]gdal.Dataset, historicalWeather map[time.Time]weather.Weather, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
+func CreateDeltaDataset(farm, plot string, date time.Time, images map[time.Time]*godal.Dataset, historicalWeather map[time.Time]weather.Weather, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
 	pixelDataset, err := createPixelDataset(farm, plot, images, historicalWeather)
 	if err != nil {
 		return nil, err

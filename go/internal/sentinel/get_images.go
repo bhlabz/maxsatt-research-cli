@@ -9,22 +9,22 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/lukeroth/gdal"
+	"github.com/airbusgeo/godal"
 )
 
-func GetValues(indexes map[string][][]float64, x, y int) (float64, float64, float64, float64, float64, float64, float64, float64) {
-	ndmiValue := indexes["ndmi"][y][x]
-	cldValue := indexes["cloud"][y][x]
-	sclValue := indexes["scl"][y][x]
-	ndreValue := indexes["ndre"][y][x]
-	psriValue := indexes["psri"][y][x]
-	b02Value := indexes["b02"][y][x]
-	b04Value := indexes["b04"][y][x]
-	ndviValue := indexes["ndvi"][y][x]
+func GetValues(indexes map[string][][]float64, x, y int) (ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue float64) {
+	ndmiValue = indexes["ndmi"][y][x]
+	cldValue = indexes["cloud"][y][x]
+	sclValue = indexes["scl"][y][x]
+	ndreValue = indexes["ndre"][y][x]
+	psriValue = indexes["psri"][y][x]
+	b02Value = indexes["b02"][y][x]
+	b04Value = indexes["b04"][y][x]
+	ndviValue = indexes["ndvi"][y][x]
 	return ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue
 }
 
-func AreIndexesValid(psriValue, ndviValue, ndmiValue, ndreValue, cldValue, sclValue, b02Value, b04Value float64) bool {
+func AreIndexesValid(ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue float64) bool {
 	invalidConditions := []struct {
 		Condition bool
 		Reason    string
@@ -48,8 +48,8 @@ func AreIndexesValid(psriValue, ndviValue, ndmiValue, ndreValue, cldValue, sclVa
 }
 
 // GetImages retrieves satellite images based on the given parameters
-func GetImages(geometry map[string]any, farm, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[time.Time]gdal.Dataset, error) {
-	images := make(map[time.Time]gdal.Dataset)
+func GetImages(geometry map[string]any, farm, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[time.Time]*godal.Dataset, error) {
+	images := make(map[time.Time]*godal.Dataset)
 	imagesNotFoundFile := "images/images_not_found.json"
 
 	// Load images_not_found.json
@@ -84,7 +84,7 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 
 		// Skip if file already exists
 		if _, err := os.Stat(fileName); err == nil {
-			data, err := gdal.Open(fileName, gdal.Access(gdal.ReadOnly))
+			data, err := godal.Open(fileName)
 			if err != nil {
 				return nil, fmt.Errorf("failed to open %s: %v", fileName, err)
 			}
@@ -92,7 +92,7 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 			continue
 		}
 
-		// Request image
+		// Request image TODO: image width and height should be calculated based on geometry
 		image, err := requestImage(startDateStr, endDateStr, geometry, 0, 0) // Width and height are placeholders
 		if err != nil {
 			if err.Error() == "Image not found" {
@@ -108,8 +108,8 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 		count := 0
 		for y := 0; y < 10; y++ { // Placeholder for height
 			for x := 0; x < 10; x++ { // Placeholder for width
-				_, _, _, _, _, _, _, _ = GetValues(nil, x, y)
-				if !AreIndexesValid(0, 0, 0, 0, 0, 0, 0, 0) {
+				ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue := GetValues(nil, x, y)
+				if !AreIndexesValid(ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue) {
 					count++
 				}
 			}
@@ -130,7 +130,7 @@ func GetImages(geometry map[string]any, farm, plot string, startDate, endDate ti
 		if err := ioutil.WriteFile(fileName, image, 0644); err != nil {
 			return nil, fmt.Errorf("failed to save image to %s: %v", fileName, err)
 		}
-		data, err := gdal.Open(fileName, gdal.Access(gdal.ReadOnly))
+		data, err := godal.Open(fileName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to open %s: %v", fileName, err)
 		}

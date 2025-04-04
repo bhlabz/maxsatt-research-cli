@@ -1,31 +1,32 @@
 package sentinel
 
 import (
-	"errors"
 	"fmt"
 	"math"
 
+	"github.com/airbusgeo/godal"
 	"github.com/fogleman/gg"
-	"github.com/lukeroth/gdal"
 )
 
 func latLonToXY(tiffPath string, lat, lon float64) (int, int, error) {
-	dataset, err := gdal.Open(tiffPath, gdal.Access(gdal.ReadOnly))
+	dataset, err := godal.Open(tiffPath)
 	if err != nil {
 		return 0, 0, fmt.Errorf("failed to open TIFF file: %v", err)
 	}
 	defer dataset.Close()
 
-	geoTransform := dataset.GeoTransform()
-	if len(geoTransform) == 0 {
-		return 0, 0, errors.New("failed to retrieve GeoTransform")
+	geoTransform, err := dataset.GeoTransform()
+	if err != nil {
+		return 0, 0, err
 	}
 
-	// Get dataset bounds
+	blockSizeX := dataset.Structure().BlockSizeX
+	blockSizeY := dataset.Structure().BlockSizeY
+
 	xMin := geoTransform[0]
 	yMax := geoTransform[3]
-	xMax := xMin + geoTransform[1]*float64(dataset.RasterXSize())
-	yMin := yMax + geoTransform[5]*float64(dataset.RasterYSize())
+	xMax := xMin + geoTransform[1]*float64(blockSizeX)
+	yMin := yMax + geoTransform[5]*float64(blockSizeY)
 
 	// Check if latitude and longitude are within bounds
 	if lon < xMin || lon > xMax || lat < yMin || lat > yMax {
@@ -37,22 +38,22 @@ func latLonToXY(tiffPath string, lat, lon float64) (int, int, error) {
 	row := int(math.Floor((lat - geoTransform[3]) / geoTransform[5]))
 
 	// Validate pixel coordinates within image dimensions
-	if col >= 0 && col < dataset.RasterXSize() && row >= 0 && row < dataset.RasterYSize() {
+	if col >= 0 && col < blockSizeX && row >= 0 && row < blockSizeY {
 		return col, row, nil
 	}
 	return 0, 0, fmt.Errorf("pixel coordinates (%d, %d) are out of image bounds", col, row)
 }
 
 func xyToLatLon(tiffPath string, x, y int) (float64, float64, error) {
-	dataset, err := gdal.Open(tiffPath, gdal.Access(gdal.ReadOnly))
+	dataset, err := godal.Open(tiffPath)
 	if err != nil {
 		return 0, 0, fmt.Errorf("failed to open TIFF file: %v", err)
 	}
 	defer dataset.Close()
 
-	geoTransform := dataset.GeoTransform()
-	if len(geoTransform) == 0 {
-		return 0, 0, errors.New("failed to retrieve GeoTransform")
+	geoTransform, err := dataset.GeoTransform()
+	if err != nil {
+		return 0, 0, err
 	}
 
 	// Convert pixel coordinates (col, row) to geographic coordinates (lon, lat)
@@ -63,18 +64,18 @@ func xyToLatLon(tiffPath string, x, y int) (float64, float64, error) {
 }
 
 func plotPixelOnImage(tiffPath string, x, y int) error {
-	dataset, err := gdal.Open(tiffPath, gdal.Access(gdal.ReadOnly))
+	dataset, err := godal.Open(tiffPath)
 	if err != nil {
 		return fmt.Errorf("failed to open TIFF file: %v", err)
 	}
 	defer dataset.Close()
 
-	band := dataset.RasterBand(1)
+	band := dataset.Bands()[1]
 
-	width := dataset.RasterXSize()
-	height := dataset.RasterYSize()
+	width := dataset.Structure().BlockSizeX
+	height := dataset.Structure().BlockSizeY
 	data := make([]float64, width*height)
-	err = band.IO(gdal.RWFlag(gdal.Read), 0, 0, width, height, data, width, height, 0, 0)
+	err = band.Read(0, 0, data, width, height)
 	if err != nil {
 		return fmt.Errorf("failed to read raster data: %v", err)
 	}

@@ -3,7 +3,7 @@ package sentinel
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -54,7 +54,7 @@ func GetGeometryFromGeoJSON(farm, plot string) (map[string]interface{}, error) {
 	}
 	defer file.Close()
 
-	byteValue, _ := ioutil.ReadAll(file)
+	byteValue, _ := io.ReadAll(file)
 
 	var geojson map[string]interface{}
 	if err := json.Unmarshal(byteValue, &geojson); err != nil {
@@ -81,7 +81,7 @@ func getAllPlotsAndGeometries(farm string) ([]map[string]interface{}, error) {
 	}
 	defer file.Close()
 
-	byteValue, _ := ioutil.ReadAll(file)
+	byteValue, _ := io.ReadAll(file)
 
 	var geojson map[string]interface{}
 	if err := json.Unmarshal(byteValue, &geojson); err != nil {

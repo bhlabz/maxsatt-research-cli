@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+service GamSmoothingService {
+  rpc Smooth (SmoothRequest) returns (SmoothResponse);
+}
+
+message SmoothRequest {
+  repeated double values = 1;
+  double lam = 2;
+}
+
+message SmoothResponse {
+  repeated double smoothed_values = 1;
+}

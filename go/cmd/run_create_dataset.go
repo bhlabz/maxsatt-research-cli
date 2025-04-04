@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/delta"
-	"github.com/forest-guardian/forest-guardian-api-poc/final"
-	"github.com/forest-guardian/forest-guardian-api-poc/sentinel"
-	"github.com/forest-guardian/forest-guardian-api-poc/weather"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/gocarina/gocsv"
 )
 
@@ -60,15 +60,16 @@ func getBestSamplesFromDeltaDataset(deltaDataset []delta.DeltaData, samplesAmoun
 }
 
 func runCreateDataset() {
+	fmt.Println("create dataset")
 	errors := []string{}
-	daysBeforeEvidenceToAnalyse := 5
+	daysBeforeEvidenceToAnalyze := 5
 	deltaDays := 5
 	deltaDaysTrashHold := 20
-	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyse
+	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 
 	outputFileName := "166.csv"
+	validationDataPath := "data/training_input/166.csv"
 
-	validationDataPath := "validations/166.csv"
 	file, err := os.OpenFile(validationDataPath, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
@@ -97,14 +98,14 @@ func runCreateDataset() {
 		farm := row.Farm
 		plot := strings.Split(row.Plot, "-")[1]
 
-		daysBeforeEvidenceToAnalyse = -getDaysBeforeEvidenceToAnalyse(pest, severity)
+		daysBeforeEvidenceToAnalyze = -getDaysBeforeEvidenceToAnalyse(pest, severity)
 		geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
 			continue
 		}
 
-		endDate := date.AddDate(0, 0, -(daysBeforeEvidenceToAnalyse - 5))
+		endDate := date.AddDate(0, 0, -(daysBeforeEvidenceToAnalyze - 5))
 		startDate := endDate.AddDate(0, 0, -daysToFetch)
 
 		images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
@@ -135,6 +136,8 @@ func runCreateDataset() {
 			continue
 		}
 	}
+
+	fmt.Println(strings.Join(errors, "/n"))
 }
 
 func main() {

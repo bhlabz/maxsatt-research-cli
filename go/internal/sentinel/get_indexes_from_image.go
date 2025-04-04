@@ -3,41 +3,49 @@ package sentinel
 import (
 	"math"
 
-	"github.com/lukeroth/gdal"
+	"github.com/airbusgeo/godal"
 )
 
-func GetIndexesFromImage(dataset gdal.Dataset) map[string][][]float64 {
+func GetIndexesFromImage(dataset *godal.Dataset) (map[string][][]float64, error) {
 	// Read bands
-	bands := map[string]gdal.RasterBand{
-		"B05": dataset.RasterBand(1),
-		"B08": dataset.RasterBand(2),
-		"B11": dataset.RasterBand(3),
-		"B02": dataset.RasterBand(4),
-		"B04": dataset.RasterBand(5),
-		"B06": dataset.RasterBand(6),
-		"CLD": dataset.RasterBand(7),
-		"SCL": dataset.RasterBand(8),
-	}
+	bandsData := dataset.Bands()
 
+	// Map specific band names to their corresponding Band objects
+	bands := map[string]godal.Band{
+		"B05": bandsData[0], // Band 1
+		"B08": bandsData[1], // Band 2
+		"B11": bandsData[2], // Band 3
+		"B02": bandsData[3], // Band 4
+		"B04": bandsData[4], // Band 5
+		"B06": bandsData[5], // Band 6
+		"CLD": bandsData[6], // Band 7
+		"SCL": bandsData[7], // Band 8
+	}
 	// Read data from bands
-	readBand := func(band gdal.RasterBand) [][]float64 {
-		xSize := band.XSize()
-		ySize := band.YSize()
+	readBand := func(band godal.Band) ([][]float64, error) {
+		xSize := band.Structure().SizeX
+		ySize := band.Structure().SizeX
 		data := make([]float64, xSize*ySize)
-		band.IO(gdal.RWFlag(gdal.Read), 0, 0, xSize, ySize, data, xSize, ySize, 0, 0)
+		err := band.Read(0, 0, data, xSize, ySize)
+		if err != nil {
+			return nil, err
+		}
 		result := make([][]float64, ySize)
 		for i := range result {
 			result[i] = data[i*xSize : (i+1)*xSize]
 		}
-		return result
+		return result, nil
 	}
 
 	bandData := make(map[string][][]float64)
 	for key, band := range bands {
-		bandData[key] = readBand(band)
+		var err error
+		bandData[key], err = readBand(band)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	// Calculate indexes
 	ndre := calculateIndex(bandData["B08"], bandData["B05"])
 	ndmi := calculateIndex(bandData["B08"], bandData["B11"])
 	psri := calculateIndex(bandData["B04"], bandData["B06"])
@@ -54,7 +62,7 @@ func GetIndexesFromImage(dataset gdal.Dataset) map[string][][]float64 {
 		"scl":   bandData["SCL"],
 	}
 
-	return indexes
+	return indexes, nil
 }
 
 func calculateIndex(band1, band2 [][]float64) [][]float64 {

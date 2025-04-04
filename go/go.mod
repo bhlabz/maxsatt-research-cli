@@ -1,11 +1,11 @@
 module github.com/forest-guardian/forest-guardian-api-poc
 
-go 1.20
+go 1.24.0
 
 require (
+	github.com/airbusgeo/godal v0.0.13
 	github.com/fogleman/gg v1.3.0
 	github.com/gocarina/gocsv v0.0.0-20240520201108-78e41c74b4b1
-	github.com/lukeroth/gdal v0.0.0-20240301124940-d4ff2229365e
 	github.com/schollz/progressbar/v3 v3.18.0
 	golang.org/x/oauth2 v0.28.0
 )

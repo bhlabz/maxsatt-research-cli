@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/delta"
-	"github.com/forest-guardian/forest-guardian-api-poc/weather"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/gocarina/gocsv"
 )
 
