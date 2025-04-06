@@ -5,15 +5,32 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/airbusgeo/godal"
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-func requestImage(startDate, endDate string, geometry map[string]any, widthPixels, heightPixels int) ([]byte, error) {
+func calculatePixels(distance float64, resolution float64) int {
+	return int(distance * (111_000.0 / resolution)) // Rough conversion assuming degrees to meters
+}
+
+func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byte, error) {
+	// Format the dates to ensure they are in ISO-8601 format
+	startDateStr := startDate.Format(time.RFC3339)
+	endDateStr := endDate.Format(time.RFC3339)
+
+	bbox, err := geometry.Bounds()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get geometry bounds: %v", err)
+	}
+
+	widthPixels := calculatePixels(bbox[2]-bbox[0], 10)
+	heightPixels := calculatePixels(bbox[3]-bbox[1], 10)
+
 	evalscript := `
     //VERSION=3
     function setup() {
@@ -32,17 +49,27 @@ func requestImage(startDate, endDate string, geometry map[string]any, widthPixel
     }
   `
 
+	geometryGeojson, err := geometry.GeoJSON()
+	if err != nil {
+		return nil, fmt.Errorf("failed to export geometry to GeoJSON: %w", err)
+	}
+	// Parse the GeoJSON string to a map
+	var geojsonMap map[string]interface{}
+	if err := json.Unmarshal([]byte(geometryGeojson), &geojsonMap); err != nil {
+		return nil, fmt.Errorf("failed to parse GeoJSON: %w", err)
+	}
+
 	requestPayload := map[string]interface{}{
 		"input": map[string]interface{}{
 			"bounds": map[string]interface{}{
-				"geometry": geometry,
+				"geometry": geojsonMap,
 			},
 			"data": []map[string]interface{}{
 				{
 					"dataFilter": map[string]interface{}{
 						"timeRange": map[string]string{
-							"from": startDate,
-							"to":   endDate,
+							"from": startDateStr,
+							"to":   endDateStr,
 						},
 					},
 					"type": "sentinel-2-l2a",
@@ -101,7 +128,7 @@ func requestImage(startDate, endDate string, geometry map[string]any, widthPixel
 		}
 
 		if response != nil {
-			body, _ := ioutil.ReadAll(response.Body)
+			body, _ := io.ReadAll(response.Body)
 			fmt.Printf("Attempt %d failed: %s\n", attempt, string(body))
 			response.Body.Close()
 		} else {
@@ -117,10 +144,12 @@ func requestImage(startDate, endDate string, geometry map[string]any, widthPixel
 	defer response.Body.Close()
 
 	// Read the response body
-	responseContent, err := ioutil.ReadAll(response.Body)
+	responseContent, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
+
+	fmt.Println("Image requested successfully")
 
 	return responseContent, nil
 }

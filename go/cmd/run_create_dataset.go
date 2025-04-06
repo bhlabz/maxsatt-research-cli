@@ -12,6 +12,7 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/gocarina/gocsv"
+	"github.com/joho/godotenv"
 )
 
 type ValidationRow struct {
@@ -68,7 +69,7 @@ func runCreateDataset() {
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 
 	outputFileName := "166.csv"
-	validationDataPath := "data/training_input/166.csv"
+	validationDataPath := "../data/training_input/166.csv"
 
 	file, err := os.OpenFile(validationDataPath, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
@@ -84,7 +85,7 @@ func runCreateDataset() {
 	}
 
 	target := len(rows)
-	fmt.Printf("Creating dataset from file %s\n", validationDataPath)
+	fmt.Printf("Creating dataset from file %s with %d samples\n", validationDataPath, target)
 
 	for i := 0; i < target; i++ {
 		row := rows[i]
@@ -114,7 +115,12 @@ func runCreateDataset() {
 			continue
 		}
 
-		latitude, longitude := sentinel.GetCentroidLatitudeLongitude(geometry)
+		latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
+		if err != nil {
+			errors = append(errors, fmt.Sprintf("Error getting centroid latitude and longitude: %v", err))
+			continue
+		}
+
 		historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error getting weather: %v", err))
@@ -141,5 +147,9 @@ func runCreateDataset() {
 }
 
 func main() {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		panic(err)
+	}
 	runCreateDataset()
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/airbusgeo/godal"
 )
 
 func flattenCoordinates(coordinates interface{}) [][]float64 {
@@ -31,42 +33,78 @@ func flattenCoordinates(coordinates interface{}) [][]float64 {
 	return flatCoordinates
 }
 
-func GetCentroidLatitudeLongitude(geometry map[string]interface{}) (float64, float64) {
-	flatCoordinates := flattenCoordinates(geometry["coordinates"])
-
-	var latitude, longitude float64
-	for _, coordinate := range flatCoordinates {
-		latitude += coordinate[1]
-		longitude += coordinate[0]
+func GetCentroidLatitudeLongitudeFromGeometry(g *godal.Geometry) (float64, float64, error) {
+	geojsonStr, err := g.GeoJSON()
+	if err != nil {
+		return 0, 0, fmt.Errorf("failed to export geometry to GeoJSON: %w", err)
 	}
 
-	latitude /= float64(len(flatCoordinates))
-	longitude /= float64(len(flatCoordinates))
+	var parsed struct {
+		Type        string          `json:"type"`
+		Coordinates json.RawMessage `json:"coordinates"`
+	}
+	if err := json.Unmarshal([]byte(geojsonStr), &parsed); err != nil {
+		return 0, 0, fmt.Errorf("invalid geojson: %w", err)
+	}
 
-	return latitude, longitude
+	// Now flatten all coordinates recursively
+	var flatCoords [][]float64
+	err = json.Unmarshal(parsed.Coordinates, &flatCoords)
+	if err != nil {
+		// maybe it's multipolygon?
+		var multi [][][][]float64
+		if err := json.Unmarshal(parsed.Coordinates, &multi); err == nil {
+			for _, poly := range multi {
+				for _, ring := range poly {
+					flatCoords = append(flatCoords, ring...)
+				}
+			}
+		} else {
+			return 0, 0, fmt.Errorf("unsupported geometry format")
+		}
+	}
+
+	var sumX, sumY float64
+	for _, pt := range flatCoords {
+		if len(pt) != 2 {
+			continue
+		}
+		sumX += pt[0]
+		sumY += pt[1]
+	}
+	n := float64(len(flatCoords))
+	if n == 0 {
+		return 0, 0, fmt.Errorf("no coordinates found")
+	}
+	return sumY / n, sumX / n, nil
 }
+func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {
+	filePath := fmt.Sprintf("../data/geojsons/%s.geojson", farm)
 
-func GetGeometryFromGeoJSON(farm, plot string) (map[string]interface{}, error) {
-	filePath := fmt.Sprintf("geojsons/%s.geojson", farm)
-	file, err := os.Open(filePath)
+	godal.RegisterInternalDrivers()
+	ds, err := godal.Open(filePath)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer ds.Close()
 
-	byteValue, _ := io.ReadAll(file)
+	layer := ds.Layers()[0]
+	for {
+		feat := layer.NextFeature()
+		if feat == nil {
+			break
+		}
+		defer feat.Close()
 
-	var geojson map[string]interface{}
-	if err := json.Unmarshal(byteValue, &geojson); err != nil {
-		return nil, err
-	}
+		val, ok := feat.Fields()["plot_id"]
+		if !ok {
+			continue
+		}
 
-	features := geojson["features"].([]interface{})
-	for _, feature := range features {
-		featureMap := feature.(map[string]interface{})
-		properties := featureMap["properties"].(map[string]interface{})
-		if properties["plot_id"] == plot {
-			return featureMap["geometry"].(map[string]interface{}), nil
+		if val.String() == plot {
+			geom := feat.Geometry()
+			wkb, _ := geom.WKB()
+			return godal.NewGeometryFromWKB(wkb, geom.SpatialRef())
 		}
 	}
 
