@@ -2,82 +2,35 @@ package sentinel
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"github.com/airbusgeo/godal"
+	"github.com/paulmach/orb/geojson"
+	"github.com/paulmach/orb/planar"
 )
 
-func flattenCoordinates(coordinates interface{}) [][]float64 {
-	var flatCoordinates [][]float64
-
-	switch coords := coordinates.(type) {
-	case []interface{}:
-		for _, coord := range coords {
-			switch c := coord.(type) {
-			case []interface{}:
-				if _, ok := c[0].([]interface{}); ok {
-					flatCoordinates = append(flatCoordinates, flattenCoordinates(c)...)
-				} else {
-					var point []float64
-					for _, val := range c {
-						point = append(point, val.(float64))
-					}
-					flatCoordinates = append(flatCoordinates, point)
-				}
-			}
-		}
-	}
-
-	return flatCoordinates
-}
-
 func GetCentroidLatitudeLongitudeFromGeometry(g *godal.Geometry) (float64, float64, error) {
-	geojsonStr, err := g.GeoJSON()
+	json, err := g.GeoJSON()
 	if err != nil {
-		return 0, 0, fmt.Errorf("failed to export geometry to GeoJSON: %w", err)
+		return 0, 0, err
 	}
-
-	var parsed struct {
-		Type        string          `json:"type"`
-		Coordinates json.RawMessage `json:"coordinates"`
-	}
-	if err := json.Unmarshal([]byte(geojsonStr), &parsed); err != nil {
-		return 0, 0, fmt.Errorf("invalid geojson: %w", err)
-	}
-
-	// Now flatten all coordinates recursively
-	var flatCoords [][]float64
-	err = json.Unmarshal(parsed.Coordinates, &flatCoords)
+	geomT, err := geojson.UnmarshalGeometry([]byte(json))
 	if err != nil {
-		// maybe it's multipolygon?
-		var multi [][][][]float64
-		if err := json.Unmarshal(parsed.Coordinates, &multi); err == nil {
-			for _, poly := range multi {
-				for _, ring := range poly {
-					flatCoords = append(flatCoords, ring...)
-				}
-			}
-		} else {
-			return 0, 0, fmt.Errorf("unsupported geometry format")
-		}
+		log.Fatalf("Failed to unmarshal WKB: %v", err)
 	}
 
-	var sumX, sumY float64
-	for _, pt := range flatCoords {
-		if len(pt) != 2 {
-			continue
-		}
-		sumX += pt[0]
-		sumY += pt[1]
+	// Assert the type to *geom.MultiPolygon
+	centroid, area := planar.CentroidArea(geomT.Coordinates)
+	if area <= 0 {
+		return 0, 0, errors.New("error getting centroid")
 	}
-	n := float64(len(flatCoords))
-	if n == 0 {
-		return 0, 0, fmt.Errorf("no coordinates found")
-	}
-	return sumY / n, sumX / n, nil
+	return centroid.X(), centroid.Y(), nil
 }
+
 func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {
 	filePath := fmt.Sprintf("../data/geojsons/%s.geojson", farm)
 
