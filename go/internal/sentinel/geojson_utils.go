@@ -28,7 +28,7 @@ func GetCentroidLatitudeLongitudeFromGeometry(g *godal.Geometry) (float64, float
 	if area <= 0 {
 		return 0, 0, errors.New("error getting centroid")
 	}
-	return centroid.X(), centroid.Y(), nil
+	return centroid.Y(), centroid.X(), nil
 }
 
 func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {

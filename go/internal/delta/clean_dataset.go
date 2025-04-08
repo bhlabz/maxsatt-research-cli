@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math"
 	"sync"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 func detectOutliers(data []float64, windowSize int, threshold float64) []float64 {
@@ -60,6 +62,7 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 	var wg sync.WaitGroup
 	mu := sync.Mutex{}
 	newArray := []PixelData{}
+	progressBar := progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
 
 	for key, data := range groupedData {
 		wg.Add(1)
@@ -97,6 +100,7 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 			}
 
 			mu.Lock()
+			progressBar.Add(1)
 			newArray = append(newArray, validData...)
 			mu.Unlock()
 		}(key, data)

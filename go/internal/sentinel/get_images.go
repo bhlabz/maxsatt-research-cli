@@ -3,13 +3,17 @@ package sentinel
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"os"
 	"path/filepath"
 	"time"
 
 	"github.com/airbusgeo/godal"
+	"github.com/schollz/progressbar/v3"
 )
+
+type Bands struct {
+	NDMI, CLD, SCL, NDRE, PSRI, B02, B04, NDVI float64
+}
 
 func getIndexesFromImage(ds *godal.Dataset) (map[string][][]float64, error) {
 	bands := ds.Bands()
@@ -75,31 +79,36 @@ func getIndexesFromImage(ds *godal.Dataset) (map[string][][]float64, error) {
 	return indexes, nil
 }
 
-func GetValues(indexes map[string][][]float64, x, y int) (ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue float64) {
-	ndmiValue = indexes["ndmi"][y][x]
-	cldValue = indexes["cloud"][y][x]
-	sclValue = indexes["scl"][y][x]
-	ndreValue = indexes["ndre"][y][x]
-	psriValue = indexes["psri"][y][x]
-	b02Value = indexes["b02"][y][x]
-	b04Value = indexes["b04"][y][x]
-	ndviValue = indexes["ndvi"][y][x]
-	return ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue
+func GetBands(indexes map[string][][]float64, x, y int) Bands {
+	ndmiValue := indexes["ndmi"][y][x]
+	cldValue := indexes["cloud"][y][x]
+	sclValue := indexes["scl"][y][x]
+	ndreValue := indexes["ndre"][y][x]
+	psriValue := indexes["psri"][y][x]
+	b02Value := indexes["b02"][y][x]
+	b04Value := indexes["b04"][y][x]
+	ndviValue := indexes["ndvi"][y][x]
+	return Bands{
+		NDMI: ndmiValue,
+		CLD:  cldValue,
+		SCL:  sclValue,
+		NDRE: ndreValue,
+		PSRI: psriValue,
+		B02:  b02Value,
+		B04:  b04Value,
+		NDVI: ndviValue,
+	}
 }
 
-func AreIndexesValid(ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue float64) bool {
+func (bands Bands) Valid() bool {
 	invalidConditions := []struct {
 		Condition bool
 		Reason    string
 	}{
-		{math.IsNaN(psriValue), "PSRI value is NaN"},
-		{math.IsNaN(ndviValue), "NDVI value is NaN"},
-		{math.IsNaN(ndmiValue), "NDMI value is NaN"},
-		{math.IsNaN(ndreValue), "NDRE value is NaN"},
-		{cldValue > 0, "Cloud value is greater than 0"},
-		{sclValue == 3 || sclValue == 8 || sclValue == 9 || sclValue == 10, "SCL value is in [3, 8, 9, 10]"},
-		{(b04Value+b02Value)/2 > 0.9, "(B04 value + B02 value) / 2 is greater than 0.9"},
-		{psriValue == 0 && ndviValue == 0 && ndmiValue == 0 && ndreValue == 0, "All index values are 0"},
+		{bands.CLD > 0, "Cloud value is greater than 0"},
+		{bands.SCL == 3 || bands.SCL == 8 || bands.SCL == 9 || bands.SCL == 10, "SCL value is in [3, 8, 9, 10]"},
+		{(bands.B04+bands.B02)/2 > 0.9, "(B04 value + B02 value) / 2 is greater than 0.9"},
+		{bands.PSRI == 0 && bands.NDVI == 0 && bands.NDMI == 0 && bands.NDRE == 0, "All index values are 0"},
 	}
 
 	for _, condition := range invalidConditions {
@@ -135,6 +144,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 	}
 
 	// Iterate through dates
+	progressbar := progressbar.Default(int64(endDate.Sub(startDate).Hours()/24), "Processing images")
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, satelliteIntervalDays) {
 		startImageDate := currentDate
 		endImageDate := currentDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
@@ -143,6 +153,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 
 		// Skip if image is in the not-found list
 		if contains(imagesNotFound, imageName) {
+			progressbar.Add(1)
 			continue
 		}
 
@@ -159,6 +170,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 				return nil, fmt.Errorf("failed to open %s: %v", fileName, err)
 			}
 			images[currentDate] = data
+			progressbar.Add(1)
 			continue
 		}
 
@@ -207,8 +219,8 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 		count := 0
 		for y := 0; y < 10; y++ { // Placeholder for height
 			for x := 0; x < 10; x++ { // Placeholder for width
-				ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue := GetValues(indexes, x, y)
-				if !AreIndexesValid(ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue) {
+				bands := GetBands(indexes, x, y)
+				if !bands.Valid() {
 					count++
 				}
 			}
@@ -219,10 +231,12 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			if err := os.Remove(permanentFileName); err != nil {
 				fmt.Printf("failed to delete image file %s: %v\n", permanentFileName, err)
 			}
+			progressbar.Add(1)
 			continue
 		}
 
 		images[currentDate] = ds
+		progressbar.Add(1)
 	}
 
 	return images, nil

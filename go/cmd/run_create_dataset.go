@@ -48,9 +48,7 @@ func getBestSamplesFromDeltaDataset(deltaDataset []delta.DeltaData, samplesAmoun
 
 	// Add name and pest (label) to each sample
 	for i := range deltaDataset {
-		if deltaDataset[i].Label != nil {
-			*deltaDataset[i].Label = label
-		}
+		deltaDataset[i].Label = &label
 	}
 
 	// Select the top samplesAmount rows
@@ -68,7 +66,7 @@ func runCreateDataset() {
 	deltaDaysTrashHold := 20
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 
-	outputFileName := "166.csv"
+	outputFileName := "../data/model/166.csv"
 	validationDataPath := "../data/training_input/166.csv"
 
 	file, err := os.OpenFile(validationDataPath, os.O_RDWR|os.O_CREATE, os.ModePerm)
@@ -127,7 +125,7 @@ func runCreateDataset() {
 			continue
 		}
 
-		deltaDataset, err := delta.CreateDeltaDataset(farm, plot, date, images, historicalWeather, deltaDays, deltaDaysTrashHold)
+		deltaDataset, err := delta.CreateDeltaDataset(farm, plot, date, images, deltaDays, deltaDaysTrashHold)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
 			continue
@@ -141,6 +139,7 @@ func runCreateDataset() {
 			errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 			continue
 		}
+
 	}
 
 	fmt.Println(strings.Join(errors, "/n"))
@@ -149,7 +148,10 @@ func runCreateDataset() {
 func main() {
 	err := godotenv.Load("../.env")
 	if err != nil {
-		panic(err)
+		err := godotenv.Load(".env")
+		if err != nil {
+			panic(err)
+		}
 	}
 	runCreateDataset()
 }

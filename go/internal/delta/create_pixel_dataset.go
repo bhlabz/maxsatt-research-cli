@@ -7,7 +7,6 @@ import (
 
 	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 
 	"github.com/schollz/progressbar/v3"
 )
@@ -23,44 +22,36 @@ type Indexes struct {
 	NDVI  []float64
 }
 type PixelData struct {
-	Farm          string
-	Plot          string
-	Date          time.Time
-	X             int
-	Y             int
-	NDRE          float64
-	NDMI          float64
-	PSRI          float64
-	NDVI          float64
-	Precipitation float64
-	Temperature   float64
-	Humidity      float64
+	Date time.Time
+	X    int
+	Y    int
+	NDRE float64
+	NDMI float64
+	PSRI float64
+	NDVI float64
 }
 
-func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset, weather map[time.Time]weather.Weather) ([]PixelData, error) {
+func createPixelDataset(images map[time.Time]*godal.Dataset) ([]PixelData, error) {
 	var width, height, totalPixels int
-	var xRange, yRange []int
 
 	for _, imageData := range images {
 		width = imageData.Structure().SizeX
 		height = imageData.Structure().SizeY
-		xRange = makeRange(0, width)
-		yRange = makeRange(0, height)
 		totalPixels = width * height
 		break
 	}
 
 	fileResults := []PixelData{}
 	count := 0
-	target := len(yRange) * len(xRange) * len(images)
-	progressBar := progressbar.Default(int64(target))
+	target := height * width * len(images)
+	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 
-	for _, y := range yRange {
-		for _, x := range xRange {
+	for y := range height {
+		for x := range width {
 			sortedImageDates := getSortedKeys(images)
 			for _, date := range sortedImageDates {
 				image := images[date]
-				result, err := getData(farm, plot, image, totalPixels, width, height, x, y, date, weather[date])
+				result, err := getData(image, totalPixels, width, height, x, y, date)
 				if err != nil {
 					return nil, err
 				}
@@ -68,7 +59,9 @@ func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset, 
 				if result != nil {
 					fileResults = append(fileResults, *result)
 				}
-				progressBar.Add(1)
+				if err := progressBar.Add(1); err != nil {
+					return nil, err
+				}
 			}
 		}
 	}
@@ -79,7 +72,7 @@ func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset, 
 	return fileResults, nil
 }
 
-func getData(farm, plot string, image *godal.Dataset, totalPixels, width, height, x, y int, date time.Time, weather weather.Weather) (*PixelData, error) {
+func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date time.Time) (*PixelData, error) {
 	if totalPixels != 0 && totalPixels != width*height {
 		return nil, errors.New("different image size")
 	}
@@ -89,33 +82,20 @@ func getData(farm, plot string, image *godal.Dataset, totalPixels, width, height
 		return nil, err
 	}
 
-	ndmiValue, cldValue, sclValue, ndreValue, psriValue, b02Value, b04Value, ndviValue := sentinel.GetValues(indexes, x, y)
+	bands := sentinel.GetBands(indexes, x, y)
 
-	if sentinel.AreIndexesValid(psriValue, ndviValue, ndmiValue, ndreValue, cldValue, sclValue, b02Value, b04Value) {
+	if bands.Valid() {
 		return &PixelData{
-			Farm:          farm,
-			Plot:          plot,
-			Date:          date,
-			X:             x,
-			Y:             y,
-			NDRE:          ndreValue,
-			NDMI:          ndmiValue,
-			PSRI:          psriValue,
-			NDVI:          ndviValue,
-			Temperature:   weather.Temperature,
-			Precipitation: weather.Precipitation,
-			Humidity:      weather.Humidity,
+			Date: date,
+			X:    x,
+			Y:    y,
+			NDRE: bands.NDRE,
+			NDMI: bands.NDMI,
+			PSRI: bands.PSRI,
+			NDVI: bands.NDVI,
 		}, nil
 	}
 	return nil, nil
-}
-
-func makeRange(min, max int) []int {
-	r := make([]int, max-min)
-	for i := range r {
-		r[i] = min + i
-	}
-	return r
 }
 
 func getSortedKeys(m map[time.Time]*godal.Dataset) []time.Time {

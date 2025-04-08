@@ -23,7 +23,6 @@ type Sample struct {
 type FinalData struct {
 	weather.WeatherMetrics
 	delta.DeltaData
-	Label     *string   `csv:"label"`
 	CreatedAt time.Time `csv:"created_at"`
 }
 
@@ -59,7 +58,6 @@ func createFinalDataset(samples []delta.DeltaData, weatherData weather.Historica
 			mergedRow := FinalData{
 				WeatherMetrics: weatherRow,
 				DeltaData:      sample,
-				Label:          sample.Label,
 				CreatedAt:      time.Now(),
 			}
 

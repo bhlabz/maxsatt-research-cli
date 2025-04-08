@@ -7,34 +7,31 @@ import (
 	"time"
 
 	"github.com/airbusgeo/godal"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
+	"github.com/schollz/progressbar/v3"
 )
 
 type DeltaData struct {
-	Name           string
-	DeltaMin       int
-	DeltaMax       int
-	Delta          int
-	StartDate      time.Time
-	EndDate        time.Time
-	X              int
-	Y              int
-	NDRE           float64
-	NDMI           float64
-	PSRI           float64
-	NDVI           float64
-	NDREDerivative float64
-	NDMIDerivative float64
-	PSRIDerivative float64
-	NDVIDerivative float64
-	Label          *string
+	Farm           string    `csv:"farm"`
+	Plot           string    `csv:"plot"`
+	DeltaMin       int       `csv:"delta_min"`
+	DeltaMax       int       `csv:"delta_max"`
+	Delta          int       `csv:"delta"`
+	StartDate      time.Time `csv:"start_date"`
+	EndDate        time.Time `csv:"end_date"`
+	X              int       `csv:"x"`
+	Y              int       `csv:"y"`
+	NDRE           float64   `csv:"ndre"`
+	NDMI           float64   `csv:"ndmi"`
+	PSRI           float64   `csv:"psri"`
+	NDVI           float64   `csv:"ndvi"`
+	NDREDerivative float64   `csv:"ndre_derivative"`
+	NDMIDerivative float64   `csv:"ndmi_derivative"`
+	PSRIDerivative float64   `csv:"psri_derivative"`
+	NDVIDerivative float64   `csv:"ndvi_derivative"`
+	Label          *string   `csv:"label"`
 }
 
-func parseDate(dateStr string) (time.Time, error) {
-	return time.Parse("2006-01-02", dateStr)
-}
-
-func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData, error) {
+func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData, error) {
 	// Sort the dataset by date
 	sort.Slice(clearDataset, func(i, j int) bool {
 		dateI := clearDataset[i].Date
@@ -44,7 +41,7 @@ func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData
 
 	groupedPixels := make(map[string][]PixelData)
 	for _, row := range clearDataset {
-		key := fmt.Sprintf("%s,%s", row.X, row.Y)
+		key := fmt.Sprintf("%d,%d", row.X, row.Y)
 		groupedPixels[key] = append(groupedPixels[key], row)
 	}
 
@@ -53,14 +50,12 @@ func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData
 	notFound := 0
 	target := len(groupedPixels)
 
-	fmt.Printf("Creating delta dataset: 0/%d\n", target)
-	progress := 0
+	progressBar := progressbar.Default(int64(target), "Creating delta dataset")
 
 	for _, data := range groupedPixels {
 		if len(data) < 3 {
 			notFound++
-			progress++
-			fmt.Printf("\rCreating delta dataset: %d/%d", progress, target)
+			progressBar.Add(1)
 			continue
 		}
 
@@ -96,6 +91,8 @@ func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData
 				ndviDerivative := (ndviValue - ndviStart) / float64(timeDiff)
 
 				deltaDataset = append(deltaDataset, DeltaData{
+					Farm:           farm,
+					Plot:           plot,
 					DeltaMin:       deltaMin,
 					DeltaMax:       deltaMax,
 					Delta:          timeDiff,
@@ -117,8 +114,7 @@ func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData
 				break
 			}
 		}
-		progress++
-		fmt.Printf("\rCreating delta dataset: %d/%d", progress, target)
+		progressBar.Add(1)
 	}
 
 	fmt.Println()
@@ -130,11 +126,11 @@ func deltaDataset(deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData
 	return deltaDataset, nil
 }
 
-func CreateDeltaDataset(farm, plot string, date time.Time, images map[time.Time]*godal.Dataset, historicalWeather map[time.Time]weather.Weather, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
-	pixelDataset, err := createPixelDataset(farm, plot, images, historicalWeather)
+func CreateDeltaDataset(farm, plot string, date time.Time, images map[time.Time]*godal.Dataset, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
+	pixelDataset, err := createPixelDataset(images)
 	if err != nil {
 		return nil, err
 	}
 	clearDataset := cleanDataset(pixelDataset)
-	return deltaDataset(deltaDays, deltaDays+deltaDaysThreshold, clearDataset)
+	return deltaDataset(farm, plot, deltaDays, deltaDays+deltaDaysThreshold, clearDataset)
 }

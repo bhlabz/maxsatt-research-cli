@@ -24,7 +24,7 @@ func GetIndexesFromImage(dataset *godal.Dataset) (map[string][][]float64, error)
 	// Read data from bands
 	readBand := func(band godal.Band) ([][]float64, error) {
 		xSize := band.Structure().SizeX
-		ySize := band.Structure().SizeX
+		ySize := band.Structure().SizeY
 		data := make([]float64, xSize*ySize)
 		err := band.Read(0, 0, data, xSize, ySize)
 		if err != nil {

@@ -149,7 +149,5 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	fmt.Println("Image requested successfully")
-
 	return responseContent, nil
 }
