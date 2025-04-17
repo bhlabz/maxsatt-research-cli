@@ -16,9 +16,9 @@ func isBetweenDates(date, startDate, endDate time.Time) bool {
 }
 
 // GetFinalData processes and retrieves climate group data.
-func GetFinalData(deltaDataset []delta.DeltaData, historicalWeather weather.HistoricalWeather, date time.Time, farm, plot string, deltaDays, deltaDaysTrashHold int, cache bool, fileName string) ([]FinalData, error) {
+func GetFinalData(deltaDataset []delta.DeltaData, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string, cache bool, fileName string) ([]FinalData, error) {
 	// Construct the file name
-	name := farm + "_" + plot + "_" + date.Format("2006-01-02")
+	name := farm + "_" + plot + "_" + startDate.Format("2006-01-02")
 	if fileName == "" {
 		fileName = name + ".csv"
 	}
@@ -30,10 +30,6 @@ func GetFinalData(deltaDataset []delta.DeltaData, historicalWeather weather.Hist
 			return readCSV(filePath)
 		}
 	}
-
-	// Calculate date range
-	endDate := date
-	startDate := endDate.AddDate(0, 0, -(deltaDays + deltaDaysTrashHold))
 
 	filteredDataset := make([]delta.DeltaData, 0, len(deltaDataset))
 	for _, record := range deltaDataset {

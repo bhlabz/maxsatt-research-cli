@@ -126,7 +126,7 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []Pixe
 	return deltaDataset, nil
 }
 
-func CreateDeltaDataset(farm, plot string, date time.Time, images map[time.Time]*godal.Dataset, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
+func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
 	pixelDataset, err := createPixelDataset(images)
 	if err != nil {
 		return nil, err

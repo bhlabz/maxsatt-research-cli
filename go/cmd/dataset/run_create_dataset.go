@@ -125,7 +125,7 @@ func runCreateDataset() {
 			continue
 		}
 
-		deltaDataset, err := delta.CreateDeltaDataset(farm, plot, date, images, deltaDays, deltaDaysTrashHold)
+		deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysTrashHold)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
 			continue
@@ -134,7 +134,7 @@ func runCreateDataset() {
 		samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
 		bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
 
-		_, err = final.GetFinalData(bestSamples, historicalWeather, date, farm, plot, deltaDays, deltaDaysTrashHold, false, outputFileName)
+		_, err = final.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot, false, outputFileName)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 			continue

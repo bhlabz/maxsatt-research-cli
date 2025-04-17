@@ -1,14 +1,15 @@
-from get_images import get_images
+import csv
+import json
+import traceback
+from datetime import timedelta
+
+import pandas as pd
 from create_dataset import get_climate_group_data
 from delta_dataset import create_delta_dataset
+from get_images import get_images
 from get_weather import fetch_weather
-import json
-from datetime import timedelta
-import csv
-import pandas as pd
+from telegram import send_error_message, send_success_message
 from tqdm import tqdm
-import traceback
-from telegram import send_success_message,send_error_message
 
 formiga_alto = 3
 formiga_baixo = 1
