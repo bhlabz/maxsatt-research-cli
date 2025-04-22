@@ -10,14 +10,21 @@ require (
 	github.com/paulmach/orb v0.11.1
 	github.com/schollz/progressbar/v3 v3.18.0
 	golang.org/x/oauth2 v0.28.0
+	google.golang.org/grpc v1.72.0
+	google.golang.org/protobuf v1.36.5
 )
 
 require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/stretchr/testify v1.10.0 // indirect
 	go.mongodb.org/mongo-driver v1.11.4 // indirect
 	golang.org/x/image v0.25.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/term v0.28.0 // indirect
+	golang.org/x/net v0.35.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/term v0.29.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250218202821-56aae31c358a // indirect
 )

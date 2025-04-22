@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "/protobufs";
+
+
+service ClearAndSmoothService {
+    rpc ClearAndSmooth (ClearAndSmoothRequest) returns (ClearAndSmoothResponse);
+}
+
+message ClearAndSmoothRequest {
+    repeated double data = 1;
+}
+
+message ClearAndSmoothResponse {
+    repeated double smoothed_data = 1;
+}

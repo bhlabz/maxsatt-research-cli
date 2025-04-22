@@ -1,55 +1,46 @@
 package delta
 
 import (
+	"context"
 	"fmt"
-	"math"
+	"log"
 	"sync"
+	"time"
 
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
 	"github.com/schollz/progressbar/v3"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-func detectOutliers(data []float64, windowSize int, threshold float64) []float64 {
-	cleanedData := make([]float64, len(data))
+func clearAndSmooth(values []float64) []float64 {
 
-	for i := range data {
-		start := int(math.Max(0, float64(i-windowSize)))
-		end := int(math.Min(float64(len(data)), float64(i+windowSize+1)))
-		window := data[start:end]
+	// Connect to the gRPC server
+	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Failed to connect to gRPC server: %v", err)
+	}
+	defer conn.Close()
 
-		mean, std := calculateMeanAndStd(window)
+	client := protobufs.NewClearAndSmoothServiceClient(conn)
 
-		if math.Abs(data[i]-mean) > threshold*std {
-			cleanedData[i] = mean
-		} else {
-			cleanedData[i] = data[i]
-		}
+	// Create the request
+	req := &protobufs.ClearAndSmoothRequest{
+		Data: values,
 	}
 
-	return cleanedData
-}
+	// Call the gRPC method
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-func calculateMeanAndStd(data []float64) (mean, std float64) {
-	sum := 0.0
-	for _, v := range data {
-		sum += v
+	resp, err := client.ClearAndSmooth(ctx, req)
+	if err != nil {
+		log.Fatalf("Failed to call ClearAndSmooth: %v", err)
 	}
-	mean = sum / float64(len(data))
 
-	variance := 0.0
-	for _, v := range data {
-		variance += math.Pow(v-mean, 2)
-	}
-	std = math.Sqrt(variance / float64(len(data)))
-
-	return mean, std
+	// Return the smoothed data
+	return resp.SmoothedData
 }
-
-func gamSmoothing(values []float64, lam float64) []float64 {
-	// Placeholder for GAM smoothing logic
-	// Replace this with the actual implementation later
-	return values
-}
-
 func cleanDataset(pixelDataset []PixelData) []PixelData {
 	groupedData := make(map[[2]int][]PixelData)
 
@@ -63,11 +54,16 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 	mu := sync.Mutex{}
 	newArray := []PixelData{}
 	progressBar := progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
+	// Create a buffered channel to limit the number of goroutines
+	goroutineLimit := make(chan struct{}, 100) // Limit to 10 goroutines
 
 	for key, data := range groupedData {
 		wg.Add(1)
+		goroutineLimit <- struct{}{} // Acquire a slot
+
 		go func(key [2]int, data []PixelData) {
 			defer wg.Done()
+			defer func() { <-goroutineLimit }() // Release the slot
 
 			var ndre, ndmi, psri, ndvi []float64
 			for _, d := range data {
@@ -77,15 +73,10 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 				ndvi = append(ndvi, d.NDVI)
 			}
 
-			ndmi = detectOutliers(ndmi, 5, 0.3)
-			psri = detectOutliers(psri, 5, 0.3)
-			ndre = detectOutliers(ndre, 5, 0.3)
-			ndvi = detectOutliers(ndvi, 5, 0.3)
-
-			ndvi = gamSmoothing(ndvi, 0.0005)
-			ndmi = gamSmoothing(ndmi, 0.0005)
-			psri = gamSmoothing(psri, 0.0005)
-			ndre = gamSmoothing(ndre, 0.0005)
+			ndmi = clearAndSmooth(ndmi)
+			psri = clearAndSmooth(psri)
+			ndre = clearAndSmooth(ndre)
+			ndvi = clearAndSmooth(ndvi)
 
 			validData := []PixelData{}
 			for i := range data {
