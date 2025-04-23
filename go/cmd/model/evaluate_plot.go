@@ -24,7 +24,7 @@ func evaluatePlot(farm, plot string, endDate time.Time) error {
 	start := time.Now()
 
 	deltaDays := 5
-	deltaDaysTrashHold := 20
+	deltaDaysTrashHold := 30
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysTrashHold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
 	outputFileName := fmt.Sprintf("%s_%s_%s.csv", farm, plot, endDate.Format("2006-01-02"))
@@ -44,11 +44,16 @@ func evaluatePlot(farm, plot string, endDate time.Time) error {
 	fmt.Printf("GetImages took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
+	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysTrashHold)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("CreateDeltaDataset took %v\n", time.Since(stepStart))
+
 	latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("GetCentroidLatitudeLongitudeFromGeometry took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
 	historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
@@ -56,13 +61,6 @@ func evaluatePlot(farm, plot string, endDate time.Time) error {
 		return err
 	}
 	fmt.Printf("FetchWeather took %v\n", time.Since(stepStart))
-
-	stepStart = time.Now()
-	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysTrashHold)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("CreateDeltaDataset took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
 	plotFinalDataset, err := final.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, farm, plot, false, outputFileName)
@@ -90,5 +88,8 @@ func main() {
 			panic(err)
 		}
 	}
-	evaluatePlot("Boi Preto XI", "055", time.Now().Add(-time.Hour*24*20))
+	err = evaluatePlot("Boi Preto XI", "055", time.Now())
+	if err != nil {
+		panic(err)
+	}
 }

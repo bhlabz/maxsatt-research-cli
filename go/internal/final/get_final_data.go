@@ -42,7 +42,9 @@ func GetFinalData(deltaDataset []delta.DeltaData, historicalWeather weather.Hist
 	dates := []time.Time{}
 	for _, record := range filteredDataset {
 		endDateRecord := record.EndDate // Access the EndDate field directly
-		dates = append(dates, endDateRecord)
+		// Truncate to year, month, and day
+		truncatedDate := time.Date(endDateRecord.Year(), endDateRecord.Month(), endDateRecord.Day(), 0, 0, 0, 0, endDateRecord.Location())
+		dates = append(dates, truncatedDate)
 	}
 
 	// Call external functions (placeholders for now)

@@ -43,6 +43,5 @@ def detect_outliers(data, window_size=5, threshold=0.3):
     return cleaned_data
 
 def clear_and_smooth(data):
-    print("Running clear_and_smooth...")
     smoothed_data = gam_smoothing(detect_outliers(data), 0.0005)
     return smoothed_data

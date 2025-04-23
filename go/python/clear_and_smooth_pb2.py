@@ -24,17 +24,27 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16\x63lear_and_smooth.proto\"%\n\x15\x43learAndSmoothRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x03(\x01\"/\n\x16\x43learAndSmoothResponse\x12\x15\n\rsmoothed_data\x18\x01 \x03(\x01\x32Z\n\x15\x43learAndSmoothService\x12\x41\n\x0e\x43learAndSmooth\x12\x16.ClearAndSmoothRequest\x1a\x17.ClearAndSmoothResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16\x63lear_and_smooth.proto\"\x81\x01\n\x15\x43learAndSmoothRequest\x12.\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32 .ClearAndSmoothRequest.DataEntry\x1a\x38\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1a\n\x05value\x18\x02 \x01(\x0b\x32\x0b.DoubleList:\x02\x38\x01\"\x9c\x01\n\x16\x43learAndSmoothResponse\x12@\n\rsmoothed_data\x18\x01 \x03(\x0b\x32).ClearAndSmoothResponse.SmoothedDataEntry\x1a@\n\x11SmoothedDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1a\n\x05value\x18\x02 \x01(\x0b\x32\x0b.DoubleList:\x02\x38\x01\"\x1c\n\nDoubleList\x12\x0e\n\x06values\x18\x01 \x03(\x01\x32Z\n\x15\x43learAndSmoothService\x12\x41\n\x0e\x43learAndSmooth\x12\x16.ClearAndSmoothRequest\x1a\x17.ClearAndSmoothResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'clear_and_smooth_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_CLEARANDSMOOTHREQUEST']._serialized_start=26
-  _globals['_CLEARANDSMOOTHREQUEST']._serialized_end=63
-  _globals['_CLEARANDSMOOTHRESPONSE']._serialized_start=65
-  _globals['_CLEARANDSMOOTHRESPONSE']._serialized_end=112
-  _globals['_CLEARANDSMOOTHSERVICE']._serialized_start=114
-  _globals['_CLEARANDSMOOTHSERVICE']._serialized_end=204
+  _globals['_CLEARANDSMOOTHREQUEST_DATAENTRY']._loaded_options = None
+  _globals['_CLEARANDSMOOTHREQUEST_DATAENTRY']._serialized_options = b'8\001'
+  _globals['_CLEARANDSMOOTHRESPONSE_SMOOTHEDDATAENTRY']._loaded_options = None
+  _globals['_CLEARANDSMOOTHRESPONSE_SMOOTHEDDATAENTRY']._serialized_options = b'8\001'
+  _globals['_CLEARANDSMOOTHREQUEST']._serialized_start=27
+  _globals['_CLEARANDSMOOTHREQUEST']._serialized_end=156
+  _globals['_CLEARANDSMOOTHREQUEST_DATAENTRY']._serialized_start=100
+  _globals['_CLEARANDSMOOTHREQUEST_DATAENTRY']._serialized_end=156
+  _globals['_CLEARANDSMOOTHRESPONSE']._serialized_start=159
+  _globals['_CLEARANDSMOOTHRESPONSE']._serialized_end=315
+  _globals['_CLEARANDSMOOTHRESPONSE_SMOOTHEDDATAENTRY']._serialized_start=251
+  _globals['_CLEARANDSMOOTHRESPONSE_SMOOTHEDDATAENTRY']._serialized_end=315
+  _globals['_DOUBLELIST']._serialized_start=317
+  _globals['_DOUBLELIST']._serialized_end=345
+  _globals['_CLEARANDSMOOTHSERVICE']._serialized_start=347
+  _globals['_CLEARANDSMOOTHSERVICE']._serialized_end=437
 # @@protoc_insertion_point(module_scope)

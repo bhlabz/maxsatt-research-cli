@@ -143,12 +143,26 @@ func sum(data []float64) float64 {
 
 func CalculateHistoricalWeatherMetricsByDates(dates []time.Time, historicalWeather HistoricalWeather) (historicalWeatherMetrics HistoricalWeatherMetrics) {
 	historicalWeatherMetrics = make(HistoricalWeatherMetrics)
+	results := make(chan struct {
+		date    time.Time
+		metrics WeatherMetrics
+	}, len(dates))
 
 	for _, date := range dates {
-		if _, exists := historicalWeather[date]; exists {
-			historicalWeatherMetrics[date] = calculateWeatherMetrics(30, date, historicalWeather)
-		}
+		go func(d time.Time) {
+			metrics := calculateWeatherMetrics(30, d, historicalWeather)
+			results <- struct {
+				date    time.Time
+				metrics WeatherMetrics
+			}{date: d, metrics: metrics}
+		}(date)
 	}
 
+	for i := 0; i < len(dates); i++ {
+		result := <-results
+		historicalWeatherMetrics[result.date] = result.metrics
+	}
+
+	close(results)
 	return historicalWeatherMetrics
 }

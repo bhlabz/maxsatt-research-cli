@@ -45,10 +45,10 @@ func createPixelDataset(images map[time.Time]*godal.Dataset) ([]PixelData, error
 	count := 0
 	target := height * width * len(images)
 	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
+	sortedImageDates := getSortedKeys(images)
 
 	for y := range height {
 		for x := range width {
-			sortedImageDates := getSortedKeys(images)
 			for _, date := range sortedImageDates {
 				image := images[date]
 				result, err := getData(image, totalPixels, width, height, x, y, date)

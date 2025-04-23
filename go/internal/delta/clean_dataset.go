@@ -5,42 +5,50 @@ import (
 	"fmt"
 	"log"
 	"sync"
-	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
+	"github.com/gammazero/workerpool"
 	"github.com/schollz/progressbar/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func clearAndSmooth(values []float64) []float64 {
-
-	// Connect to the gRPC server
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("Failed to connect to gRPC server: %v", err)
+func convertToProtobufList(data map[string][]float64) map[string]*protobufs.DoubleList {
+	result := make(map[string]*protobufs.DoubleList)
+	for key, values := range data {
+		result[key] = &protobufs.DoubleList{
+			Values: values,
+		}
 	}
-	defer conn.Close()
+	return result
+}
+
+func convertFromProtobufList(data map[string]*protobufs.DoubleList) map[string][]float64 {
+	result := make(map[string][]float64)
+	for key, doubleList := range data {
+		result[key] = doubleList.Values
+	}
+	return result
+}
+
+func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) map[string][]float64 {
 
 	client := protobufs.NewClearAndSmoothServiceClient(conn)
 
 	// Create the request
 	req := &protobufs.ClearAndSmoothRequest{
-		Data: values,
+		Data: convertToProtobufList(values),
 	}
 
-	// Call the gRPC method
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	resp, err := client.ClearAndSmooth(ctx, req)
+	resp, err := client.ClearAndSmooth(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Failed to call ClearAndSmooth: %v", err)
 	}
 
 	// Return the smoothed data
-	return resp.SmoothedData
+	return convertFromProtobufList(resp.SmoothedData)
 }
+
 func cleanDataset(pixelDataset []PixelData) []PixelData {
 	groupedData := make(map[[2]int][]PixelData)
 
@@ -55,16 +63,17 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 	newArray := []PixelData{}
 	progressBar := progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
 	// Create a buffered channel to limit the number of goroutines
-	goroutineLimit := make(chan struct{}, 100) // Limit to 10 goroutines
-
-	for key, data := range groupedData {
+	wp := workerpool.New(200)
+	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Failed to connect to gRPC server: %v", err)
+	}
+	defer conn.Close()
+	for _, data := range groupedData {
 		wg.Add(1)
-		goroutineLimit <- struct{}{} // Acquire a slot
 
-		go func(key [2]int, data []PixelData) {
+		wp.Submit(func() {
 			defer wg.Done()
-			defer func() { <-goroutineLimit }() // Release the slot
-
 			var ndre, ndmi, psri, ndvi []float64
 			for _, d := range data {
 				ndre = append(ndre, d.NDRE)
@@ -73,10 +82,19 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 				ndvi = append(ndvi, d.NDVI)
 			}
 
-			ndmi = clearAndSmooth(ndmi)
-			psri = clearAndSmooth(psri)
-			ndre = clearAndSmooth(ndre)
-			ndvi = clearAndSmooth(ndvi)
+			values := map[string][]float64{
+				"ndre": ndre,
+				"ndmi": ndmi,
+				"psri": psri,
+				"ndvi": ndvi,
+			}
+
+			values = clearAndSmooth(conn, values)
+
+			ndre = values["ndre"]
+			ndmi = values["ndmi"]
+			psri = values["psri"]
+			ndvi = values["ndvi"]
 
 			validData := []PixelData{}
 			for i := range data {
@@ -94,7 +112,8 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 			progressBar.Add(1)
 			newArray = append(newArray, validData...)
 			mu.Unlock()
-		}(key, data)
+		})
+
 	}
 
 	wg.Wait()

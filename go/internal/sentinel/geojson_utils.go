@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/airbusgeo/godal"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/paulmach/orb/geojson"
 	"github.com/paulmach/orb/planar"
 )
@@ -32,7 +33,8 @@ func GetCentroidLatitudeLongitudeFromGeometry(g *godal.Geometry) (float64, float
 }
 
 func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {
-	filePath := fmt.Sprintf("../../data/geojsons/%s.geojson", farm)
+
+	filePath := fmt.Sprintf("%s/data/geojsons/%s.geojson", properties.RootPath, farm)
 
 	godal.RegisterInternalDrivers()
 	ds, err := godal.Open(filePath)

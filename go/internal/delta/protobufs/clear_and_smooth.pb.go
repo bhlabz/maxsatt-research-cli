@@ -23,7 +23,7 @@ const (
 
 type ClearAndSmoothRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Data          []float64              `protobuf:"fixed64,1,rep,packed,name=data,proto3" json:"data,omitempty"`
+	Data          map[string]*DoubleList `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,7 +58,7 @@ func (*ClearAndSmoothRequest) Descriptor() ([]byte, []int) {
 	return file_clear_and_smooth_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ClearAndSmoothRequest) GetData() []float64 {
+func (x *ClearAndSmoothRequest) GetData() map[string]*DoubleList {
 	if x != nil {
 		return x.Data
 	}
@@ -67,7 +67,7 @@ func (x *ClearAndSmoothRequest) GetData() []float64 {
 
 type ClearAndSmoothResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	SmoothedData  []float64              `protobuf:"fixed64,1,rep,packed,name=smoothed_data,json=smoothedData,proto3" json:"smoothed_data,omitempty"`
+	SmoothedData  map[string]*DoubleList `protobuf:"bytes,1,rep,name=smoothed_data,json=smoothedData,proto3" json:"smoothed_data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -102,9 +102,53 @@ func (*ClearAndSmoothResponse) Descriptor() ([]byte, []int) {
 	return file_clear_and_smooth_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ClearAndSmoothResponse) GetSmoothedData() []float64 {
+func (x *ClearAndSmoothResponse) GetSmoothedData() map[string]*DoubleList {
 	if x != nil {
 		return x.SmoothedData
+	}
+	return nil
+}
+
+type DoubleList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Values        []float64              `protobuf:"fixed64,1,rep,packed,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DoubleList) Reset() {
+	*x = DoubleList{}
+	mi := &file_clear_and_smooth_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DoubleList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DoubleList) ProtoMessage() {}
+
+func (x *DoubleList) ProtoReflect() protoreflect.Message {
+	mi := &file_clear_and_smooth_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DoubleList.ProtoReflect.Descriptor instead.
+func (*DoubleList) Descriptor() ([]byte, []int) {
+	return file_clear_and_smooth_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DoubleList) GetValues() []float64 {
+	if x != nil {
+		return x.Values
 	}
 	return nil
 }
@@ -113,11 +157,20 @@ var File_clear_and_smooth_proto protoreflect.FileDescriptor
 
 const file_clear_and_smooth_proto_rawDesc = "" +
 	"\n" +
-	"\x16clear_and_smooth.proto\"+\n" +
-	"\x15ClearAndSmoothRequest\x12\x12\n" +
-	"\x04data\x18\x01 \x03(\x01R\x04data\"=\n" +
-	"\x16ClearAndSmoothResponse\x12#\n" +
-	"\rsmoothed_data\x18\x01 \x03(\x01R\fsmoothedData2Z\n" +
+	"\x16clear_and_smooth.proto\"\x93\x01\n" +
+	"\x15ClearAndSmoothRequest\x124\n" +
+	"\x04data\x18\x01 \x03(\v2 .ClearAndSmoothRequest.DataEntryR\x04data\x1aD\n" +
+	"\tDataEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12!\n" +
+	"\x05value\x18\x02 \x01(\v2\v.DoubleListR\x05value:\x028\x01\"\xb6\x01\n" +
+	"\x16ClearAndSmoothResponse\x12N\n" +
+	"\rsmoothed_data\x18\x01 \x03(\v2).ClearAndSmoothResponse.SmoothedDataEntryR\fsmoothedData\x1aL\n" +
+	"\x11SmoothedDataEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12!\n" +
+	"\x05value\x18\x02 \x01(\v2\v.DoubleListR\x05value:\x028\x01\"$\n" +
+	"\n" +
+	"DoubleList\x12\x16\n" +
+	"\x06values\x18\x01 \x03(\x01R\x06values2Z\n" +
 	"\x15ClearAndSmoothService\x12A\n" +
 	"\x0eClearAndSmooth\x12\x16.ClearAndSmoothRequest\x1a\x17.ClearAndSmoothResponseB\fZ\n" +
 	"/protobufsb\x06proto3"
@@ -134,19 +187,26 @@ func file_clear_and_smooth_proto_rawDescGZIP() []byte {
 	return file_clear_and_smooth_proto_rawDescData
 }
 
-var file_clear_and_smooth_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_clear_and_smooth_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_clear_and_smooth_proto_goTypes = []any{
 	(*ClearAndSmoothRequest)(nil),  // 0: ClearAndSmoothRequest
 	(*ClearAndSmoothResponse)(nil), // 1: ClearAndSmoothResponse
+	(*DoubleList)(nil),             // 2: DoubleList
+	nil,                            // 3: ClearAndSmoothRequest.DataEntry
+	nil,                            // 4: ClearAndSmoothResponse.SmoothedDataEntry
 }
 var file_clear_and_smooth_proto_depIdxs = []int32{
-	0, // 0: ClearAndSmoothService.ClearAndSmooth:input_type -> ClearAndSmoothRequest
-	1, // 1: ClearAndSmoothService.ClearAndSmooth:output_type -> ClearAndSmoothResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	3, // 0: ClearAndSmoothRequest.data:type_name -> ClearAndSmoothRequest.DataEntry
+	4, // 1: ClearAndSmoothResponse.smoothed_data:type_name -> ClearAndSmoothResponse.SmoothedDataEntry
+	2, // 2: ClearAndSmoothRequest.DataEntry.value:type_name -> DoubleList
+	2, // 3: ClearAndSmoothResponse.SmoothedDataEntry.value:type_name -> DoubleList
+	0, // 4: ClearAndSmoothService.ClearAndSmooth:input_type -> ClearAndSmoothRequest
+	1, // 5: ClearAndSmoothService.ClearAndSmooth:output_type -> ClearAndSmoothResponse
+	5, // [5:6] is the sub-list for method output_type
+	4, // [4:5] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_clear_and_smooth_proto_init() }
@@ -160,7 +220,7 @@ func file_clear_and_smooth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_clear_and_smooth_proto_rawDesc), len(file_clear_and_smooth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

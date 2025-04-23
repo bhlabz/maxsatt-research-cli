@@ -9,6 +9,7 @@ import (
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/gocarina/gocsv"
@@ -66,8 +67,8 @@ func runCreateDataset() {
 	deltaDaysTrashHold := 20
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 
-	outputFileName := "../../data/model/166.csv"
-	validationDataPath := "../../data/training_input/166.csv"
+	outputFileName := fmt.Sprintf("%s/data/model/166.csv", properties.RootPath)
+	validationDataPath := fmt.Sprintf("%/data/training_input/166.csv", properties.RootPath)
 
 	file, err := os.OpenFile(validationDataPath, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
