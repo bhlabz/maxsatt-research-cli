@@ -63,7 +63,7 @@ func cleanDataset(pixelDataset []PixelData) []PixelData {
 	newArray := []PixelData{}
 	progressBar := progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
 	// Create a buffered channel to limit the number of goroutines
-	wp := workerpool.New(200)
+	wp := workerpool.New(100)
 	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to gRPC server: %v", err)

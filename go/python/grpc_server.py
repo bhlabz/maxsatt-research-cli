@@ -27,7 +27,7 @@ class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServi
             context.set_code(grpc.StatusCode.INTERNAL)
             return clear_and_smooth_pb2.ClearAndSmoothResponse()
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
     clear_and_smooth_pb2_grpc.add_ClearAndSmoothServiceServicer_to_server(ClearAndSmoothService(), server)
     server.add_insecure_port('[::]:50051')
     server.start()

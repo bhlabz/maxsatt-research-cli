@@ -5,20 +5,20 @@ go 1.24.0
 require (
 	github.com/airbusgeo/godal v0.0.13
 	github.com/fogleman/gg v1.3.0
+	github.com/gammazero/workerpool v1.1.3
 	github.com/gocarina/gocsv v0.0.0-20240520201108-78e41c74b4b1
 	github.com/joho/godotenv v1.5.1
 	github.com/paulmach/orb v0.11.1
 	github.com/schollz/progressbar/v3 v3.18.0
 	golang.org/x/oauth2 v0.28.0
+	golang.org/x/sync v0.12.0
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.5
 )
 
 require (
 	github.com/gammazero/deque v0.2.0 // indirect
-	github.com/gammazero/workerpool v1.1.3 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
