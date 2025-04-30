@@ -6,25 +6,17 @@ import (
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/model"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/joho/godotenv"
 )
 
-type Result struct {
-	X                       int
-	Y                       int
-	ProbabilityDistribution map[string]any
-}
-
-func runModel(finalPlotDataset []final.FinalData) ([]Result, error) {
-	return nil, nil
-}
 func evaluatePlot(farm, plot string, endDate time.Time) error {
 	start := time.Now()
 
 	deltaDays := 5
-	deltaDaysTrashHold := 30
+	deltaDaysTrashHold := 40
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysTrashHold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
 	outputFileName := fmt.Sprintf("%s_%s_%s.csv", farm, plot, endDate.Format("2006-01-02"))
@@ -70,12 +62,12 @@ func evaluatePlot(farm, plot string, endDate time.Time) error {
 	fmt.Printf("GetFinalData took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	_, err = runModel(plotFinalDataset)
+	_, err = model.RunModel(plotFinalDataset)
 	if err != nil {
 		return err
 	}
 	fmt.Printf("runModel took %v\n", time.Since(stepStart))
-
+	
 	fmt.Printf("Total evaluatePlot execution time: %v\n", time.Since(start))
 	return nil
 }

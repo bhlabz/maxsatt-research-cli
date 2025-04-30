@@ -135,7 +135,7 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 			fmt.Printf("Attempt %d failed: %v\n", attempt, err)
 		}
 
-		time.Sleep(2 * time.Second) // Wait for 2 seconds before retrying
+		time.Sleep(5 * time.Second) // Wait for 2 seconds before retrying
 	}
 
 	if err != nil {

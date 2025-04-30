@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -9,18 +10,31 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/model/protobufs"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-func RunModel(finalData []final.FinalData) {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+type LabelProbability struct {
+	Label       string
+	Probability float64
+}
+type PixelResult struct {
+	X         int32
+	Y         int32
+	Latitude  float64
+	Longitude float64
+	Result    []*LabelProbability
+}
+
+func RunModel(finalData []final.FinalData) ([]PixelResult, error) {
+	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("Failed to connect to gRPC server: %v", err)
+		return nil, fmt.Errorf("failed to connect to gRPC server: %v", err)
 	}
 	defer conn.Close()
 
 	client := protobufs.NewRunModelServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*60*15)
 	defer cancel()
 
 	req := &protobufs.RunModelRequest{
@@ -29,10 +43,32 @@ func RunModel(finalData []final.FinalData) {
 
 	resp, err := client.RunModel(ctx, req)
 	if err != nil {
-		log.Fatalf("Error calling RunModel: %v", err)
+		return nil, fmt.Errorf("error calling RunModel: %v", err)
 	}
 
 	log.Printf("RunModel response: %v", resp)
+	return convertToPixelResult(resp.Results), nil
+}
+
+func convertToPixelResult(data []*protobufs.PixelResult) []PixelResult {
+	var pixelResults []PixelResult
+	for _, pixel := range data {
+		var labelProbabilities []*LabelProbability
+		for _, result := range pixel.Result {
+			labelProbabilities = append(labelProbabilities, &LabelProbability{
+				Label:       result.Label,
+				Probability: result.Probability,
+			})
+		}
+		pixelResults = append(pixelResults, PixelResult{
+			X:         pixel.X,
+			Y:         pixel.Y,
+			Latitude:  pixel.Latitude,
+			Longitude: pixel.Longitude,
+			Result:    labelProbabilities,
+		})
+	}
+	return pixelResults
 }
 
 func convertToProtoFinalData(data []final.FinalData) []*protobufs.FinalData {
