@@ -6,15 +6,12 @@ import (
 )
 
 type WeatherMetrics struct {
-	AvgTemperature float64 `csv:"avg_temperature"`
-	TempStdDev     float64 `csv:"temp_std_dev"`
-	// TempAnomaly    float64 `csv:"temp_anomaly"`
-	AvgHumidity float64 `csv:"avg_humidity"`
-	// HumidityAnomaly      float64 `csv:"humidity_anomaly"`
+	AvgTemperature     float64 `csv:"avg_temperature"`
+	TempStdDev         float64 `csv:"temp_std_dev"`
+	AvgHumidity        float64 `csv:"avg_humidity"`
 	HumidityStdDev     float64 `csv:"humidity_std_dev"`
 	TotalPrecipitation float64 `csv:"total_precipitation"`
-	// PrecipitationAnomaly float64 `csv:"precipitation_anomaly"`
-	DryDaysConsecutive int `csv:"dry_days_consecutive"`
+	DryDaysConsecutive int     `csv:"dry_days_consecutive"`
 }
 
 type HistoricalWeatherMetrics map[time.Time]WeatherMetrics

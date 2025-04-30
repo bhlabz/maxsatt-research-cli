@@ -119,7 +119,7 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 	url := "https://sh.dataspace.copernicus.eu/api/v1/process"
 
 	// Retry logic
-	retries := 3
+	retries := 10
 	var response *http.Response
 	for attempt := 1; attempt <= retries; attempt++ {
 		response, err = httpClient.Post(url, "application/json", bytes.NewBuffer(requestBody))

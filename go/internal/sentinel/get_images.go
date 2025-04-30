@@ -185,8 +185,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			return nil, fmt.Errorf("error requesting image: %v", err)
 		}
 
-		imagePath := filepath.Join("..", "data", "images", fmt.Sprintf("%s_%s", farm, plot))
-
+		imagePath := fmt.Sprintf("%s/data/images/%s_%s", properties.RootPath, farm, plot)
 		// Verifica se o diretório existe e cria caso não
 		if _, err := os.Stat(imagePath); os.IsNotExist(err) {
 			if mkErr := os.MkdirAll(imagePath, os.ModePerm); mkErr != nil {

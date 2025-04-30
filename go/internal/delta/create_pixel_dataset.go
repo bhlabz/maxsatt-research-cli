@@ -1,15 +1,12 @@
 package delta
 
 import (
-	"context"
 	"errors"
 	"sort"
-	"sync"
 	"time"
 
 	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
-	"golang.org/x/sync/errgroup"
 
 	"github.com/schollz/progressbar/v3"
 )
@@ -44,40 +41,29 @@ func createPixelDataset(images map[time.Time]*godal.Dataset) ([]PixelData, error
 		break
 	}
 
-	mu := &sync.Mutex{}
 	fileResults := []PixelData{}
 	count := 0
 	target := height * width * len(images)
 	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 	sortedImageDates := getSortedKeys(images)
-	eg, _ := errgroup.WithContext(context.Background())
 
 	for y := range height {
 		for x := range width {
-			eg.Go(func() error {
-				for _, date := range sortedImageDates {
-					image := images[date]
-					result, err := getData(image, totalPixels, width, height, x, y, date)
-					if err != nil {
-						return err
-					}
-					count++
-					if result != nil {
-						mu.Lock()
-						fileResults = append(fileResults, *result)
-						mu.Unlock()
-					}
-					if err := progressBar.Add(1); err != nil {
-						return err
-					}
+			for _, date := range sortedImageDates {
+				image := images[date]
+				result, err := getData(image, totalPixels, width, height, x, y, date)
+				if err != nil {
+					return nil, err
 				}
-				return nil
-			})
+				count++
+				if result != nil {
+					fileResults = append(fileResults, *result)
+				}
+				if err := progressBar.Add(1); err != nil {
+					return nil, err
+				}
+			}
 		}
-	}
-
-	if err := eg.Wait(); err != nil {
-		return nil, err
 	}
 
 	if len(fileResults) == 0 {
