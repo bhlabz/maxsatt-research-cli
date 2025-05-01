@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+service ClearAndSmoothService {
+    rpc ClearAndSmooth (ClearAndSmoothRequest) returns (ClearAndSmoothResponse);
+}
+
+message ClearAndSmoothRequest {
+    map<string, DoubleList> data = 1;
+}
+
+message ClearAndSmoothResponse {
+    map<string, DoubleList> smoothed_data = 1;
+}
+
+message DoubleList {
+    repeated double values = 1;
+}

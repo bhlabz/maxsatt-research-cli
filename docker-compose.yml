@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  go-service:
+    build:
+      context: ./go-service
+    ports:
+      - "50051:50051"
+    networks:
+      - backend
+    depends_on:
+      - python-service
+
+  python-service:
+    build:
+      context: ./python-service
+    ports:
+      - "50052:50052"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
