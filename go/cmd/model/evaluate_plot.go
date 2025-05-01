@@ -4,13 +4,85 @@ import (
 	"fmt"
 	"time"
 
+	"image"
+	"image/color"
+	"image/png"
+	"os"
+
+	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/model"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/joho/godotenv"
 )
+
+func createImage(result []model.PixelResult, tiffImagePath string) {
+
+	// Open the TIFF image to get its dimensions
+	tiffFile, err := os.Open(tiffImagePath)
+	if err != nil {
+		fmt.Printf("Error opening TIFF file: %v\n", err)
+		return
+	}
+	defer tiffFile.Close()
+
+	ds, err := godal.Open(tiffImagePath, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
+		if ec == godal.CE_Warning {
+			return nil
+		}
+		return err
+	}))
+	if err != nil {
+		fmt.Println(err.Error())
+
+	}
+
+	width, height := int(ds.Structure().SizeX), int(ds.Structure().SizeY)
+	// Create a new RGBA image
+	newImage := image.NewRGBA(image.Rect(0, 0, width, height))
+
+	// Map the PixelResult to the new image
+	for _, pixel := range result {
+		x, y := int(pixel.X), int(pixel.Y)
+		// Find the maximum probability in the result
+		maxProbability := 0.0
+		label := ""
+		for _, pixelResult := range pixel.Result {
+			if pixelResult.Probability > maxProbability {
+				maxProbability = pixelResult.Probability
+				label = pixelResult.Label
+			}
+		}
+
+		if x >= 0 && x < width && y >= 0 && y < height {
+			newImage.Set(int(x), int(y), color.RGBA{
+				R: properties.ColorMap[label].R,
+				G: properties.ColorMap[label].G,
+				B: properties.ColorMap[label].B,
+				A: 255,
+			})
+		}
+	}
+
+	// Save the new image as a PNG
+	outputFile, err := os.Create("output.png")
+	if err != nil {
+		fmt.Printf("Error creating PNG file: %v\n", err)
+		return
+	}
+	defer outputFile.Close()
+
+	err = png.Encode(outputFile, newImage)
+	if err != nil {
+		fmt.Printf("Error encoding PNG file: %v\n", err)
+		return
+	}
+
+	fmt.Println("PNG image created successfully as output.png")
+}
 
 func evaluatePlot(farm, plot string, endDate time.Time) error {
 	start := time.Now()
@@ -62,12 +134,29 @@ func evaluatePlot(farm, plot string, endDate time.Time) error {
 	fmt.Printf("GetFinalData took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	_, err = model.RunModel(plotFinalDataset)
+	result, err := model.RunModel(plotFinalDataset)
 	if err != nil {
 		return err
 	}
 	fmt.Printf("runModel took %v\n", time.Since(stepStart))
-	
+
+	imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath, farm, plot)
+
+	files, err := os.ReadDir(imageFolderPath)
+	if err != nil {
+		return fmt.Errorf("error reading image folder: %v", err)
+	}
+
+	if len(files) == 0 {
+		return fmt.Errorf("no files found in image folder: %s", imageFolderPath)
+	}
+
+	firstFileName := files[0].Name()
+	firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
+	fmt.Printf("First file path in the folder: %s\n", firstFilePath)
+
+	createImage(result, firstFilePath)
+
 	fmt.Printf("Total evaluatePlot execution time: %v\n", time.Since(start))
 	return nil
 }
