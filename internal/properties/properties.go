@@ -1,6 +1,10 @@
 package properties
 
-const RootPath = "/Users/gabihert/Projects/forest-guardian/forest-guardian-api-poc/go"
+import "os"
+
+func RootPath() string {
+	return os.Getenv("ROOT_PATH")
+}
 
 type Color struct {
 	R, G, B uint8

@@ -140,7 +140,7 @@ func evaluatePlot(farm, plot string, endDate time.Time) error {
 	}
 	fmt.Printf("runModel took %v\n", time.Since(stepStart))
 
-	imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath, farm, plot)
+	imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), farm, plot)
 
 	files, err := os.ReadDir(imageFolderPath)
 	if err != nil {

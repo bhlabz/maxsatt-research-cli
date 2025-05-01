@@ -34,7 +34,7 @@ func GetCentroidLatitudeLongitudeFromGeometry(g *godal.Geometry) (float64, float
 
 func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {
 
-	filePath := fmt.Sprintf("%s/data/geojsons/%s.geojson", properties.RootPath, farm)
+	filePath := fmt.Sprintf("%s/data/geojsons/%s.geojson", properties.RootPath(), farm)
 
 	godal.RegisterInternalDrivers()
 	ds, err := godal.Open(filePath)

@@ -67,8 +67,8 @@ func runCreateDataset() {
 	deltaDaysTrashHold := 20
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 
-	outputFileName := fmt.Sprintf("%s/data/model/test.csv", properties.RootPath)
-	validationDataPath := fmt.Sprintf("%s/data/training_input/166.csv", properties.RootPath)
+	outputFileName := fmt.Sprintf("%s/data/model/test.csv", properties.RootPath())
+	validationDataPath := fmt.Sprintf("%s/data/training_input/166.csv", properties.RootPath())
 
 	file, err := os.OpenFile(validationDataPath, os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
