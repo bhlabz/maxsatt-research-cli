@@ -18,13 +18,13 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
-func createImage(result []ml.PixelResult, tiffImagePath, outputImagePath string) {
+func createImage(result []ml.PixelResult, tiffImagePath, outputImagePath string) (string, error) {
 	outputImagePath = fmt.Sprintf("%s/data/result/%s.png", properties.RootPath(), outputImagePath)
 	// Open the TIFF image to get its dimensions
 	tiffFile, err := os.Open(tiffImagePath)
 	if err != nil {
 		fmt.Printf("Error opening TIFF file: %v\n", err)
-		return
+		return "", err
 	}
 	defer tiffFile.Close()
 
@@ -70,17 +70,18 @@ func createImage(result []ml.PixelResult, tiffImagePath, outputImagePath string)
 	outputFile, err := os.Create(outputImagePath)
 	if err != nil {
 		fmt.Printf("Error creating PNG file: %v\n", err)
-		return
+		return "", nil
 	}
 	defer outputFile.Close()
 
 	err = png.Encode(outputFile, newImage)
 	if err != nil {
 		fmt.Printf("Error encoding PNG file: %v\n", err)
-		return
+		return "", err
 	}
 
 	fmt.Println("PNG image created successfully as", outputImagePath)
+	return outputImagePath, nil
 }
 
 func EvaluatePlot(farm, plot string, endDate time.Time) (string, error) {
@@ -132,12 +133,13 @@ func EvaluatePlot(farm, plot string, endDate time.Time) (string, error) {
 	}
 	fmt.Printf("GetFinalData took %v\n", time.Since(stepStart))
 
+	fmt.Println("Starting ML analysis...")
 	stepStart = time.Now()
 	result, err := ml.RunModel(plotFinalDataset)
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("runModel took %v\n", time.Since(stepStart))
+	fmt.Printf("RunModel took %v\n", time.Since(stepStart))
 
 	imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), farm, plot)
 
@@ -152,10 +154,11 @@ func EvaluatePlot(farm, plot string, endDate time.Time) (string, error) {
 
 	firstFileName := files[0].Name()
 	firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
-	fmt.Printf("First file path in the folder: %s\n", firstFilePath)
 
-	createImage(result, firstFilePath, outputFileName)
-
+	outputFilePath, err := createImage(result, firstFilePath, outputFileName)
+	if err != nil {
+		return "", fmt.Errorf("error creating result image: %s", err.Error())
+	}
 	fmt.Printf("Total evaluatePlot execution time: %v\n", time.Since(start))
-	return outputFileName, nil
+	return outputFilePath, nil
 }

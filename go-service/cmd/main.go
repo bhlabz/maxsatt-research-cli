@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delivery"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/joho/godotenv"
 )
 
@@ -45,7 +47,9 @@ func initCLI() {
 		fmt.Println("\033[34m===================\033[0m")
 		fmt.Println("\033[34m1. Evaluate a forest plot\033[0m")
 		fmt.Println("\033[34m2. Create a new dataset\033[0m")
-		fmt.Println("\033[34m3. Exit\033[0m")
+		fmt.Println("\033[34m3. List available forests\033[0m")
+		fmt.Println("\033[34m4. List available forest plots\033[0m")
+		fmt.Println("\033[34m5. Exit\033[0m")
 		fmt.Println("\033[34mEnter your choice:\033[0m")
 
 		var choice int
@@ -64,9 +68,9 @@ func initCLI() {
 			fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
 			reader := bufio.NewReader(os.Stdin)
 
-			fmt.Print("\033[34mEnter the farm name: \033[0m")
-			farm, _ := reader.ReadString('\n')
-			farm = strings.TrimSpace(farm)
+			fmt.Print("\033[34mEnter the forest name: \033[0m")
+			forest, _ := reader.ReadString('\n')
+			forest = strings.TrimSpace(forest)
 
 			fmt.Print("\033[34mEnter the plot id: \033[0m")
 			plot, _ := reader.ReadString('\n')
@@ -81,11 +85,12 @@ func initCLI() {
 				continue
 			}
 
-			_, err = delivery.EvaluatePlot(farm, plot, endDate)
+			path, err := delivery.EvaluatePlot(forest, plot, endDate)
 			if err != nil {
 				fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
 				continue
 			}
+			fmt.Printf("\n\033[32mSuccessful analysis! Resultant image located at: %s\033[0m\n", path)
 		case 2:
 			fmt.Println("\033[33m\nWarning:\033[0m")
 			fmt.Println("\033[33mThe resultant dataset will be created at data/model folder\033[0m")
@@ -104,9 +109,82 @@ func initCLI() {
 			fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
 			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s", inputDataFileName))
 		case 3:
+			files, err := os.ReadDir(properties.RootPath() + "/data/geojsons")
+			if err != nil {
+				fmt.Printf("\n\033[31mError reading geojsons folder: %s\033[0m\n", err.Error())
+				return
+			}
+			fmt.Println("\033[33m\nWarning:\033[0m")
+			fmt.Println("\033[33mTo add a new forest, add its '.geojson' file at 'data/geojsons' folder.\033[0m")
+
+			fmt.Println("\n\033[32mAvailable forests:\033[0m")
+			for _, file := range files {
+				if strings.HasSuffix(file.Name(), ".geojson") {
+					fmt.Printf("\033[32m- %s\033[0m\n", strings.TrimSuffix(file.Name(), ".geojson"))
+				}
+			}
+
+		case 4:
+			fmt.Println("\033[33m\nWarning:\033[0m")
+			fmt.Println("\033[33mTo add a plot to a forest add the 'plot_id' property at the '.geojson' file from the forest fo your choice.\033[0m")
+			fmt.Println("\033[33mThe 'plot_id' property should be located at 'features[N]properties.plot_id'.\n\033[0m")
+
+			reader := bufio.NewReader(os.Stdin)
+
+			fmt.Print("\033[34mEnter the forest name: \033[0m")
+			forest, _ := reader.ReadString('\n')
+			forest = strings.TrimSpace(forest)
+			filePath := properties.RootPath() + "/data/geojsons/" + forest + ".geojson"
+			file, err := os.Open(filePath)
+			if err != nil {
+				fmt.Printf("\n\033[31mError opening file: %s\033[0m\n", err.Error())
+				continue
+			}
+			defer file.Close()
+
+			var geojsonData map[string]interface{}
+			decoder := json.NewDecoder(file)
+			err = decoder.Decode(&geojsonData)
+			if err != nil {
+				fmt.Printf("\n\033[31mError decoding GEOJSON: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			features, ok := geojsonData["features"].([]interface{})
+			if !ok {
+				fmt.Printf("\n\033[31mError: Invalid GEOJSON format.\033[0m\n")
+				continue
+			}
+
+			plotIDs := []string{}
+
+			for _, feature := range features {
+				featureMap, ok := feature.(map[string]interface{})
+				if !ok {
+					fmt.Printf("\n\033[31mError: Invalid feature format.\033[0m\n")
+					break
+				}
+				properties, ok := featureMap["properties"].(map[string]interface{})
+				if !ok {
+					fmt.Printf("\n\033[31mError: Invalid properties format.\033[0m\n")
+					break
+				}
+				plotID, ok := properties["plot_id"].(string)
+				if ok {
+					plotIDs = append(plotIDs, plotID)
+				}
+			}
+			if len(plotIDs) == 0 {
+				fmt.Printf("\n\033[31mNo plot IDs found in the GEOJSON file.\033[0m\n")
+				continue
+			}
+			fmt.Println("\033[32m\nAvailable plots:\033[0m")
+			for _, plotID := range plotIDs {
+				fmt.Printf("\033[32m- %s\033[0m\n", plotID)
+			}
+		case 5:
 			println("Exiting...")
 			return
-
 		default:
 			println("Invalid choice. Please try again.")
 		}
