@@ -26,7 +26,7 @@ class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServi
                 smoothed_data[key] = clear_and_smooth_pb2.DoubleList(values=smoothed_values)
             return clear_and_smooth_pb2.ClearAndSmoothResponse(smoothed_data=smoothed_data)
         except Exception as e:
-            print(f"Error in ClearAndSmooth: {e}")
+            # print(f"Error in ClearAndSmooth: {e}")
             context.set_details(str(e))
             context.set_code(grpc.StatusCode.INTERNAL)
             return clear_and_smooth_pb2.ClearAndSmoothResponse()
@@ -34,7 +34,7 @@ class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServi
 class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
     def RunModel(self, request, context):
         try:
-            print("Received RunModel request")
+            # print("Received RunModel request")
             rows = []
             for item in request.data:
                 weather = item.weather
@@ -70,7 +70,7 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
 
             # Create a DataFrame
             df = pd.DataFrame(rows)
-            print(df)
+            # print(df)
             result = run_model(df)
             response = run_model_pb2.RunModelResponse()
             for item in result:
@@ -89,7 +89,7 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
                 response.results.append(pixel_result)
             return response
         except Exception as e:
-            print(f"Error in RunModel: {e}")
+            # print(f"Error in RunModel: {e}")
             context.set_details(str(e))
             context.set_code(grpc.StatusCode.INTERNAL)
             return run_model_pb2.RunModelResponse()
@@ -103,7 +103,7 @@ def serve():
     run_model_pb2_grpc.add_RunModelServiceServicer_to_server(RunModelServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
-    print("gRPC server is running on port 50051...")
+    # print("gRPC server is running on port 50051...")
     server.wait_for_termination()
 
 if __name__ == "__main__":

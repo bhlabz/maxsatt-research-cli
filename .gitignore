@@ -1,2 +1,4 @@
 *.tif
 .env
+data/result/*
+data/final/*
