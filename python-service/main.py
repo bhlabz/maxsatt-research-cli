@@ -9,6 +9,8 @@ import run_model_pb2
 import run_model_pb2_grpc
 from clear_and_smooth import clear_and_smooth
 from run_model import run_model
+from dotenv import load_dotenv
+import os
 
 
 class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServicer):
@@ -93,7 +95,10 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
             return run_model_pb2.RunModelResponse()
     
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=200),options=[
+        ('grpc.max_send_message_length', 10 * 1024 * 1024),  # 10 MB
+        ('grpc.max_receive_message_length', 10 * 1024 * 1024)
+    ])
     clear_and_smooth_pb2_grpc.add_ClearAndSmoothServiceServicer_to_server(ClearAndSmoothService(), server)
     run_model_pb2_grpc.add_RunModelServiceServicer_to_server(RunModelServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
@@ -102,4 +107,7 @@ def serve():
     server.wait_for_termination()
 
 if __name__ == "__main__":
+    # Load environment variables from .env file
+    env_path = os.path.join(os.path.dirname(__file__), '../../.env')
+    load_dotenv(env_path)
     serve()

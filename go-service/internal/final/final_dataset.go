@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/gocarina/gocsv"
 )
@@ -75,7 +76,7 @@ func createFinalDataset(samples []delta.DeltaData, weatherData weather.Historica
 	}
 
 	if outputFileName != "" {
-		file, err := os.Create(outputFileName)
+		file, err := os.Create(fmt.Sprintf("%s/data/final/%s.csv", properties.RootPath(), outputFileName))
 		if err != nil {
 			return nil, err
 		}

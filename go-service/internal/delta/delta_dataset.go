@@ -131,6 +131,9 @@ func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, 
 	if err != nil {
 		return nil, err
 	}
-	clearDataset := cleanDataset(pixelDataset)
+	clearDataset, err := cleanDataset(pixelDataset)
+	if err != nil {
+		return nil, err
+	}
 	return deltaDataset(farm, plot, deltaDays, deltaDays+deltaDaysThreshold, clearDataset)
 }

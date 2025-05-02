@@ -3,7 +3,6 @@ package delta
 import (
 	"context"
 	"fmt"
-	"log"
 	"sync"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
@@ -31,7 +30,7 @@ func convertFromProtobufList(data map[string]*protobufs.DoubleList) map[string][
 	return result
 }
 
-func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) map[string][]float64 {
+func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) (map[string][]float64, error) {
 
 	client := protobufs.NewClearAndSmoothServiceClient(conn)
 
@@ -42,86 +41,89 @@ func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) map[stri
 
 	resp, err := client.ClearAndSmooth(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Failed to call ClearAndSmooth: %v", err)
+		return nil, err
 	}
 
 	// Return the smoothed data
-	return convertFromProtobufList(resp.SmoothedData)
+	return convertFromProtobufList(resp.SmoothedData), nil
 }
-
-func cleanDataset(pixelDataset []PixelData) []PixelData {
+func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 	groupedData := make(map[[2]int][]PixelData)
 
-	// Group data by (x, y)
 	for _, data := range pixelDataset {
 		key := [2]int{data.X, data.Y}
 		groupedData[key] = append(groupedData[key], data)
 	}
 
-	var wg sync.WaitGroup
-	mu := sync.Mutex{}
-	newArray := []PixelData{}
-	progressBar := progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
-	// Create a buffered channel to limit the number of goroutines
+	var (
+		mu          sync.Mutex
+		newArray    []PixelData
+		progressBar = progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
+	)
+
 	wp := workerpool.New(100)
 	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("Failed to connect to gRPC server: %v", err)
+		return nil, fmt.Errorf("failed to connect to gRPC server: %v", err)
 	}
 	defer conn.Close()
-	for _, data := range groupedData {
-		wg.Add(1)
 
+	errChan := make(chan error, 1)
+	var stopProcessing sync.Once
+
+	for _, data := range groupedData {
+		d := data // capture range variable
 		wp.Submit(func() {
-			defer wg.Done()
 			var ndre, ndmi, psri, ndvi []float64
-			for _, d := range data {
-				ndre = append(ndre, d.NDRE)
-				ndmi = append(ndmi, d.NDMI)
-				psri = append(psri, d.PSRI)
-				ndvi = append(ndvi, d.NDVI)
+			for _, val := range d {
+				ndre = append(ndre, val.NDRE)
+				ndmi = append(ndmi, val.NDMI)
+				psri = append(psri, val.PSRI)
+				ndvi = append(ndvi, val.NDVI)
 			}
 
 			values := map[string][]float64{
-				"ndre": ndre,
-				"ndmi": ndmi,
-				"psri": psri,
-				"ndvi": ndvi,
+				"ndre": ndre, "ndmi": ndmi, "psri": psri, "ndvi": ndvi,
 			}
 
-			values = clearAndSmooth(conn, values)
-
-			ndre = values["ndre"]
-			ndmi = values["ndmi"]
-			psri = values["psri"]
-			ndvi = values["ndvi"]
+			smoothed, err := clearAndSmooth(conn, values)
+			if err != nil {
+				stopProcessing.Do(func() { errChan <- err })
+				return
+			}
 
 			validData := []PixelData{}
-			for i := range data {
-				if ndmi[i] == 0 || psri[i] == 0 || ndre[i] == 0 || ndvi[i] == 0 {
+			for i := range d {
+				if smoothed["ndmi"][i] == 0 || smoothed["psri"][i] == 0 || smoothed["ndre"][i] == 0 || smoothed["ndvi"][i] == 0 {
 					continue
 				}
-				data[i].NDMI = ndmi[i]
-				data[i].PSRI = psri[i]
-				data[i].NDRE = ndre[i]
-				data[i].NDVI = ndvi[i]
-				validData = append(validData, data[i])
+				d[i].NDMI = smoothed["ndmi"][i]
+				d[i].PSRI = smoothed["psri"][i]
+				d[i].NDRE = smoothed["ndre"][i]
+				d[i].NDVI = smoothed["ndvi"][i]
+				validData = append(validData, d[i])
 			}
 
 			mu.Lock()
-			progressBar.Add(1)
 			newArray = append(newArray, validData...)
+			progressBar.Add(1)
 			mu.Unlock()
 		})
-
 	}
 
-	wg.Wait()
+	// Wait for all tasks
+	go func() {
+		wp.StopWait()
+		close(errChan)
+	}()
 
-	if len(newArray) > 0 {
-		return newArray
-	} else {
-		fmt.Println("No valid data found")
-		return nil
+	// Return the first error if any
+	if err := <-errChan; err != nil {
+		return nil, fmt.Errorf("error during dataset cleaning: %v", err)
 	}
+
+	if len(newArray) == 0 {
+		return nil, fmt.Errorf("no valid data found after cleaning")
+	}
+	return newArray, nil
 }
