@@ -13,3 +13,10 @@ type Color struct {
 var ColorMap = map[string]Color{
 	"unknown": {255, 0, 0},
 }
+
+func DiscordErrorNotificationUrl() string {
+	return os.Getenv("DISCORD_ERROR_NOTIFICATION_URL")
+}
+func DiscordSuccessNotificationUrl() string {
+	return os.Getenv("DISCORD_SUCCESS_NOTIFICATION_URL")
+}

@@ -12,6 +12,7 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delivery"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/joho/godotenv"
 )
 
@@ -25,6 +26,19 @@ func printBanner() {
 }
 
 func initCLI() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("\n\033[31mAn error occurred: %v\033[0m\n", r)
+			fmt.Printf("\n\033[31mPlease check the input and try again.\033[0m\n")
+			fmt.Printf("\n\033[31mIf the problem persists, please contact support.\033[0m\n")
+			fmt.Printf("\n\033[31mExiting...\033[0m\n")
+			errMessage := fmt.Sprintf("Maxsatt CLI panic:\n\n %v", r)
+			err := notification.SendDiscordErrorNotification(errMessage)
+			if err != nil {
+				fmt.Printf("\n\033[31mFailed to send notification: %s\033[0m\n", err.Error())
+			}
+		}
+	}()
 	printBanner()
 
 	for {
@@ -37,7 +51,6 @@ func initCLI() {
 		var choice int
 		_, err := fmt.Scan(&choice)
 		if err != nil {
-			println("")
 			fmt.Printf("\n\033[31mInvalid input. Please enter a number.\033[0m\n")
 
 			fmt.Scanln()
@@ -73,7 +86,6 @@ func initCLI() {
 				fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
 				continue
 			}
-			// showImage(imagePath)
 		case 2:
 			fmt.Println("\033[33m\nWarning:\033[0m")
 			fmt.Println("\033[33mThe resultant dataset will be created at data/model folder\033[0m")
@@ -86,8 +98,11 @@ func initCLI() {
 			err := delivery.CreateDataset(inputDataFileName)
 			if err != nil {
 				fmt.Printf("\n\033[31mError creating dataset: %s\033[0m\n", err.Error())
+				notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating dataset: %s", err.Error()))
 				continue
 			}
+			fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
+			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s", inputDataFileName))
 		case 3:
 			println("Exiting...")
 			return
