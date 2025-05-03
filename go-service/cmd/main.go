@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -30,14 +32,28 @@ func printBanner() {
 func initCLI() {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Printf("\n\033[31mAn error occurred: %v\033[0m\n", r)
-			fmt.Printf("\n\033[31mPlease check the input and try again.\033[0m\n")
-			fmt.Printf("\n\033[31mIf the problem persists, please contact support.\033[0m\n")
-			fmt.Printf("\n\033[31mExiting...\033[0m\n")
-			errMessage := fmt.Sprintf("Maxsatt CLI panic:\n\n %v", r)
+			// Get the function, file, and line where panic occurred
+			pc, file, line, ok := runtime.Caller(3) // 3 levels up is often the panic source
+			var location string
+			if ok {
+				fn := runtime.FuncForPC(pc)
+				location = fmt.Sprintf("%s:%d in %s", file, line, fn.Name())
+			} else {
+				location = "Unknown location"
+			}
+
+			// Print structured error
+			fmt.Printf("\n\033[31mPANIC: %v\033[0m\n", r)
+			fmt.Printf("\033[31mLocation: %s\033[0m\n", location)
+			fmt.Printf("\033[31mPlease check the input and try again.\033[0m\n")
+			fmt.Printf("\033[31mExiting...\033[0m\n")
+
+			// Prepare full error message
+			stack := debug.Stack()
+			errMessage := fmt.Sprintf("Maxsatt CLI panic:\n\n%v\n\nLocation: %s\n\nStack trace:\n%s", r, location, stack)
 			err := notification.SendDiscordErrorNotification(errMessage)
 			if err != nil {
-				fmt.Printf("\n\033[31mFailed to send notification: %s\033[0m\n", err.Error())
+				fmt.Printf("\033[31mFailed to send notification: %s\033[0m\n", err.Error())
 			}
 		}
 	}()
