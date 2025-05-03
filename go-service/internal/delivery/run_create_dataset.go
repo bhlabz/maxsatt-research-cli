@@ -140,7 +140,7 @@ func CreateDataset(inputDataFileName string) error {
 			continue
 		}
 
-		filePath := fmt.Sprintf("%s/data/model/%s.csv", properties.RootPath(), inputDataFileName)
+		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), inputDataFileName)
 		file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error opening dataset: %v", err))
