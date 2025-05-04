@@ -119,7 +119,9 @@ func initCLI() {
 			err := delivery.CreateDataset(inputDataFileName)
 			if err != nil {
 				fmt.Printf("\n\033[31mError creating dataset: %s\033[0m\n", err.Error())
-				notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating dataset: %s", err.Error()))
+				if !strings.Contains(err.Error(), "empty csv file given") {
+					notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating dataset: %s", err.Error()))
+				}
 				continue
 			}
 			fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
