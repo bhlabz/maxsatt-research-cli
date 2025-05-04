@@ -215,10 +215,12 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			return nil, err
 		}
 
-		totalPixels := 100 // Placeholder for total pixels
+		height := len(indexes["ndmi"])
+		width := len(indexes["ndmi"][0])
+		totalPixels := height * width
 		count := 0
-		for y := 0; y < 10; y++ { // Placeholder for height
-			for x := 0; x < 10; x++ { // Placeholder for width
+		for y := 0; y < height; y++ {
+			for x := 0; x < width; x++ {
 				bands := GetBands(indexes, x, y)
 				if !bands.Valid() {
 					count++
