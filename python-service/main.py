@@ -1,3 +1,4 @@
+import os
 from concurrent import futures
 from datetime import datetime
 
@@ -8,9 +9,8 @@ import pandas as pd
 import run_model_pb2
 import run_model_pb2_grpc
 from clear_and_smooth import clear_and_smooth
-from run_model import run_model
 from dotenv import load_dotenv
-import os
+from run_model import run_model
 
 
 class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServicer):
@@ -110,4 +110,5 @@ if __name__ == "__main__":
     # Load environment variables from .env file
     env_path = os.path.join(os.path.dirname(__file__), '../../.env')
     load_dotenv(env_path)
+    print(f"ROOT_PATH: {os.getenv('ROOT_PATH')}")
     serve()

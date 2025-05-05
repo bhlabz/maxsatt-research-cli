@@ -11,8 +11,8 @@ def run_model(input, climate_group_clusters=2, reflectance_clusters=16):
     dataset_concat = pd.concat([dataset, input], ignore_index=True)
 
     result = climate_group_model(dataset_concat, climate_group_clusters)
-    # if len(result['label'].unique()) == 1:
-    #     print("Only one cluster was found, skipping reflectance model")
-    #     return 
+    if len(result['label'].unique()) == 1:
+        print("Only one cluster was found, skipping reflectance model")
+        return 
     result = reflectance_model(result, reflectance_clusters)
     return result
