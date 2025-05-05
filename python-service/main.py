@@ -108,7 +108,7 @@ def serve():
 
 if __name__ == "__main__":
     # Load environment variables from .env file
-    env_path = os.path.join(os.path.dirname(__file__), '../../.env')
+    env_path = os.path.join(os.path.dirname(__file__), '../.env')
     load_dotenv(env_path)
     print(f"ROOT_PATH: {os.getenv('ROOT_PATH')}")
     serve()
