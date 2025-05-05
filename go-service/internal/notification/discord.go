@@ -48,6 +48,35 @@ func SendDiscordErrorNotification(errorMessage string) error {
 	return nil
 }
 
+func SendDiscordWarnNotification(warnMessage string) error {
+	message := DiscordMessage{
+		Embeds: []DiscordEmbed{
+			{
+				Title:       "⚠️ Warning Notification",
+				Description: fmt.Sprintf("Heads up!\n\n%s", warnMessage),
+				Color:       16776960, // Yellow color
+			},
+		},
+	}
+
+	payload, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.Post(properties.DiscordErrorNotificationUrl(), "application/json", bytes.NewBuffer(payload))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusNoContent && resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to send Discord notification, status code: %d", resp.StatusCode)
+	}
+
+	return nil
+}
+
 func SendDiscordSuccessNotification(successMessage string) error {
 	message := DiscordMessage{
 		Embeds: []DiscordEmbed{

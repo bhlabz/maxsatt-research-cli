@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/gammazero/workerpool"
 	"github.com/schollz/progressbar/v3"
 	"google.golang.org/grpc"
@@ -62,7 +63,7 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 	)
 
 	wp := workerpool.New(100)
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(fmt.Sprintf("localhost:%s", properties.GrpcPort()), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to gRPC server: %v", err)
 	}

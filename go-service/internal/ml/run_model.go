@@ -7,6 +7,7 @@ import (
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -25,7 +26,7 @@ type PixelResult struct {
 }
 
 func RunModel(finalData []final.FinalData) ([]PixelResult, error) {
-	conn, err := grpc.NewClient("localhost:50051",
+	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%s", properties.GrpcPort()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(
 			grpc.MaxCallRecvMsgSize(10*1024*1024),

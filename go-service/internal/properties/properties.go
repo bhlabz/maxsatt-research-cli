@@ -6,6 +6,10 @@ func RootPath() string {
 	return os.Getenv("ROOT_PATH")
 }
 
+func GrpcPort() string {
+	return os.Getenv("GRPC_PORT")
+}
+
 type Color struct {
 	R, G, B uint8
 }

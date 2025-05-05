@@ -10,6 +10,7 @@ import (
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
@@ -141,6 +142,13 @@ func CreateDataset(inputDataFileName string) error {
 		}
 
 		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), inputDataFileName)
+		fileExists := false
+
+		// Check if the file already exists
+		if _, err := os.Stat(filePath); err == nil {
+			fileExists = true
+		}
+
 		file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error opening dataset: %v", err))
@@ -151,6 +159,15 @@ func CreateDataset(inputDataFileName string) error {
 		writer := csv.NewWriter(file)
 		defer writer.Flush()
 
+		// Write the header only if the file does not already exist
+		if !fileExists {
+			if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
+				errors = append(errors, fmt.Sprintf("Error writing header to CSV file: %v", err))
+				continue
+			}
+		}
+
+		// Write the data rows
 		if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
 			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
 			continue
@@ -159,8 +176,11 @@ func CreateDataset(inputDataFileName string) error {
 	}
 
 	fmt.Println(strings.Join(errors, "/n"))
+	if len(errors) == target {
+		return fmt.Errorf("all rows failed during dataset creation: %v", errors)
+	}
 	if len(errors) > 0 {
-		return fmt.Errorf("errors occurred during dataset creation: %v", errors)
+		notification.SendDiscordWarnNotification(fmt.Sprintf("Dataset creation completed with %d errors.\n Errors: %s", len(errors), strings.Join(errors, "/n")))
 	}
 	fmt.Println("Dataset created successfully")
 	return nil
