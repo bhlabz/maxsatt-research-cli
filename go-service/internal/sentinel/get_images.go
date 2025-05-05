@@ -101,7 +101,7 @@ func GetBands(indexes map[string][][]float64, x, y int) Bands {
 	}
 }
 
-func (bands Bands) Valid() bool {
+func (bands Bands) Valid() (bool, string) {
 	invalidConditions := []struct {
 		Condition bool
 		Reason    string
@@ -114,10 +114,10 @@ func (bands Bands) Valid() bool {
 
 	for _, condition := range invalidConditions {
 		if condition.Condition {
-			return false
+			return false, condition.Reason
 		}
 	}
-	return true
+	return true, ""
 }
 
 // GetImages retrieves satellite images based on the given parameters
@@ -222,7 +222,8 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 		for y := 0; y < height; y++ {
 			for x := 0; x < width; x++ {
 				bands := GetBands(indexes, x, y)
-				if !bands.Valid() {
+				valid, _ := bands.Valid()
+				if valid {
 					count++
 				}
 			}

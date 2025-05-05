@@ -2,6 +2,7 @@ package delta
 
 import (
 	"errors"
+	"fmt"
 	"sort"
 	"time"
 
@@ -31,7 +32,7 @@ type PixelData struct {
 	NDVI float64
 }
 
-func createPixelDataset(images map[time.Time]*godal.Dataset) ([]PixelData, error) {
+func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
 	var width, height, totalPixels int
 
 	for _, imageData := range images {
@@ -67,7 +68,7 @@ func createPixelDataset(images map[time.Time]*godal.Dataset) ([]PixelData, error
 	}
 
 	if len(fileResults) == 0 {
-		return nil, errors.New("no data available to create the dataset")
+		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images from dates %v", farm, plot, len(images), sortedImageDates)
 	}
 	return fileResults, nil
 }
@@ -84,7 +85,7 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 
 	bands := sentinel.GetBands(indexes, x, y)
 
-	if bands.Valid() {
+	if valid, _ := bands.Valid(); valid {
 		return &PixelData{
 			Date: date,
 			X:    x,
