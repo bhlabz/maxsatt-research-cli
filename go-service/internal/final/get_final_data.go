@@ -20,12 +20,12 @@ func fileExists(filename string) bool {
 	return !os.IsNotExist(err)
 }
 
-func buildFilePath(farm, plot string, deltaMin, deltaMax int) string {
-	return fmt.Sprintf("%s/data/final/%s_%s_%d_%d.csv", properties.RootPath(), farm, plot, deltaMin, deltaMax)
+func buildFilePath(farm, plot string, date time.Time, deltaMin, deltaMax int) string {
+	return fmt.Sprintf("%s/data/final/%s_%s_%s_%d_%d.csv", properties.RootPath(), farm, plot, date.Format("2006-01-02"), deltaMin, deltaMax)
 }
 
-func GetSavedFinalData(farm, plot string, deltaMin, deltaMax int) ([]FinalData, error) {
-	filePath := buildFilePath(farm, plot, deltaMin, deltaMax)
+func GetSavedFinalData(farm, plot string, date time.Time, deltaMin, deltaMax int) ([]FinalData, error) {
+	filePath := buildFilePath(farm, plot, date, deltaMin, deltaMax)
 	if fileExists(filePath) {
 		var existingFinalData []FinalData
 		file, err := os.Open(filePath)
@@ -46,12 +46,12 @@ func GetSavedFinalData(farm, plot string, deltaMin, deltaMax int) ([]FinalData, 
 	return nil, nil
 }
 
-func SaveFinalData(finalData []FinalData) error {
+func SaveFinalData(finalData []FinalData, date time.Time) error {
 	if len(finalData) == 0 {
 		return fmt.Errorf("no final data to save")
 	}
 
-	filePath := buildFilePath(finalData[0].Farm, finalData[0].Plot, finalData[0].DeltaMin, finalData[0].DeltaMax)
+	filePath := buildFilePath(finalData[0].Farm, finalData[0].Plot, date, finalData[0].DeltaMin, finalData[0].DeltaMax)
 	file, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to create final data file: %w", err)

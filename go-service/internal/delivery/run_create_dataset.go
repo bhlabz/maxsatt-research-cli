@@ -99,7 +99,7 @@ func CreateDataset(inputDataFileName string) error {
 		farm := row.Farm
 		plot := strings.Split(row.Plot, "-")[1]
 
-		finalData, err := final.GetSavedFinalData(farm, plot, deltaMin, deltaMax)
+		finalData, err := final.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
 		if err != nil {
 			fmt.Println("Error getting saved final dataset: " + err.Error())
 		}
@@ -149,7 +149,7 @@ func CreateDataset(inputDataFileName string) error {
 				continue
 			}
 
-			err = final.SaveFinalData(finalData)
+			err = final.SaveFinalData(finalData, date)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 				continue
