@@ -26,7 +26,7 @@ type PixelResult struct {
 }
 
 func RunModel(finalData []final.FinalData) ([]PixelResult, error) {
-	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%s", properties.GrpcPort()),
+	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", properties.GrpcPort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(
 			grpc.MaxCallRecvMsgSize(10*1024*1024),

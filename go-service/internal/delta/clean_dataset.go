@@ -63,7 +63,7 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 	)
 
 	wp := workerpool.New(100)
-	conn, err := grpc.Dial(fmt.Sprintf("localhost:%s", properties.GrpcPort()), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", properties.GrpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to gRPC server: %v", err)
 	}

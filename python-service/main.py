@@ -1,3 +1,4 @@
+import argparse
 import os
 from concurrent import futures
 from datetime import datetime
@@ -94,21 +95,21 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
             return run_model_pb2.RunModelResponse()
 
     
-def serve():
+def serve(port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=200),options=[
         ('grpc.max_send_message_length', 10 * 1024 * 1024),  # 10 MB
         ('grpc.max_receive_message_length', 10 * 1024 * 1024)
     ])
     clear_and_smooth_pb2_grpc.add_ClearAndSmoothServiceServicer_to_server(ClearAndSmoothService(), server)
     run_model_pb2_grpc.add_RunModelServiceServicer_to_server(RunModelServiceServicer(), server)
-    port = os.getenv("GRPC_PORT", "50051")
     server.add_insecure_port(f'[::]:{port}')
     server.start()
     # print("gRPC server is running on port 50051...")
     server.wait_for_termination()
 
 if __name__ == "__main__":
-    # Load environment variables from .env file
-    env_path = os.path.join(os.path.dirname(__file__), '../.env')
-    load_dotenv(env_path)
-    serve()
+
+    parser = argparse.ArgumentParser(description="Run the gRPC server.")
+    parser.add_argument("--port", type=int, default=50051, help="Port to run the gRPC server on.")
+    args = parser.parse_args()
+    serve(args.port)

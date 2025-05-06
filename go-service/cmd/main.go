@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"time"
 
@@ -219,6 +220,35 @@ func initCLI() {
 }
 
 func main() {
+	var port int
+	for i, arg := range os.Args {
+		if strings.HasPrefix(arg, "--port=") {
+			portArg := strings.TrimPrefix(arg, "--port=")
+			var err error
+			port, err = strconv.Atoi(portArg)
+			if err != nil {
+				fmt.Printf("\033[31mInvalid port value: %s\033[0m\n", portArg)
+				os.Exit(1)
+			}
+			break
+		} else if arg == "--port" && i+1 < len(os.Args) {
+			var err error
+			port, err = strconv.Atoi(os.Args[i+1])
+			if err != nil {
+				fmt.Printf("\033[31mInvalid port value: %s\033[0m\n", os.Args[i+1])
+				os.Exit(1)
+			}
+			break
+		}
+	}
+
+	if port == 0 {
+		port = 8080
+		fmt.Printf("\033[33mNo port specified. Using default port: %d\033[0m\n", port)
+	} else {
+		fmt.Printf("\033[32mUsing specified port: %d\033[0m\n", port)
+	}
+
 	err := godotenv.Load("../../.env")
 	if err != nil {
 		err := godotenv.Load("../.env")
@@ -227,5 +257,6 @@ func main() {
 		}
 	}
 
+	properties.GrpcPort = port
 	initCLI()
 }
