@@ -60,12 +60,10 @@ func getBestSamplesFromDeltaDataset(deltaDataset []delta.DeltaData, samplesAmoun
 	return deltaDataset[:samplesAmount]
 }
 
-func CreateDataset(inputDataFileName string) error {
+func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, deltaDaysTrashHold int) error {
 	fmt.Println("create dataset")
 	errors := []string{}
 	daysBeforeEvidenceToAnalyze := 5
-	deltaDays := 5
-	deltaDaysTrashHold := 40
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 	deltaMin, deltaMax := deltaDays, deltaDays+deltaDaysTrashHold
 
@@ -155,7 +153,7 @@ func CreateDataset(inputDataFileName string) error {
 				continue
 			}
 		}
-		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), inputDataFileName)
+		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
 		fileExists := false
 
 		// Check if the file already exists

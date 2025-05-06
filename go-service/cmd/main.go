@@ -116,7 +116,16 @@ func initCLI() {
 			var inputDataFileName string
 			fmt.Scanln(&inputDataFileName)
 
-			err := delivery.CreateDataset(inputDataFileName)
+			fmt.Print("\033[34mEnter the ideal delta days for the image analysis: \033[0m")
+			var deltaDays int
+			fmt.Scanln(&deltaDays)
+
+			fmt.Print("\033[34mEnter the delta days trash hold for the image analysis: \033[0m")
+			var deltaDaysTrashHold int
+			fmt.Scanln(&deltaDaysTrashHold)
+
+			outputtDataFileName := fmt.Sprintf("%s_%s_%d_%d.csv", strings.TrimSuffix(inputDataFileName, ".csv"), time.Now().Format("2006-01-02"), deltaDays, deltaDaysTrashHold)
+			err := delivery.CreateDataset(inputDataFileName, outputtDataFileName, deltaDays, deltaDaysTrashHold)
 			if err != nil {
 				fmt.Printf("\n\033[31mError creating dataset: %s\033[0m\n", err.Error())
 				if !strings.Contains(err.Error(), "empty csv file given") {
