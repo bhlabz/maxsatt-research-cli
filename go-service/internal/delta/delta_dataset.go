@@ -188,5 +188,6 @@ func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, 
 		return nil, fmt.Errorf("failed to write delta dataset to file: %w", err)
 	}
 
+	fmt.Printf("Delta dataset saved at %s.\n", deltaDatasetFilePath)
 	return deltaData, nil
 }
