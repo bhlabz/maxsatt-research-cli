@@ -33,60 +33,65 @@ class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServi
         
 class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
     def RunModel(self, request, context):
-        # print("Received RunModel request")
-        rows = []
-        for item in request.data:
-            weather = item.weather
-            delta = item.delta
-            row = {
-                "avg_temperature": weather.avg_temperature,
-                "temp_std_dev": weather.temp_std_dev,
-                "avg_humidity": weather.avg_humidity,
-                "humidity_std_dev": weather.humidity_std_dev,
-                "total_precipitation": weather.total_precipitation,
-                "dry_days_consecutive": weather.dry_days_consecutive,
-                "farm": delta.farm,
-                "plot": delta.plot,
-                "delta_min": delta.delta_min,
-                "delta_max": delta.delta_max,
-                "delta": delta.delta,
-                "start_date": delta.start_date,
-                "end_date": delta.end_date,
-                "x": delta.x,
-                "y": delta.y,
-                "ndre": getattr(delta, "ndre", None), 
-                "ndmi": getattr(delta, "ndmi", None),
-                "psri": delta.psri,
-                "ndvi": delta.ndvi,
-                "ndre_derivative": getattr(delta, "ndre_derivative", None),
-                "ndmi_derivative": getattr(delta, "ndmi_derivative", None),
-                "psri_derivative": delta.psri_derivative,
-                "ndvi_derivative": delta.ndvi_derivative,
-                "label": getattr(delta, "label", None),
-                "created_at": datetime.now().isoformat(),
-            }
-            rows.append(row)
+        try: 
+            rows = []
+            for item in request.data:
+                weather = item.weather
+                delta = item.delta
+                row = {
+                    "avg_temperature": weather.avg_temperature,
+                    "temp_std_dev": weather.temp_std_dev,
+                    "avg_humidity": weather.avg_humidity,
+                    "humidity_std_dev": weather.humidity_std_dev,
+                    "total_precipitation": weather.total_precipitation,
+                    "dry_days_consecutive": weather.dry_days_consecutive,
+                    "farm": delta.farm,
+                    "plot": delta.plot,
+                    "delta_min": delta.delta_min,
+                    "delta_max": delta.delta_max,
+                    "delta": delta.delta,
+                    "start_date": delta.start_date,
+                    "end_date": delta.end_date,
+                    "x": delta.x,
+                    "y": delta.y,
+                    "ndre": getattr(delta, "ndre", None), 
+                    "ndmi": getattr(delta, "ndmi", None),
+                    "psri": delta.psri,
+                    "ndvi": delta.ndvi,
+                    "ndre_derivative": getattr(delta, "ndre_derivative", None),
+                    "ndmi_derivative": getattr(delta, "ndmi_derivative", None),
+                    "psri_derivative": delta.psri_derivative,
+                    "ndvi_derivative": delta.ndvi_derivative,
+                    "label": getattr(delta, "label", None),
+                    "created_at": datetime.now().isoformat(),
+                }
+                rows.append(row)
 
-        # Create a DataFrame
-        df = pd.DataFrame(rows)
-        # print(df)
-        result = run_model(df)
-        response = run_model_pb2.RunModelResponse()
-        for item in result:
-            pixel_result = run_model_pb2.PixelResult(
-                x=item['x'],
-                y=item['y'],
-                latitude=0.0,
-                longitude=0.0,
-                result=[
-                    run_model_pb2.LabelProbability(
-                        label=label_prob['label'],
-                        probability=label_prob['probability']
-                    ) for label_prob in item['result']
-                ]
-            )
-            response.results.append(pixel_result)
-        return response
+            # Create a DataFrame
+            df = pd.DataFrame(rows)
+            # print(df)
+            result = run_model(df)
+            response = run_model_pb2.RunModelResponse()
+            for item in result:
+                pixel_result = run_model_pb2.PixelResult(
+                    x=item['x'],
+                    y=item['y'],
+                    latitude=0.0,
+                    longitude=0.0,
+                    result=[
+                        run_model_pb2.LabelProbability(
+                            label=label_prob['label'],
+                            probability=label_prob['probability']
+                        ) for label_prob in item['result']
+                    ]
+                )
+                response.results.append(pixel_result)
+            return response
+        except Exception as e:
+            # print(f"Error in RunModel: {e}")
+            context.set_details(str(e))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return run_model_pb2.RunModelResponse()
 
     
 def serve():

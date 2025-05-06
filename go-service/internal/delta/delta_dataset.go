@@ -3,10 +3,13 @@ package delta
 import (
 	"errors"
 	"fmt"
+	"os"
 	"sort"
 	"time"
 
 	"github.com/airbusgeo/godal"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
+	"github.com/gocarina/gocsv"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -126,7 +129,8 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []Pixe
 	return deltaDataset, nil
 }
 
-func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
+func createDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
+
 	pixelDataset, err := createPixelDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
@@ -135,5 +139,54 @@ func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, 
 	if err != nil {
 		return nil, err
 	}
-	return deltaDataset(farm, plot, deltaDays, deltaDays+deltaDaysThreshold, clearDataset)
+
+	deltaDataset, err := deltaDataset(farm, plot, deltaDays, deltaDays+deltaDaysThreshold, clearDataset)
+	if err != nil {
+		return nil, err
+	}
+
+	return deltaDataset, nil
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return !os.IsNotExist(err)
+}
+
+func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaDays, deltaDaysThreshold int) ([]DeltaData, error) {
+	deltaDatasetFilePath := fmt.Sprintf("%s/data/delta/%s_%s_%d.csv", properties.RootPath(), farm, plot, deltaDays+deltaDays+deltaDaysThreshold)
+	if fileExists(deltaDatasetFilePath) {
+		var existingDeltaDataset []DeltaData
+		file, err := os.Open(deltaDatasetFilePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open existing delta dataset file: %w", err)
+		}
+		defer file.Close()
+
+		err = gocsv.UnmarshalFile(file, &existingDeltaDataset)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read existing delta dataset: %w", err)
+		}
+
+		fmt.Printf("Delta dataset already exists at %s.\n", deltaDatasetFilePath)
+		return existingDeltaDataset, nil
+	}
+
+	deltaData, err := createDeltaDataset(farm, plot, images, deltaDays, deltaDaysThreshold)
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Create(deltaDatasetFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create delta dataset file: %w", err)
+	}
+	defer file.Close()
+
+	err = gocsv.MarshalFile(deltaData, file)
+	if err != nil {
+		return nil, fmt.Errorf("failed to write delta dataset to file: %w", err)
+	}
+
+	return deltaData, nil
 }

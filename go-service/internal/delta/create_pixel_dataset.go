@@ -23,13 +23,13 @@ type Indexes struct {
 	NDVI  []float64
 }
 type PixelData struct {
-	Date time.Time
-	X    int
-	Y    int
-	NDRE float64
-	NDMI float64
-	PSRI float64
-	NDVI float64
+	Date time.Time `csv:"date"`
+	X    int       `csv:"x"`
+	Y    int       `csv:"y"`
+	NDRE float64   `csv:"ndre"`
+	NDMI float64   `csv:"ndmi"`
+	PSRI float64   `csv:"psri"`
+	NDVI float64   `csv:"ndvi"`
 }
 
 func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
