@@ -2,3 +2,5 @@
 .env
 data/result/*
 data/final/*
+data/delta/*
+data/model/*
