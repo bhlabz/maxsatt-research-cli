@@ -243,7 +243,7 @@ func main() {
 	}
 
 	if port == 0 {
-		port = 8080
+		port = 50051
 		fmt.Printf("\033[33mNo port specified. Using default port: %d\033[0m\n", port)
 	} else {
 		fmt.Printf("\033[32mUsing specified port: %d\033[0m\n", port)
