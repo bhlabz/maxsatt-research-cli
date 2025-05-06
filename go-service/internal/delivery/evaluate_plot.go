@@ -127,7 +127,7 @@ func EvaluatePlot(farm, plot string, endDate time.Time) (string, error) {
 	fmt.Printf("FetchWeather took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	plotFinalDataset, err := final.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, farm, plot, outputFileName)
+	plotFinalDataset, err := final.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, farm, plot)
 	if err != nil {
 		return "", err
 	}

@@ -1,16 +1,12 @@
 package final
 
 import (
-	"encoding/csv"
 	"fmt"
-	"os"
 	"sync"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
-	"github.com/gocarina/gocsv"
 )
 
 type Sample struct {
@@ -27,7 +23,7 @@ type FinalData struct {
 	CreatedAt time.Time `csv:"created_at"`
 }
 
-func createFinalDataset(samples []delta.DeltaData, weatherData weather.HistoricalWeatherMetrics, outputFileName string) ([]FinalData, error) {
+func createFinalDataset(samples []delta.DeltaData, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
 	var mergedData []FinalData
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -73,22 +69,6 @@ func createFinalDataset(samples []delta.DeltaData, weatherData weather.Historica
 
 	if len(errChan) > 0 {
 		return nil, <-errChan
-	}
-
-	if outputFileName != "" {
-		file, err := os.Create(fmt.Sprintf("%s/data/final/%s.csv", properties.RootPath(), outputFileName))
-		if err != nil {
-			return nil, err
-		}
-		defer file.Close()
-
-		writer := csv.NewWriter(file)
-		defer writer.Flush()
-
-		// Use gocsv to write the data
-		if err := gocsv.MarshalFile(&mergedData, file); err != nil {
-			return nil, fmt.Errorf("failed to write CSV using gocsv: %w", err)
-		}
 	}
 
 	return mergedData, nil

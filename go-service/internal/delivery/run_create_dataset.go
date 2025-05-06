@@ -67,6 +67,7 @@ func CreateDataset(inputDataFileName string) error {
 	deltaDays := 5
 	deltaDaysTrashHold := 40
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
+	deltaMin, deltaMax := deltaDays, deltaDays+deltaDaysTrashHold
 
 	validationDataPath := fmt.Sprintf("%s/data/training_input/%s", properties.RootPath(), inputDataFileName)
 
@@ -98,49 +99,62 @@ func CreateDataset(inputDataFileName string) error {
 		farm := row.Farm
 		plot := strings.Split(row.Plot, "-")[1]
 
-		daysBeforeEvidenceToAnalyze = -getDaysBeforeEvidenceToAnalyse(pest, severity)
-		geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+		finalData, err := final.GetSavedFinalData(farm, plot, deltaMin, deltaMax)
 		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
-			continue
+			fmt.Println("Error getting saved final dataset: " + err.Error())
 		}
 
-		endDate := date.AddDate(0, 0, -(daysBeforeEvidenceToAnalyze - 5))
-		startDate := endDate.AddDate(0, 0, -daysToFetch)
+		if finalData == nil {
 
-		images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
-			continue
+			daysBeforeEvidenceToAnalyze = -getDaysBeforeEvidenceToAnalyse(pest, severity)
+			geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
+				continue
+			}
+
+			endDate := date.AddDate(0, 0, -(daysBeforeEvidenceToAnalyze - 5))
+			startDate := endDate.AddDate(0, 0, -daysToFetch)
+
+			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
+				continue
+			}
+
+			latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error getting centroid latitude and longitude: %v", err))
+				continue
+			}
+
+			historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error getting weather: %v", err))
+				continue
+			}
+
+			deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaMin, deltaMax)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
+				continue
+			}
+
+			samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
+			bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
+
+			finalData, err := final.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				continue
+			}
+
+			err = final.SaveFinalData(finalData)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				continue
+			}
 		}
-
-		latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error getting centroid latitude and longitude: %v", err))
-			continue
-		}
-
-		historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error getting weather: %v", err))
-			continue
-		}
-
-		deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysTrashHold)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
-			continue
-		}
-
-		samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
-		bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
-
-		finalData, err := final.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot, "")
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
-			continue
-		}
-
 		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), inputDataFileName)
 		fileExists := false
 
