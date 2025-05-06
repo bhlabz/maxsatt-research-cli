@@ -217,13 +217,15 @@ func initCLI() {
 			date = strings.TrimSpace(date)
 			endDate, err := time.Parse("2006-01-02", date)
 			if err != nil {
-				fmt.Printf("\n\033[31mInvalid date format. Please use YYYY-MM-DD.\033[0m\n")
 				continue
 			}
 
 			result, err := delivery.EvaluatePlot(forest, plot, endDate)
 			if err != nil {
 				fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+				if !strings.Contains(err.Error(), "empty csv file given") {
+					notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+				}
 				continue
 			}
 
@@ -232,11 +234,13 @@ func initCLI() {
 			files, err := os.ReadDir(imageFolderPath)
 			if err != nil {
 				fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
+				notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError reading images folder: %s", err.Error()))
 				continue
 			}
 
 			if len(files) == 0 {
-				fmt.Printf("\n\033[31mNo tiff images found to create resultant image: %s\033[0m\n", err.Error())
+				fmt.Printf("\n\033[31mNo tiff images found to create resultant image\033[0m\n")
+				notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
 				continue
 			}
 
@@ -250,10 +254,12 @@ func initCLI() {
 			outputImageFilePath, err := createImage(result, firstFilePath, outputFileName)
 			if err != nil {
 				fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
+				notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", err.Error()))
 				continue
 			}
 
 			fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s\n Resultant geojson located at: %s\033[0m\n", outputImageFilePath, outputGeoJsonFilePath)
+			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nSuccessful analysis!\nResultant image located at: %s\nResultant geojson located at: %s", outputImageFilePath, outputGeoJsonFilePath))
 		case 2:
 			fmt.Println("\033[33m\nWarning:\033[0m")
 			fmt.Println("\033[33mThe resultant dataset will be created at data/model folder\033[0m")
