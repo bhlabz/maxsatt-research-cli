@@ -1,9 +1,10 @@
 syntax = "proto3";
 
+option go_package = "/protobufs";
+
 service ClearAndSmoothService {
     rpc ClearAndSmooth (ClearAndSmoothRequest) returns (ClearAndSmoothResponse);
 }
-
 message ClearAndSmoothRequest {
     map<string, DoubleList> data = 1;
 }
