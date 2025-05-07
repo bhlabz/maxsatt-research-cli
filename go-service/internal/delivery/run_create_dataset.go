@@ -182,14 +182,14 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 
 		// Write the header only if the file does not already exist
 		if !fileExists {
-			if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
+			if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
 				errors = append(errors, fmt.Sprintf("Error writing header to CSV file: %v", err))
 				continue
 			}
 			continue
 		}
 		// Write the data rows
-		if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
+		if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
 			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
 			continue
 		}
