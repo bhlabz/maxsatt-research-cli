@@ -3,6 +3,7 @@ package delivery
 import (
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"strings"
@@ -168,6 +169,14 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		}
 		defer file.Close()
 
+		if fileExists {
+			_, err = file.Seek(0, io.SeekEnd)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error seeking to end of file: %v", err))
+				continue
+			}
+		}
+
 		writer := csv.NewWriter(file)
 		defer writer.Flush()
 
@@ -177,8 +186,8 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 				errors = append(errors, fmt.Sprintf("Error writing header to CSV file: %v", err))
 				continue
 			}
+			continue
 		}
-
 		// Write the data rows
 		if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
 			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
