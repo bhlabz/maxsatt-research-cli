@@ -71,6 +71,7 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
             # Create a DataFrame
             df = pd.DataFrame(rows)
             # print(df)
+            print(f"Running model: {request.model}")
             result = run_model(request.model,df)
             response = run_model_pb2.RunModelResponse()
             for item in result:
