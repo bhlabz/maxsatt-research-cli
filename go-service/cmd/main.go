@@ -204,6 +204,35 @@ func initCLI() {
 			fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
 			reader := bufio.NewReader(os.Stdin)
 
+			modelFolderPath := fmt.Sprintf("%s/data/model/", properties.RootPath())
+
+			modelFiles, err := os.ReadDir(modelFolderPath)
+			if err != nil {
+				fmt.Printf("\n\033[31mError reading model folder: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			if len(modelFiles) == 0 {
+				fmt.Printf("\n\033[31mNo models found in the model folder.\033[0m\n")
+				continue
+			}
+
+			fmt.Println("\033[32m\nAvailable models:\033[0m")
+			for i, file := range modelFiles {
+				fmt.Printf("\033[32m%d. %s\033[0m\n", i+1, file.Name())
+			}
+
+			fmt.Print("\033[34mEnter the number of the model you want to use: \033[0m")
+			var modelChoice int
+			_, err = fmt.Scan(&modelChoice)
+			if err != nil || modelChoice < 1 || modelChoice > len(modelFiles) {
+				fmt.Printf("\n\033[31mInvalid choice. Please select a valid model number.\033[0m\n")
+				continue
+			}
+
+			selectedModel := modelFiles[modelChoice-1].Name()
+			fmt.Printf("\033[32mYou selected the model: %s\033[0m\n", selectedModel)
+
 			fmt.Print("\033[34mEnter the forest name: \033[0m")
 			forest, _ := reader.ReadString('\n')
 			forest = strings.TrimSpace(forest)
@@ -220,11 +249,11 @@ func initCLI() {
 				continue
 			}
 
-			result, err := delivery.EvaluatePlot(forest, plot, endDate)
+			result, err := delivery.EvaluatePlot(selectedModel,forest, plot, endDate)
 			if err != nil {
 				fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
 				if !strings.Contains(err.Error(), "empty csv file given") {
-					notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+					// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
 				}
 				continue
 			}

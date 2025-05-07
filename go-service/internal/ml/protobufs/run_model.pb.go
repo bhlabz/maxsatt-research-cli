@@ -212,6 +212,7 @@ func (x *LabelProbability) GetProbability() float64 {
 type RunModelRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Data          []*FinalData           `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	Model         string                 `protobuf:"bytes,2,opt,name=model,proto3" json:"model,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -251,6 +252,13 @@ func (x *RunModelRequest) GetData() []*FinalData {
 		return x.Data
 	}
 	return nil
+}
+
+func (x *RunModelRequest) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
 }
 
 type RunModelResponse struct {
@@ -608,10 +616,11 @@ const file_run_model_proto_rawDesc = "" +
 	"\x06result\x18\x05 \x03(\v2\x11.LabelProbabilityR\x06result\"J\n" +
 	"\x10LabelProbability\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\x12 \n" +
-	"\vprobability\x18\x02 \x01(\x01R\vprobability\"1\n" +
+	"\vprobability\x18\x02 \x01(\x01R\vprobability\"G\n" +
 	"\x0fRunModelRequest\x12\x1e\n" +
 	"\x04data\x18\x01 \x03(\v2\n" +
-	".FinalDataR\x04data\":\n" +
+	".FinalDataR\x04data\x12\x14\n" +
+	"\x05model\x18\x02 \x01(\tR\x05model\":\n" +
 	"\x10RunModelResponse\x12&\n" +
 	"\aresults\x18\x01 \x03(\v2\f.PixelResultR\aresults2B\n" +
 	"\x0fRunModelService\x12/\n" +

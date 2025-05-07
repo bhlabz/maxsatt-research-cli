@@ -25,7 +25,7 @@ type PixelResult struct {
 	Result    []*LabelProbability
 }
 
-func RunModel(finalData []final.FinalData) ([]PixelResult, error) {
+func RunModel(model string, finalData []final.FinalData) ([]PixelResult, error) {
 	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", properties.GrpcPort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(
@@ -44,7 +44,8 @@ func RunModel(finalData []final.FinalData) ([]PixelResult, error) {
 	defer cancel()
 
 	req := &protobufs.RunModelRequest{
-		Data: convertToProtoFinalData(finalData),
+		Data:  convertToProtoFinalData(finalData),
+		Model: model,
 	}
 
 	resp, err := client.RunModel(ctx, req)

@@ -11,12 +11,21 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
-func EvaluatePlot(farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
+func EvaluatePlot(model, farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
 	start := time.Now()
+	var discard1, discard2, discard3, discard4 int
+	var deltaDays, deltaDaysThreshold int
 
-	deltaDays := 5
-	deltaDaysTrashHold := 40
-	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysTrashHold
+	_, err := fmt.Sscanf(model, "%d_%d-%d-%d_%d_%d.csv",
+		&discard1, &discard2, &discard3, &discard4,
+		&deltaDays, &deltaDaysThreshold)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse model string: %w", err)
+	}
+
+	deltaDaysThreshold -= deltaDays
+
+	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
 
 	stepStart := time.Now()
@@ -34,7 +43,7 @@ func EvaluatePlot(farm, plot string, endDate time.Time) ([]ml.PixelResult, error
 	fmt.Printf("GetImages took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysTrashHold)
+	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysThreshold)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +70,7 @@ func EvaluatePlot(farm, plot string, endDate time.Time) ([]ml.PixelResult, error
 
 	fmt.Println("Starting ML analysis...")
 	stepStart = time.Now()
-	result, err := ml.RunModel(plotFinalDataset)
+	result, err := ml.RunModel(model, plotFinalDataset)
 	if err != nil {
 		return nil, err
 	}

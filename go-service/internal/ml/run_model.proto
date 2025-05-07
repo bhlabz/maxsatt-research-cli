@@ -54,6 +54,7 @@ message LabelProbability {
 
 message RunModelRequest {
     repeated FinalData data = 1;
+    string model = 2;
 }
 
 message RunModelResponse {
