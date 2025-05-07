@@ -23,8 +23,6 @@ func EvaluatePlot(model, farm, plot string, endDate time.Time) ([]ml.PixelResult
 		return nil, fmt.Errorf("failed to parse model string: %w", err)
 	}
 
-	deltaDaysThreshold -= deltaDays
-
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
 
