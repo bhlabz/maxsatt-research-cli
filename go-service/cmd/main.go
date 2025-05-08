@@ -63,8 +63,8 @@ func initCLI() {
 
 	for {
 		fmt.Println("\033[34m===================\033[0m")
-		fmt.Println("\033[34m1. Evaluate a forest plot\033[0m")
-		fmt.Println("\033[34m2. Evaluate a forest plot image indexes\033[0m")
+		fmt.Println("\033[34m1. Evaluate a forest plot at a specific date\033[0m")
+		fmt.Println("\033[34m2. Evaluate a forest plot image indexes over time\033[0m")
 		fmt.Println("\033[34m3. Create a new dataset\033[0m")
 		fmt.Println("\033[34m4. List available forests\033[0m")
 		fmt.Println("\033[34m5. List available forest plots\033[0m")
