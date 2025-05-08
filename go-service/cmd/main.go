@@ -232,18 +232,7 @@ func initCLI() {
 			var outputImageFilePaths []string
 
 			for _, endDate := range endDates {
-
-				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
-				if err != nil {
-					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
-					if !strings.Contains(err.Error(), "empty csv file given") {
-						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
-					}
-					continue
-				}
-
 				imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
-
 				files, err := os.ReadDir(imageFolderPath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
@@ -260,7 +249,21 @@ func initCLI() {
 				firstFileName := files[0].Name()
 				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
 
-				outputFilePath := fmt.Sprintf("%s/%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"))
+				outputFilePath := fmt.Sprintf("%s/%s_%s_%s.jpeg", resultPath, forest, plot, endDate.Format("2006-01-02"))
+
+				if _, err := os.Stat(outputFilePath); !os.IsNotExist(err) {
+					outputImageFilePaths = append(outputImageFilePaths, outputFilePath)
+					continue
+				}
+
+				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
+				if err != nil {
+					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+					if !strings.Contains(err.Error(), "empty csv file given") {
+						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+					}
+					continue
+				}
 
 				outputImageFilePath, err := output.CreateCleanDataImage(result, firstFilePath, outputFilePath)
 				if err != nil {
@@ -274,7 +277,7 @@ func initCLI() {
 			}
 
 			if len(outputImageFilePaths) > 1 {
-				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%d_%d", resultPath, forest, plot, endDate.Format("2006-01-02"), samples, intervalDays)
+				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d_%d", resultPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), samples, intervalDays)
 				output.CreateVideoFromImages(outputImageFilePaths, outputVideoPath)
 			}
 
