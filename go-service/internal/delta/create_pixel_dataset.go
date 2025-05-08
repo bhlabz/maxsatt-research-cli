@@ -43,7 +43,7 @@ func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
 	lon := geoTransform[0] + float64(x)*geoTransform[1] + float64(y)*geoTransform[2]
 	lat := geoTransform[3] + float64(x)*geoTransform[4] + float64(y)*geoTransform[5]
 
-	return lon, lat, nil
+	return lat, lon, nil
 }
 
 func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
