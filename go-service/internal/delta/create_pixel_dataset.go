@@ -32,7 +32,7 @@ type PixelData struct {
 	NDVI float64   `csv:"ndvi"`
 }
 
-func createPixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
+func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
 	var width, height, totalPixels int
 
 	for _, imageData := range images {

@@ -126,13 +126,21 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []Pixe
 	return deltaDataset, nil
 }
 
-func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaMin, deltaMax int) ([]DeltaData, error) {
-
-	pixelDataset, err := createPixelDataset(farm, plot, images)
+func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
+	pixelDataset, err := CreatePixelDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}
 	clearDataset, err := cleanDataset(pixelDataset)
+	if err != nil {
+		return nil, err
+	}
+
+	return clearDataset, nil
+}
+
+func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaMin, deltaMax int) ([]DeltaData, error) {
+	clearDataset, err := CreateCleanDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}

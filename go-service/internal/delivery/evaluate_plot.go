@@ -11,7 +11,63 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
-func EvaluatePlot(model, farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
+func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
+	startDate := endDate.AddDate(0, 0, -20)
+
+	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+	if err != nil {
+		return nil, err
+	}
+
+	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	if err != nil {
+		return nil, err
+	}
+
+	cleanDataset, err := delta.CreateCleanDataset(farm, plot, images)
+	if err != nil {
+		return nil, err
+	}
+
+	groupedData := make(map[time.Time][]delta.PixelData)
+	for _, pixel := range cleanDataset {
+		groupedData[pixel.Date] = append(groupedData[pixel.Date], pixel)
+	}
+
+	var mostRecentDate time.Time
+	for date := range groupedData {
+		if date.After(mostRecentDate) {
+			mostRecentDate = date
+		}
+	}
+	fmt.Printf("Image Date: %v\n", mostRecentDate)
+	return groupedData[mostRecentDate], nil
+}
+
+func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) ([]delta.DeltaData, error) {
+
+	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
+	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
+
+	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+	if err != nil {
+		return nil, err
+	}
+
+	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	if err != nil {
+		return nil, err
+	}
+
+	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysThreshold)
+	if err != nil {
+		return nil, err
+	}
+
+	return deltaDataset, nil
+}
+
+func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
 	start := time.Now()
 	var discard1, discard2, discard3, discard4 int
 	var deltaDays, deltaDaysThreshold int
@@ -26,14 +82,12 @@ func EvaluatePlot(model, farm, plot string, endDate time.Time) ([]ml.PixelResult
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
 
-	stepStart := time.Now()
 	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("GetGeometryFromGeoJSON took %v\n", time.Since(stepStart))
 
-	stepStart = time.Now()
+	stepStart := time.Now()
 	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
 	if err != nil {
 		return nil, err
