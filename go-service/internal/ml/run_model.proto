@@ -34,6 +34,8 @@ message FinalData {
         double psri_derivative = 16;
         double ndvi_derivative = 17;
         string label = 18;
+        double latitude = 19;
+        double longitude = 20;
     }
     DeltaData delta = 2;
     string created_at = 3;

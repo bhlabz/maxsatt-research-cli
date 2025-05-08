@@ -23,13 +23,27 @@ type Indexes struct {
 	NDVI  []float64
 }
 type PixelData struct {
-	Date time.Time `csv:"date"`
-	X    int       `csv:"x"`
-	Y    int       `csv:"y"`
-	NDRE float64   `csv:"ndre"`
-	NDMI float64   `csv:"ndmi"`
-	PSRI float64   `csv:"psri"`
-	NDVI float64   `csv:"ndvi"`
+	Date      time.Time `csv:"date"`
+	X         int       `csv:"x"`
+	Y         int       `csv:"y"`
+	Latitude  float64   `csv:"latitude"`
+	Longitude float64   `csv:"longitude"`
+	NDRE      float64   `csv:"ndre"`
+	NDMI      float64   `csv:"ndmi"`
+	PSRI      float64   `csv:"psri"`
+	NDVI      float64   `csv:"ndvi"`
+}
+
+func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
+	geoTransform, err := dataset.GeoTransform()
+	if err != nil {
+		return 0, 0, fmt.Errorf("failed to retrieve GeoTransform: %w", err)
+	}
+
+	lon := geoTransform[0] + float64(x)*geoTransform[1] + float64(y)*geoTransform[2]
+	lat := geoTransform[3] + float64(x)*geoTransform[4] + float64(y)*geoTransform[5]
+
+	return lon, lat, nil
 }
 
 func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
@@ -56,10 +70,16 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 				if err != nil {
 					return nil, err
 				}
-				count++
+
 				if result != nil {
+					result.Latitude, result.Longitude, err = xyToLatLon(image, x, y)
+					if err != nil {
+						return nil, err
+					}
+					count++
 					fileResults = append(fileResults, *result)
 				}
+
 				if err := progressBar.Add(1); err != nil {
 					return nil, err
 				}

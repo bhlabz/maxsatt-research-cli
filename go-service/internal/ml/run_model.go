@@ -109,6 +109,8 @@ func convertToProtoFinalData(data []final.FinalData) []*protobufs.FinalData {
 				Delta:          int32(d.Delta),
 				X:              int32(d.X),
 				Y:              int32(d.Y),
+				Latitude:       d.Latitude,
+				Longitude:      d.Longitude,
 				EndDate:        d.EndDate.Format(time.RFC3339),
 				Label:          label,
 				StartDate:      d.StartDate.Format(time.RFC3339),

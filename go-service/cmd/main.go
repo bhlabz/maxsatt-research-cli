@@ -63,13 +63,13 @@ func initCLI() {
 
 	for {
 		fmt.Println("\033[34m===================\033[0m")
-		fmt.Println("\033[34m1. Evaluate a forest plot pest infestation at a specific date\033[0m")
-		fmt.Println("\033[34m2. Evaluate a forest plot image indexes over time\033[0m")
+		fmt.Println("\033[34m1. Analyze pest infestation in a forest plot for a specific date\033[0m")
+		fmt.Println("\033[34m2. Analyze forest plot image indices over time\033[0m")
 		fmt.Println("\033[34m3. Create a new dataset\033[0m")
-		fmt.Println("\033[34m4. List available forests\033[0m")
-		fmt.Println("\033[34m5. List available forest plots\033[0m")
-		fmt.Println("\033[34m6. Exit\033[0m")
-		fmt.Println("\033[34mEnter your choice:\033[0m")
+		fmt.Println("\033[34m4. View the list of available forests\033[0m")
+		fmt.Println("\033[34m5. View the list of available forest plots\033[0m")
+		fmt.Println("\033[34m6. Exit the application\033[0m")
+		fmt.Println("\033[34mPlease enter your choice:\033[0m")
 
 		var choice int
 		_, err := fmt.Scan(&choice)

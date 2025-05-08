@@ -409,6 +409,8 @@ type FinalData_DeltaData struct {
 	PsriDerivative float64                `protobuf:"fixed64,16,opt,name=psri_derivative,json=psriDerivative,proto3" json:"psri_derivative,omitempty"`
 	NdviDerivative float64                `protobuf:"fixed64,17,opt,name=ndvi_derivative,json=ndviDerivative,proto3" json:"ndvi_derivative,omitempty"`
 	Label          string                 `protobuf:"bytes,18,opt,name=label,proto3" json:"label,omitempty"`
+	Latitude       float64                `protobuf:"fixed64,19,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude      float64                `protobuf:"fixed64,20,opt,name=longitude,proto3" json:"longitude,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -569,11 +571,25 @@ func (x *FinalData_DeltaData) GetLabel() string {
 	return ""
 }
 
+func (x *FinalData_DeltaData) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *FinalData_DeltaData) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
 var File_run_model_proto protoreflect.FileDescriptor
 
 const file_run_model_proto_rawDesc = "" +
 	"\n" +
-	"\x0frun_model.proto\"\xff\x06\n" +
+	"\x0frun_model.proto\"\xb9\a\n" +
 	"\tFinalData\x123\n" +
 	"\aweather\x18\x01 \x01(\v2\x19.FinalData.WeatherMetricsR\aweather\x12*\n" +
 	"\x05delta\x18\x02 \x01(\v2\x14.FinalData.DeltaDataR\x05delta\x12\x1d\n" +
@@ -586,7 +602,7 @@ const file_run_model_proto_rawDesc = "" +
 	"\favg_humidity\x18\x03 \x01(\x01R\vavgHumidity\x12(\n" +
 	"\x10humidity_std_dev\x18\x04 \x01(\x01R\x0ehumidityStdDev\x12/\n" +
 	"\x13total_precipitation\x18\x05 \x01(\x01R\x12totalPrecipitation\x120\n" +
-	"\x14dry_days_consecutive\x18\x06 \x01(\x05R\x12dryDaysConsecutive\x1a\xe3\x03\n" +
+	"\x14dry_days_consecutive\x18\x06 \x01(\x05R\x12dryDaysConsecutive\x1a\x9d\x04\n" +
 	"\tDeltaData\x12\x12\n" +
 	"\x04farm\x18\x01 \x01(\tR\x04farm\x12\x12\n" +
 	"\x04plot\x18\x02 \x01(\tR\x04plot\x12\x1b\n" +
@@ -607,7 +623,9 @@ const file_run_model_proto_rawDesc = "" +
 	"\x0fndmi_derivative\x18\x0f \x01(\x01R\x0endmiDerivative\x12'\n" +
 	"\x0fpsri_derivative\x18\x10 \x01(\x01R\x0epsriDerivative\x12'\n" +
 	"\x0fndvi_derivative\x18\x11 \x01(\x01R\x0endviDerivative\x12\x14\n" +
-	"\x05label\x18\x12 \x01(\tR\x05label\"\x8e\x01\n" +
+	"\x05label\x18\x12 \x01(\tR\x05label\x12\x1a\n" +
+	"\blatitude\x18\x13 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x14 \x01(\x01R\tlongitude\"\x8e\x01\n" +
 	"\vPixelResult\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x05R\x01x\x12\f\n" +
 	"\x01y\x18\x02 \x01(\x05R\x01y\x12\x1a\n" +

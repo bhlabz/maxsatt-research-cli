@@ -45,6 +45,8 @@ def reflectance_model(df, n_components=2, reg_covar=1e-6):
         sample_probabilities = retrieve_sample_probabilities(index, sample, cluster_probabilities, cluster_distribution)
         sample_probabilities['x'] = int(sample['x'])
         sample_probabilities['y'] = int(sample['y'])
+        sample_probabilities['latitude'] = float(sample['latitude'])
+        sample_probabilities['longitude'] = float(sample['longitude'])
         results.append(sample_probabilities) 
 
     return results

@@ -11,6 +11,7 @@ import (
 )
 
 type DeltaData struct {
+	PixelData
 	Farm           string    `csv:"farm"`
 	Plot           string    `csv:"plot"`
 	DeltaMin       int       `csv:"delta_min"`
@@ -18,12 +19,6 @@ type DeltaData struct {
 	Delta          int       `csv:"delta"`
 	StartDate      time.Time `csv:"start_date"`
 	EndDate        time.Time `csv:"end_date"`
-	X              int       `csv:"x"`
-	Y              int       `csv:"y"`
-	NDRE           float64   `csv:"ndre"`
-	NDMI           float64   `csv:"ndmi"`
-	PSRI           float64   `csv:"psri"`
-	NDVI           float64   `csv:"ndvi"`
 	NDREDerivative float64   `csv:"ndre_derivative"`
 	NDMIDerivative float64   `csv:"ndmi_derivative"`
 	PSRIDerivative float64   `csv:"psri_derivative"`
@@ -74,7 +69,6 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []Pixe
 					continue
 				}
 
-				x, y := data[i].X, data[i].Y
 				ndreValue := data[j].NDRE
 				ndreStart := data[i].NDRE
 				ndmiValue := data[j].NDMI
@@ -98,12 +92,7 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []Pixe
 					Delta:          timeDiff,
 					StartDate:      startDate,
 					EndDate:        data[j].Date,
-					X:              x,
-					Y:              y,
-					NDRE:           ndreValue - ndreStart,
-					NDMI:           ndmiValue - ndmiStart,
-					PSRI:           psriValue - psriStart,
-					NDVI:           ndviValue - ndviStart,
+					PixelData:      data[j],
 					NDREDerivative: ndreDerivative,
 					NDMIDerivative: ndmiDerivative,
 					PSRIDerivative: psriDerivative,

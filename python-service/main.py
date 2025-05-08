@@ -53,6 +53,8 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
                     "delta": delta.delta,
                     "start_date": delta.start_date,
                     "end_date": delta.end_date,
+                    "latitude": delta.latitude,
+                    "longitude": delta.longitude,
                     "x": delta.x,
                     "y": delta.y,
                     "ndre": getattr(delta, "ndre", None), 
@@ -78,8 +80,8 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
                 pixel_result = run_model_pb2.PixelResult(
                     x=item['x'],
                     y=item['y'],
-                    latitude=0.0,
-                    longitude=0.0,
+                    latitude=item['latitude'],
+                    longitude=item['longitude'],
                     result=[
                         run_model_pb2.LabelProbability(
                             label=label_prob['label'],
