@@ -30,7 +30,7 @@ func CreateVideoFromImages(imagePaths []string, outputPath string) error {
 	height := int32(bounds.Dy())
 
 	// Create video writer
-	writer, err := mjpeg.New(outputPath, width, height, 1) // 1 FPS
+	writer, err := mjpeg.New(outputPath, width, height, 2)
 	if err != nil {
 		return err
 	}
@@ -58,6 +58,7 @@ func CreateVideoFromImages(imagePaths []string, outputPath string) error {
 		if err != nil {
 			return err
 		}
+
 	}
 
 	return nil

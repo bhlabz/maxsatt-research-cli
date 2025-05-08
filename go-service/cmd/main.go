@@ -158,19 +158,25 @@ func initCLI() {
 
 			firstFileName := files[0].Name()
 			firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
+			resultPath := fmt.Sprintf("%s/data/result/%s/%s/final", properties.RootPath(), forest, plot)
 
-			outputFileName := fmt.Sprintf("%s_%s_%s", forest, plot, endDate.Format("2006-01-02"))
+			err = os.MkdirAll(resultPath, os.ModePerm)
+			if err != nil {
+				log.Fatalf("Failed to create result folder: %v", err)
+			}
 
-			outputGeoJsonFilePath := output.CreateFinalDataGeoJson(result, outputFileName)
+			outputFilePath := fmt.Sprintf("%s/%s_%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"), selectedModel)
 
-			outputImageFilePath, err := output.CreateFinalDataImage(result, firstFilePath, outputFileName)
+			output.CreateFinalDataGeoJson(result, outputFilePath)
+
+			err = output.CreateFinalDataImage(result, firstFilePath, outputFilePath)
 			if err != nil {
 				fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
 				// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", err.Error()))
 				continue
 			}
 
-			fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s\n Resultant geojson located at: %s\033[0m\n", outputImageFilePath, outputGeoJsonFilePath)
+			fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s.jpeg\n Resultant geojson located at: %s.geojson\033[0m\n", outputFilePath, outputFilePath)
 			// notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nSuccessful analysis!\nResultant image located at: %s\nResultant geojson located at: %s", outputImageFilePath, outputGeoJsonFilePath))
 		case 2:
 			fmt.Println("\033[33m\nWarning:\033[0m")
@@ -195,34 +201,25 @@ func initCLI() {
 				continue
 			}
 
-			fmt.Print("\033[34mEnter interval in days: \033[0m")
-			intervalInput, _ := reader.ReadString('\n')
-			intervalInput = strings.TrimSpace(intervalInput)
-			intervalDays, err := strconv.Atoi(intervalInput)
-			if err != nil || intervalDays <= 0 {
-				fmt.Printf("\n\033[31mInvalid interval: %s. Please enter a positive integer.\033[0m\n", intervalInput)
-				continue
-			}
-
-			fmt.Print("\033[34mEnter number of samples: \033[0m")
-			samplesInput, _ := reader.ReadString('\n')
-			samplesInput = strings.TrimSpace(samplesInput)
-			samples, err := strconv.Atoi(samplesInput)
-			if err != nil || samples <= 0 {
-				fmt.Printf("\n\033[31mInvalid number of samples: %s. Please enter a positive integer.\033[0m\n", samplesInput)
+			fmt.Print("\033[34mEnter number of days: \033[0m")
+			daysInput, _ := reader.ReadString('\n')
+			daysInput = strings.TrimSpace(daysInput)
+			days, err := strconv.Atoi(daysInput)
+			if err != nil || days <= 0 {
+				fmt.Printf("\n\033[31mInvalid number of days: %s. Please enter a positive integer.\033[0m\n", daysInput)
 				continue
 			}
 
 			var endDates []time.Time
-			for i := range samples {
-				endDates = append(endDates, endDate.AddDate(0, 0, -i*intervalDays))
+			for i := range days {
+				endDates = append(endDates, endDate.AddDate(0, 0, -i))
 			}
 
 			sort.Slice(endDates, func(i, j int) bool {
 				return endDates[i].Before(endDates[j])
 			})
 
-			resultPath := fmt.Sprintf("%s/data/result/%s/%s", properties.RootPath(), forest, plot)
+			resultPath := fmt.Sprintf("%s/data/result/%s/%s/index", properties.RootPath(), forest, plot)
 
 			err = os.MkdirAll(resultPath, os.ModePerm)
 			if err != nil {
@@ -233,6 +230,16 @@ func initCLI() {
 
 			for _, endDate := range endDates {
 				imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
+
+				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
+				if err != nil {
+					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+					if !strings.Contains(err.Error(), "empty csv file given") {
+						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+					}
+					continue
+				}
+
 				files, err := os.ReadDir(imageFolderPath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
@@ -257,15 +264,6 @@ func initCLI() {
 					continue
 				}
 
-				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
-				if err != nil {
-					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
-					if !strings.Contains(err.Error(), "empty csv file given") {
-						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
-					}
-					continue
-				}
-
 				outputImageFilePath, err := output.CreateCleanDataImage(result, firstFilePath, outputFilePath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
@@ -278,7 +276,7 @@ func initCLI() {
 			}
 
 			if len(outputImageFilePaths) > 1 {
-				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d_%d", resultPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), samples, intervalDays)
+				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d", resultPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), days)
 				output.CreateVideoFromImages(outputImageFilePaths, outputVideoPath)
 			}
 

@@ -4,21 +4,25 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/png"
+	"image/jpeg"
 	"os"
+	"strings"
 
 	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 )
 
-func CreateFinalDataImage(result []ml.PixelResult, tiffImagePath, outputImageName string) (string, error) {
-	outputImagePath := fmt.Sprintf("%s/data/result/%s_final.png", properties.RootPath(), outputImageName)
+func CreateFinalDataImage(result []ml.PixelResult, tiffImagePath, outputImagePath string) error {
+	if !strings.Contains(outputImagePath, ".jpeg") {
+		outputImagePath += ".jpeg"
+	}
+
 	// Open the TIFF image to get its dimensions
 	tiffFile, err := os.Open(tiffImagePath)
 	if err != nil {
 		fmt.Printf("Error opening TIFF file: %v\n", err)
-		return "", err
+		return err
 	}
 	defer tiffFile.Close()
 
@@ -63,17 +67,19 @@ func CreateFinalDataImage(result []ml.PixelResult, tiffImagePath, outputImageNam
 	// Save the new image as a PNG
 	outputFile, err := os.Create(outputImagePath)
 	if err != nil {
-		fmt.Printf("Error creating PNG file: %v\n", err)
-		return "", nil
+		fmt.Printf("Error creating JPEG file: %v\n", err)
+		return err
 	}
 	defer outputFile.Close()
 
-	err = png.Encode(outputFile, newImage)
+	err = jpeg.Encode(outputFile, newImage, &jpeg.Options{
+		Quality: 100,
+	})
 	if err != nil {
-		fmt.Printf("Error encoding PNG file: %v\n", err)
-		return "", err
+		fmt.Printf("Error encoding JPEG file: %v\n", err)
+		return err
 	}
 
-	fmt.Println("PNG image created successfully as", outputImagePath)
-	return outputImagePath, nil
+	fmt.Println("JPEG image created successfully as", outputImagePath)
+	return nil
 }

@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 )
 
-func CreateFinalDataGeoJson(result []ml.PixelResult, outputGeojsonPath string) string {
-	outputPath := fmt.Sprintf("%s/data/result/%s.geojson", properties.RootPath(), outputGeojsonPath)
+func CreateFinalDataGeoJson(result []ml.PixelResult, outputGeojsonPath string) {
+	if !strings.Contains(outputGeojsonPath, ".geojson") {
+		outputGeojsonPath += ".geojson"
+	}
 	features := make([]map[string]interface{}, 0)
 
 	for _, pixel := range result {
@@ -40,10 +42,10 @@ func CreateFinalDataGeoJson(result []ml.PixelResult, outputGeojsonPath string) s
 		"features": features,
 	}
 
-	file, err := os.Create(outputPath)
+	file, err := os.Create(outputGeojsonPath)
 	if err != nil {
 		fmt.Printf("Error creating GeoJSON file: %v\n", err)
-		return ""
+		return
 	}
 	defer file.Close()
 
@@ -51,9 +53,8 @@ func CreateFinalDataGeoJson(result []ml.PixelResult, outputGeojsonPath string) s
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(geoJSON); err != nil {
 		fmt.Printf("Error encoding GeoJSON: %v\n", err)
-		return ""
+		return
 	}
 
-	fmt.Println("GeoJSON file created successfully at", outputPath)
-	return outputPath
+	fmt.Println("GeoJSON file created successfully at", outputGeojsonPath)
 }
