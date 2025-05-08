@@ -111,7 +111,7 @@ def serve(port):
     server.wait_for_termination()
 
 if __name__ == "__main__":
-
+    load_dotenv(os.path.join(os.path.dirname(__file__), "../.env"))
     parser = argparse.ArgumentParser(description="Run the gRPC server.")
     parser.add_argument("--port", type=int, default=50051, help="Port to run the gRPC server on.")
     args = parser.parse_args()
