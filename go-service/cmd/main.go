@@ -253,6 +253,7 @@ func initCLI() {
 
 				if _, err := os.Stat(outputFilePath); !os.IsNotExist(err) {
 					outputImageFilePaths = append(outputImageFilePaths, outputFilePath)
+					fmt.Printf("\n\033[32mImage already exists at: %s\033[0m\n", outputFilePath)
 					continue
 				}
 
