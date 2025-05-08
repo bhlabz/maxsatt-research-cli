@@ -165,7 +165,7 @@ func initCLI() {
 				log.Fatalf("Failed to create result folder: %v", err)
 			}
 
-			outputFilePath := fmt.Sprintf("%s/%s_%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"), selectedModel)
+			outputFilePath := fmt.Sprintf("%s/%s_%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"), strings.TrimSuffix(selectedModel, ".csv"))
 
 			output.CreateFinalDataGeoJson(result, outputFilePath)
 
