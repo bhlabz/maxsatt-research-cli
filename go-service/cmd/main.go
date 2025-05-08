@@ -278,6 +278,8 @@ func initCLI() {
 			if len(outputImageFilePaths) > 1 {
 				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d", resultPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), days)
 				output.CreateVideoFromImages(outputImageFilePaths, outputVideoPath)
+				fmt.Printf("\n\033[32mResultant video located at: %s\033[0m\n", outputVideoPath)
+
 			}
 
 		case 3:
