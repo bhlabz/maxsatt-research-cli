@@ -230,16 +230,6 @@ func initCLI() {
 
 			for _, endDate := range endDates {
 				imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
-
-				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
-				if err != nil {
-					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
-					if !strings.Contains(err.Error(), "empty csv file given") {
-						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
-					}
-					continue
-				}
-
 				files, err := os.ReadDir(imageFolderPath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
@@ -252,7 +242,6 @@ func initCLI() {
 					// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
 					continue
 				}
-
 				firstFileName := files[0].Name()
 				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
 
@@ -261,6 +250,15 @@ func initCLI() {
 				if _, err := os.Stat(outputFilePath); !os.IsNotExist(err) {
 					outputImageFilePaths = append(outputImageFilePaths, outputFilePath)
 					fmt.Printf("\n\033[32mImage already exists at: %s\033[0m\n", outputFilePath)
+					continue
+				}
+
+				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
+				if err != nil {
+					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+					if !strings.Contains(err.Error(), "empty csv file given") {
+						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+					}
 					continue
 				}
 
