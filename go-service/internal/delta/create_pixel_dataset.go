@@ -4,11 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
-
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -58,33 +59,44 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 
 	fileResults := []PixelData{}
 	count := 0
-	target := height * width * len(images)
-	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 	sortedImageDates := getSortedKeys(images)
+	target := len(sortedImageDates) * width * height
+	progressBar := progressbar.Default(int64(target), "Creating delta dataset")
 
+	wg := &sync.WaitGroup{}
+	wg.Add(height * width)
+	var errGlobal error
 	for y := range height {
 		for x := range width {
-			for _, date := range sortedImageDates {
-				image := images[date]
-				result, err := getData(image, totalPixels, width, height, x, y, date)
-				if err != nil {
-					return nil, err
-				}
-
-				if result != nil {
-					result.Latitude, result.Longitude, err = xyToLatLon(image, x, y)
+			go func(x, y int) {
+				defer wg.Done()
+				defer progressBar.Add(1)
+				for _, date := range sortedImageDates {
+					image := images[date]
+					result, err := getData(image, totalPixels, width, height, x, y, date)
 					if err != nil {
-						return nil, err
+						errGlobal = err
+						return
 					}
-					count++
-					fileResults = append(fileResults, *result)
-				}
 
-				if err := progressBar.Add(1); err != nil {
-					return nil, err
+					if result != nil {
+						result.Latitude, result.Longitude, err = xyToLatLon(image, x, y)
+						if err != nil {
+							errGlobal = err
+							return
+						}
+						count++
+						fileResults = append(fileResults, *result)
+					}
 				}
-			}
+			}(x, y)
 		}
+	}
+	wg.Wait()
+	progressBar.Finish()
+
+	if errGlobal != nil {
+		return nil, fmt.Errorf("error while creating pixel dataset: %w", errGlobal)
 	}
 
 	if len(fileResults) == 0 {
@@ -97,12 +109,14 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 	if totalPixels != 0 && totalPixels != width*height {
 		return nil, errors.New("different image size")
 	}
-
-	indexes, err := sentinel.GetIndexesFromImage(image)
+	var indexes map[string][][]float64
+	var err error
+	utils.ExecuteWithMutex(func() {
+		indexes, err = sentinel.GetIndexesFromImage(image)
+	})
 	if err != nil {
 		return nil, err
 	}
-
 	bands := sentinel.GetBands(indexes, x, y)
 
 	if valid, _ := bands.Valid(); valid {
