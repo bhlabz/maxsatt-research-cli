@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"sort"
-	"sync"
 	"time"
 
 	"github.com/airbusgeo/godal"
@@ -63,36 +62,36 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	target := len(sortedImageDates) * width * height
 	progressBar := progressbar.Default(int64(target), "Creating delta dataset")
 
-	wg := &sync.WaitGroup{}
-	wg.Add(height * width)
 	var errGlobal error
-	for y := range height {
-		for x := range width {
-			go func(x, y int) {
-				defer wg.Done()
-				defer progressBar.Add(1)
-				for _, date := range sortedImageDates {
-					image := images[date]
-					result, err := getData(image, totalPixels, width, height, x, y, date)
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			for _, date := range sortedImageDates {
+				image := images[date]
+				result, err := getData(image, totalPixels, width, height, x, y, date)
+				if err != nil {
+					errGlobal = err
+					break
+				}
+
+				if result != nil {
+					result.Latitude, result.Longitude, err = xyToLatLon(image, x, y)
 					if err != nil {
 						errGlobal = err
-						return
+						break
 					}
-
-					if result != nil {
-						result.Latitude, result.Longitude, err = xyToLatLon(image, x, y)
-						if err != nil {
-							errGlobal = err
-							return
-						}
-						count++
-						fileResults = append(fileResults, *result)
-					}
+					count++
+					fileResults = append(fileResults, *result)
 				}
-			}(x, y)
+				progressBar.Add(1)
+			}
+			if errGlobal != nil {
+				break
+			}
+		}
+		if errGlobal != nil {
+			break
 		}
 	}
-	wg.Wait()
 	progressBar.Finish()
 
 	if errGlobal != nil {
