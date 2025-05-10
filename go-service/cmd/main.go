@@ -297,8 +297,8 @@ func initCLI() {
 			var deltaDaysThreshold int
 			fmt.Scanln(&deltaDaysThreshold)
 
-			outputtDataFileName := fmt.Sprintf("%s_%s_%d_%d.csv", strings.TrimSuffix(inputDataFileName, ".csv"), time.Now().Format("2006-01-02"), deltaDays, deltaDaysThreshold)
-			err := delivery.CreateDataset(inputDataFileName, outputtDataFileName, deltaDays, deltaDaysThreshold)
+			outputDataFileName := fmt.Sprintf("%s_%s_%d_%d.csv", strings.TrimSuffix(inputDataFileName, ".csv"), time.Now().Format("2006-01-02"), deltaDays, deltaDaysThreshold)
+			err := delivery.CreateDataset(inputDataFileName, outputDataFileName, deltaDays, deltaDaysThreshold)
 			if err != nil {
 				fmt.Printf("\n\033[31mError creating dataset: %s\033[0m\n", err.Error())
 				if !strings.Contains(err.Error(), "empty csv file given") {
@@ -307,7 +307,7 @@ func initCLI() {
 				continue
 			}
 			fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
-			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s", inputDataFileName))
+			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s", outputDataFileName))
 		case 4:
 			files, err := os.ReadDir(properties.RootPath() + "/data/geojsons")
 			if err != nil {
