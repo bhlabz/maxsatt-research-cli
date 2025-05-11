@@ -4,3 +4,5 @@ data/result/*
 data/final/*
 data/delta/*
 data/model/*
+tests/*
+.DS_Store
