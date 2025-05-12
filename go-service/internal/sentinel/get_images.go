@@ -109,7 +109,6 @@ func (bands Bands) Valid() (bool, string) {
 		{bands.CLD > 0, "Cloud value > 0"},
 		{bands.SCL == 2 || bands.SCL == 3 || bands.SCL == 8 || bands.SCL == 9 || bands.SCL == 10, "Invalid SCL [2,3,8,9,10]"},
 		{(bands.B04+bands.B02)/2 > 0.9, "High reflectance (bright surface)"},
-		{(bands.B04+bands.B02)/2 < 0.15 && bands.NDVI > 0.1, "Shadow detected"},
 		{bands.PSRI == 0 && bands.NDVI == 0 && bands.NDMI == 0 && bands.NDRE == 0, "Null indices"},
 	}
 
