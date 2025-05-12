@@ -245,13 +245,7 @@ func initCLI() {
 				firstFileName := files[0].Name()
 				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
 
-				outputFilePath := fmt.Sprintf("%s/%s_%s_%s.jpeg", resultPath, forest, plot, endDate.Format("2006-01-02"))
-
-				if _, err := os.Stat(outputFilePath); !os.IsNotExist(err) {
-					outputImageFilePaths = append(outputImageFilePaths, outputFilePath)
-					fmt.Printf("\n\033[32mImage already exists at: %s\033[0m\n", outputFilePath)
-					continue
-				}
+				outputFilePath := fmt.Sprintf("%s/%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"))
 
 				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
 				if err != nil {
