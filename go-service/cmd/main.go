@@ -230,10 +230,27 @@ func initCLI() {
 
 			for _, endDate := range endDates {
 				imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
+				if _, err := os.Stat(imageFolderPath); os.IsNotExist(err) {
+					err := os.MkdirAll(imageFolderPath, os.ModePerm)
+					if err != nil {
+						fmt.Printf("\n\033[31mError creating image folder: %s\033[0m\n", err.Error())
+						continue
+					}
+				}
+
 				files, err := os.ReadDir(imageFolderPath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
 					// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError reading images folder: %s", err.Error()))
+					continue
+				}
+
+				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
+				if err != nil {
+					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+					if !strings.Contains(err.Error(), "empty csv file given") {
+						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+					}
 					continue
 				}
 
@@ -246,16 +263,6 @@ func initCLI() {
 				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
 
 				outputFilePath := fmt.Sprintf("%s/%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"))
-
-				result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
-				if err != nil {
-					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
-					if !strings.Contains(err.Error(), "empty csv file given") {
-						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
-					}
-					continue
-				}
-
 				outputImageFilePath, err := output.CreateCleanDataImage(result, firstFilePath, outputFilePath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
