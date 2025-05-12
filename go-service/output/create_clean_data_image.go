@@ -44,59 +44,77 @@ func valueToColor(norm float64) color.RGBA {
 	return color.RGBA{R: r, G: g, B: b, A: 255}
 }
 
+func getPixelIndex(index string, pixel delta.PixelData) float64 {
+	switch index {
+	case "NDRE":
+		return pixel.NDRE
+	case "NDMI":
+		return pixel.NDMI
+	case "PSRI":
+		return pixel.PSRI
+	case "NDVI":
+		return pixel.NDVI
+	default:
+		return 0
+	}
+}
+
 func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePath string) (string, error) {
-	if !strings.Contains(outputImagePath, ".jpeg") {
-		outputImagePath += ".jpeg"
-	}
-	// Open the TIFF image to get its dimensions
-	tiffFile, err := os.Open(tiffImagePath)
-	if err != nil {
-		fmt.Printf("Error opening TIFF file: %v\n", err)
-		return "", err
-	}
-	defer tiffFile.Close()
-
-	ds, err := godal.Open(tiffImagePath, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
-		if ec == godal.CE_Warning {
-			return nil
+	for _, index := range []string{"NDRE", "NDMI", "PSRI", "NDVI"} {
+		outputImagePathCpy := outputImagePath
+		if !strings.Contains(outputImagePathCpy, ".jpeg") {
+			outputImagePathCpy += "_" + index + ".jpeg"
 		}
-		return err
-	}))
-	if err != nil {
-		fmt.Println(err.Error())
-
-	}
-
-	width, height := int(ds.Structure().SizeX), int(ds.Structure().SizeY)
-	// Create a new RGBA image
-	newImage := image.NewRGBA(image.Rect(0, 0, width, height))
-
-	// Map the PixelResult to the new image
-	for _, pixel := range result {
-
-		if pixel.X >= 0 && pixel.X < width && pixel.Y >= 0 && pixel.Y < height {
-			indexesMean := (pixel.NDRE + pixel.NDMI + pixel.PSRI + pixel.NDVI) / 4.0
-			norm := normalize(indexesMean, 0, 1)
-			clr := valueToColor(norm)
-			newImage.Set(pixel.X, pixel.Y, clr)
+		// Open the TIFF image to get its dimensions
+		tiffFile, err := os.Open(tiffImagePath)
+		if err != nil {
+			fmt.Printf("Error opening TIFF file: %v\n", err)
+			return "", err
 		}
+		defer tiffFile.Close()
+
+		ds, err := godal.Open(tiffImagePath, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
+			if ec == godal.CE_Warning {
+				return nil
+			}
+			return err
+		}))
+		if err != nil {
+			fmt.Println(err.Error())
+
+		}
+
+		width, height := int(ds.Structure().SizeX), int(ds.Structure().SizeY)
+		// Create a new RGBA image
+		newImage := image.NewRGBA(image.Rect(0, 0, width, height))
+
+		// Map the PixelResult to the new image
+		for _, pixel := range result {
+			if pixel.X >= 0 && pixel.X < width && pixel.Y >= 0 && pixel.Y < height {
+				index := getPixelIndex(index, pixel)
+				norm := normalize(index, 0, 1)
+				clr := valueToColor(norm)
+				newImage.Set(pixel.X, pixel.Y, clr)
+			}
+		}
+
+		outputFile, err := os.Create(outputImagePathCpy)
+		if err != nil {
+			fmt.Printf("Error creating JPEG file: %v\n", err)
+			return "", nil
+		}
+		defer outputFile.Close()
+
+		err = jpeg.Encode(outputFile, newImage, &jpeg.Options{
+			Quality: 100,
+		})
+		if err != nil {
+			fmt.Printf("Error encoding JPEG file: %v\n", err)
+			return "", err
+		}
+
+		fmt.Println("JPEG image created successfully as", outputImagePathCpy)
 	}
 
-	outputFile, err := os.Create(outputImagePath)
-	if err != nil {
-		fmt.Printf("Error creating JPEG file: %v\n", err)
-		return "", nil
-	}
-	defer outputFile.Close()
-
-	err = jpeg.Encode(outputFile, newImage, &jpeg.Options{
-		Quality: 100,
-	})
-	if err != nil {
-		fmt.Printf("Error encoding JPEG file: %v\n", err)
-		return "", err
-	}
-
-	fmt.Println("JPEG image created successfully as", outputImagePath)
-	return outputImagePath, nil
+	return outputImagePath + "_{index}", nil
 }
