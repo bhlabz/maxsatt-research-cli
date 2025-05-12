@@ -87,6 +87,10 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 	fmt.Printf("Creating dataset from file %s with %d samples\n", validationDataPath, target)
 
 	for i := 0; i < target; i++ {
+		var err error
+		defer func() {
+			fmt.Println("Error:", err)
+		}()
 		row := rows[i]
 		date, err := time.Parse("02/01/06", row.Date)
 		if err != nil {
