@@ -61,9 +61,9 @@ func getPixelIndex(index string, pixel delta.PixelData) float64 {
 
 func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePath string) (string, error) {
 	for _, index := range []string{"NDRE", "NDMI", "PSRI", "NDVI"} {
-		outputImagePathCpy := outputImagePath
+		outputImagePathCpy := outputImagePath + "_" + index
 		if !strings.Contains(outputImagePathCpy, ".jpeg") {
-			outputImagePathCpy += "_" + index + ".jpeg"
+			outputImagePathCpy += ".jpeg"
 		}
 		// Open the TIFF image to get its dimensions
 		tiffFile, err := os.Open(tiffImagePath)

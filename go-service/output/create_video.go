@@ -13,9 +13,9 @@ import (
 
 func CreateVideoFromImages(imagePaths []string, outputPath string) error {
 	for _, index := range []string{"NDRE", "NDMI", "PSRI", "NDVI"} {
-
-		if !strings.Contains(outputPath, ".avi") {
-			outputPath += "_" + index + ".avi"
+		outputImagePathCpy := outputPath + "_" + index
+		if !strings.Contains(outputImagePathCpy, ".avi") {
+			outputImagePathCpy += ".avi"
 		}
 		// Open the first image to get dimensions
 		firstFile, err := os.Open(imagePaths[0])
@@ -32,7 +32,7 @@ func CreateVideoFromImages(imagePaths []string, outputPath string) error {
 		height := int32(bounds.Dy())
 
 		// Create video writer
-		writer, err := mjpeg.New(outputPath, width, height, 2)
+		writer, err := mjpeg.New(outputImagePathCpy, width, height, 2)
 		if err != nil {
 			return err
 		}
