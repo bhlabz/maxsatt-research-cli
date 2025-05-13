@@ -226,30 +226,46 @@ func initCLI() {
 				log.Fatalf("Failed to create result folder: %v", err)
 			}
 
+			resultImagePath := fmt.Sprintf("%s/images", resultPath)
+			err = os.MkdirAll(resultImagePath, os.ModePerm)
+			if err != nil {
+				log.Fatalf("Failed to create result folder: %v", err)
+			}
+
+			resultVideoPath := fmt.Sprintf("%s/videos", resultPath)
+			err = os.MkdirAll(resultVideoPath, os.ModePerm)
+			if err != nil {
+				log.Fatalf("Failed to create result folder: %v", err)
+			}
+
 			var outputImageFilePaths []string
 
 			for _, endDate := range endDates {
 				imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
+				if _, err := os.Stat(imageFolderPath); os.IsNotExist(err) {
+					err := os.MkdirAll(imageFolderPath, os.ModePerm)
+					if err != nil {
+						fmt.Printf("\n\033[31mError creating image folder: %s\033[0m\n", err.Error())
+						continue
+					}
+				}
+
 				files, err := os.ReadDir(imageFolderPath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
 					// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError reading images folder: %s", err.Error()))
 					continue
 				}
-
-				if len(files) == 0 {
-					fmt.Printf("\n\033[31mNo tiff images found to create resultant image\033[0m\n")
-					// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
-					continue
+				exists := true
+				for _, index := range []string{"NDMI", "NDVI", "PSRI", "NDRE"} {
+					imageFilePath := fmt.Sprintf("%s/%s_%s_%s_%s.jpeg", resultImagePath, forest, plot, endDate.Format("2006-01-02"), index)
+					if _, err := os.Stat(imageFilePath); err == nil {
+						outputImageFilePaths = append(outputImageFilePaths, imageFilePath)
+					}
+					exists = false
 				}
-				firstFileName := files[0].Name()
-				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
-
-				outputFilePath := fmt.Sprintf("%s/%s_%s_%s.jpeg", resultPath, forest, plot, endDate.Format("2006-01-02"))
-
-				if _, err := os.Stat(outputFilePath); !os.IsNotExist(err) {
-					outputImageFilePaths = append(outputImageFilePaths, outputFilePath)
-					fmt.Printf("\n\033[32mImage already exists at: %s\033[0m\n", outputFilePath)
+				if exists {
+					fmt.Printf("\n\033[31mResultant image already exists: %s\033[0m\n", files[0].Name())
 					continue
 				}
 
@@ -262,6 +278,14 @@ func initCLI() {
 					continue
 				}
 
+				if len(files) == 0 {
+					fmt.Printf("\n\033[31mNo tiff images found to create resultant image\033[0m\n")
+					// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
+					continue
+				}
+				firstFileName := files[0].Name()
+				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
+				outputFilePath := fmt.Sprintf("%s/%s_%s_%s", resultImagePath, forest, plot, endDate.Format("2006-01-02"))
 				outputImageFilePath, err := output.CreateCleanDataImage(result, firstFilePath, outputFilePath)
 				if err != nil {
 					fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
@@ -270,11 +294,11 @@ func initCLI() {
 				}
 
 				fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s\033[0m\n", outputImageFilePath)
-				outputImageFilePaths = append(outputImageFilePaths, outputImageFilePath)
+				outputImageFilePaths = append(outputImageFilePaths, outputImageFilePath...)
 			}
 
 			if len(outputImageFilePaths) > 1 {
-				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d", resultPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), days)
+				outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d", resultVideoPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), days)
 				output.CreateVideoFromImages(outputImageFilePaths, outputVideoPath)
 				fmt.Printf("\n\033[32mResultant video located at: %s\033[0m\n", outputVideoPath)
 
