@@ -40,8 +40,8 @@ func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
 		return 0, 0, fmt.Errorf("failed to retrieve GeoTransform: %w", err)
 	}
 
-	lon := geoTransform[0] + float64(x)*geoTransform[1] + float64(y)*geoTransform[2]
-	lat := geoTransform[3] + float64(x)*geoTransform[4] + float64(y)*geoTransform[5]
+	lon := geoTransform[0] + (float64(x)+0.5)*geoTransform[1] + (float64(y)+0.5)*geoTransform[2]
+	lat := geoTransform[3] + (float64(x)+0.5)*geoTransform[4] + (float64(y)+0.5)*geoTransform[5]
 
 	return lat, lon, nil
 }
