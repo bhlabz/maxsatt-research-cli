@@ -60,7 +60,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	count := 0
 	sortedImageDates := getSortedKeys(images)
 	target := len(sortedImageDates) * width * height
-	progressBar := progressbar.Default(int64(target), "Creating delta dataset")
+	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 
 	var errGlobal error
 	for y := 0; y < height; y++ {
