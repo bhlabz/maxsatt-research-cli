@@ -2,6 +2,7 @@ package output
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/jpeg"
 	_ "image/png"
@@ -41,6 +42,7 @@ func CreateVideoFromImages(imagePaths []string, outputPath string) error {
 		// Encode and add each image
 		for _, path := range imagePaths {
 			if !strings.Contains(path, index) {
+				fmt.Printf("Required index:%s. Skipping image: %s", index, path)
 				continue
 			}
 

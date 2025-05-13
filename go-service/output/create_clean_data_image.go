@@ -59,7 +59,8 @@ func getPixelIndex(index string, pixel delta.PixelData) float64 {
 	}
 }
 
-func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePath string) (string, error) {
+func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePath string) ([]string, error) {
+	imagePaths := []string{}
 	for _, index := range []string{"NDRE", "NDMI", "PSRI", "NDVI"} {
 		outputImagePathCpy := outputImagePath + "_" + index
 		if !strings.Contains(outputImagePathCpy, ".jpeg") {
@@ -69,7 +70,7 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 		tiffFile, err := os.Open(tiffImagePath)
 		if err != nil {
 			fmt.Printf("Error opening TIFF file: %v\n", err)
-			return "", err
+			return nil, err
 		}
 		defer tiffFile.Close()
 
@@ -101,7 +102,7 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 		outputFile, err := os.Create(outputImagePathCpy)
 		if err != nil {
 			fmt.Printf("Error creating JPEG file: %v\n", err)
-			return "", nil
+			return nil, nil
 		}
 		defer outputFile.Close()
 
@@ -110,11 +111,12 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 		})
 		if err != nil {
 			fmt.Printf("Error encoding JPEG file: %v\n", err)
-			return "", err
+			return nil, err
 		}
 
 		fmt.Println("JPEG image created successfully as", outputImagePathCpy)
+		imagePaths = append(imagePaths, outputImagePathCpy)
 	}
 
-	return outputImagePath + "_{index}", nil
+	return imagePaths, nil
 }
