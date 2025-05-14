@@ -32,8 +32,6 @@ func reprojectAutoUTM(inputPath, outputPath string) error {
 	defer ds.Close()
 
 	// Inspect current projection
-	projWKT := ds.Projection()
-	fmt.Println("Current projection WKT:", projWKT)
 	sr := ds.SpatialRef()
 	defer sr.Close()
 
@@ -73,8 +71,6 @@ func reprojectAutoUTM(inputPath, outputPath string) error {
 		utmEPSG = 32700 + zone
 	}
 	utmCode := fmt.Sprintf("EPSG:%d", utmEPSG)
-	fmt.Println("Reprojecting to", utmCode)
-
 	// Reproject (warp) to UTM and save result
 	outDS, err := ds.Warp(outputPath,
 		[]string{"-t_srs", utmCode},
@@ -90,7 +86,6 @@ func reprojectAutoUTM(inputPath, outputPath string) error {
 	}
 	defer outDS.Close()
 
-	fmt.Println("Saved reprojected file: output_utm.tif")
 	return nil
 }
 
