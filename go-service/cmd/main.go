@@ -249,7 +249,6 @@ func initCLI() {
 			}
 
 			plotIDs := []string{}
-
 			for _, feature := range features {
 				featureMap, ok := feature.(map[string]interface{})
 				if !ok {
@@ -272,8 +271,11 @@ func initCLI() {
 			}
 			fmt.Printf("\033[33mForest %s has %d plots that will be analyzed\n\033[0m", forest, len(plotIDs))
 			errs := []error{}
+			startTime := time.Now()
+			completed := 0
 			for _, plot := range plotIDs {
 				fmt.Printf("\033[32m\nStarting forest %s plot %s analysis\033[0m\n", forest, plot)
+				fmt.Printf("\033[32m\n- %d/%d \033[0m\n", completed, len(plotIDs))
 
 				result, err := delivery.EvaluatePlotFinalData(selectedModel, forest, plot, endDate)
 				if err != nil {
@@ -282,6 +284,7 @@ func initCLI() {
 						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
 					}
 					errs = append(errs, err)
+					completed++
 					continue
 				}
 
@@ -299,6 +302,7 @@ func initCLI() {
 					fmt.Printf("\n\033[31mNo tiff images found to create resultant image\033[0m\n")
 					// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
 					errs = append(errs, err)
+					completed++
 					continue
 				}
 
@@ -320,11 +324,15 @@ func initCLI() {
 					fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
 					// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", err.Error()))
 					errs = append(errs, err)
+					completed++
 					continue
 				}
 
 				fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s.jpeg\n Resultant geojson located at: %s.geojson\033[0m\n", outputFilePath, outputFilePath)
+				completed++
 			}
+			endTime := time.Now()
+			elapsedTime := endTime.Sub(startTime)
 			if len(errs) > 0 {
 				errorMessages := strings.Builder{}
 				for _, err := range errs {
@@ -333,10 +341,8 @@ func initCLI() {
 				notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nErrors occurred during analysis:\n%s", errorMessages.String()))
 				fmt.Printf("\n\033[31mErrors occurred during analysis: %s\033[0m\n", errorMessages.String())
 
-				if len(errs) != len(plotIDs) {
-					fmt.Printf("\n\033[31mSome plots were analyzed successfully.\033[0m\n")
-					notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", errorMessages.String()))
-				}
+			} else {
+				notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nSuccessful forest analysis!\n - Forest: %s\n - Model: %s\n - Date: %s\n - Plots: %d\n - Processing time: %s", forest, selectedModel, endDate.Format("2006-01-02"), len(plotIDs), elapsedTime.String()))
 			}
 		case 3:
 			fmt.Println("\033[33m\nWarning:\033[0m")
