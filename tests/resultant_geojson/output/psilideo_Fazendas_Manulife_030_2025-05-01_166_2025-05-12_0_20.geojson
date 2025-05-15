@@ -1,0 +1,7509 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56709243344611,
+          -20.376562005020585
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161343740675188
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56608641834021,
+          -20.376319122686834
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161428234434517
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56702553357056,
+          -20.37802322494464
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00025391019955978936
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56620591075212,
+          -20.37803528886764
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125411917798776
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56620591075212,
+          -20.37803528886764
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578389
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567448175574185,
+          -20.376041390853267
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56491957635826,
+          -20.377367044186553
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8148154165851118
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56491957635826,
+          -20.377367044186553
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434975831832
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5736110033823,
+          -20.37964407113492
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004114270839797143
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5736110033823,
+          -20.37964407113492
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8150586058022546
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570006615517215,
+          -20.376519081770535
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003722328077209931
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56709669846141,
+          -20.376819630790482
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412532642189
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567576214596585,
+          -20.378272805824135
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567576214596585,
+          -20.378272805824135
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.81614349768676
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567732755454514,
+          -20.37672437013908
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412384536208
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.569770414845586,
+          -20.37875585964975
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254124811911823
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.569770414845586,
+          -20.37875585964975
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57050181727007,
+          -20.378916871117646
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125070168716
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57050181727007,
+          -20.378916871117646
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000373164257726452
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575164891835016,
+          -20.379964711794695
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575164891835016,
+          -20.379964711794695
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977569052
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57543810097649,
+          -20.37996067652174
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5723160811231,
+          -20.37846063681003
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004123949197026484
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57662200649331,
+          -20.379943185404155
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004076967945524963
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566200225682394,
+          -20.377691787646352
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125410581724766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.574799186694264,
+          -20.379884216790757
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254087558673395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57132429034799,
+          -20.3790765364129
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004123367258543367
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57132429034799,
+          -20.3790765364129
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8068037943566092
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57677131989036,
+          -20.37796537844749
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00021562650721316672
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57250106880995,
+          -20.378629699584735
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00031964103633830033
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57452597754971,
+          -20.379888251048797
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.574249916599285,
+          -20.37972053539593
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57452597754971,
+          -20.379888251048797
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56693588608587,
+          -20.37811044082419
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434959637032
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56693588608587,
+          -20.37811044082419
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578418
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567115180954644,
+          -20.377936009028993
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004103792946229538
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5662799245214,
+          -20.377003444986215
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161429598748786
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56940471407234,
+          -20.3786753527019
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412540867889891
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56940471407234,
+          -20.3786753527019
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7863853471507517
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567758353134366,
+          -20.37827012382426
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567758353134366,
+          -20.37827012382426
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578418
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57598737275698,
+          -20.380124353938907
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977575083
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564377423303476,
+          -20.377632706683645
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041251874223777445
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564377423303476,
+          -20.377632706683645
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57598737275698,
+          -20.380124353938907
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161358033890649
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567641687094714,
+          -20.37672571105222
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412384536208
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57030259537909,
+          -20.377889055793926
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254124826273984
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568370233768405,
+          -20.37671498241868
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003336184684860147
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56563960220382,
+          -20.37684107449224
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002495720716373201
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57342743867232,
+          -20.379560884617444
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57342743867232,
+          -20.379560884617444
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56781102540283,
+          -20.375950152277014
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041242460282678805
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57104965783771,
+          -20.378994690111032
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161262610919734
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57104965783771,
+          -20.378994690111032
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434976884503
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564822825601986,
+          -20.377024882052474
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564822825601986,
+          -20.377024882052474
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977576822
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57205569515548,
+          -20.379237541014632
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57205569515548,
+          -20.379237541014632
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56456098189165,
+          -20.37771590352125
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568257831342926,
+          -20.37542819591304
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254124286223883
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568257831342926,
+          -20.37542819591304
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8120834801231446
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56809418437782,
+          -20.37654725563294
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004025130946590571
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57186643363647,
+          -20.378810853067904
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124033239882599
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56775977529716,
+          -20.378355999020076
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125374913995574
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56836596666249,
+          -20.37645735690384
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8159937996689843
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56684623850058,
+          -20.378197656667638
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56684623850058,
+          -20.378197656667638
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56573067077473,
+          -20.376839734616702
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002495720716373201
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5740378379045,
+          -20.377919854288635
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00040416330878157255
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56718776691538,
+          -20.37681829015585
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412532642189
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57086894286027,
+          -20.37908325061616
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434794766697
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565565584083274,
+          -20.37787291856722
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412530649616
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565565584083274,
+          -20.37787291856722
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57249964400207,
+          -20.378543824712263
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00031964103633830033
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57580523322345,
+          -20.380127044762364
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412528523275
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56473743847404,
+          -20.377369723109798
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002405157120480677
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57150785359029,
+          -20.379159725333956
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125373097253755
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56834889889708,
+          -20.375426854759922
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254124286223883
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56834889889708,
+          -20.375426854759922
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8120834801231446
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57187355609831,
+          -20.379240227622045
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57187355609831,
+          -20.379240227622045
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56901767102505,
+          -20.377306718241037
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7924470146749218
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5650163276265,
+          -20.377709206209087
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003655943943569826
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56867473609168,
+          -20.378600211510054
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56657160912032,
+          -20.378115802876977
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578447
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56657160912032,
+          -20.378115802876977
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56892660241554,
+          -20.377308059861374
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7924470146749218
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56828058779275,
+          -20.37680219883979
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003336184684860147
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56867473609168,
+          -20.378600211510054
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566181750013335,
+          -20.376575408573366
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540800019
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573702073026865,
+          -20.37964272692265
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041206837346041236
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573702073026865,
+          -20.37964272692265
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161351041633688
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56509887298794,
+          -20.37719261430249
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8006532116732428
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56509887298794,
+          -20.37719261430249
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434807678684
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57178248655873,
+          -20.37924157085458
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57686238832247,
+          -20.377964032691576
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00021562650721316672
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576698804034834,
+          -20.37908309381669
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7873839009024532
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57562166701036,
+          -20.380043860749737
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004102436656061686
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57562166701036,
+          -20.380043860749737
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160766110049312
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576624860893205,
+          -20.380114934562133
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540919626
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576624860893205,
+          -20.380114934562133
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041227677761210827
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570572954548815,
+          -20.37771327850547
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125322119276
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57003792923605,
+          -20.378408332896214
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254119276411185
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56967934543947,
+          -20.3787572017541
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254124811911823
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56967934543947,
+          -20.3787572017541
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56675374761772,
+          -20.378113121945475
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125397005315
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56675374761772,
+          -20.378113121945475
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004123281772874868
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56885687485635,
+          -20.378597528322324
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.5167406679466565
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57204999676891,
+          -20.378894041422395
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412520788054
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57662343368959,
+          -20.380029059983617
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161417441406957
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575985945905515,
+          -20.380038479317264
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254113618946974
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56684481685545,
+          -20.378111781408556
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434959637032
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56684481685545,
+          -20.378111781408556
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578418
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56465205105323,
+          -20.377714564153706
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575977384950804,
+          -20.379523231567646
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253696767753003
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56753782168146,
+          -20.375954174850673
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57214676467307,
+          -20.379236197639756
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254122935981537
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57214676467307,
+          -20.379236197639756
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56483276885985,
+          -20.377626009876604
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56815396455383,
+          -20.37465666021148
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412537610180154
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568673313403906,
+          -20.378514336378476
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568673313403906,
+          -20.378514336378476
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57321251959544,
+          -20.3775884517626
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541252567
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56815396455383,
+          -20.37465666021148
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575419556594305,
+          -20.378844305862156
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003624637726604766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57041074782189,
+          -20.378918213613872
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977564181
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56581037174385,
+          -20.376151391934563
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004121239304847371
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57687095150304,
+          -20.37847928017311
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434972387777
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576424169695706,
+          -20.379001256295563
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125367179165898
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57534703127,
+          -20.379962021660177
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576260582002234,
+          -20.380120317347846
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576260582002234,
+          -20.380120317347846
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57141678407174,
+          -20.379161068370543
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.815492380253787
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5759759581507,
+          -20.379437356939416
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125411170037
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56744675375972,
+          -20.375955515613676
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57240715016597,
+          -20.37845929334816
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004123949197026484
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56627281838951,
+          -20.376574068431577
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540800019
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57434241215944,
+          -20.379805065581607
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7871158516360413
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566480539860656,
+          -20.378117143271552
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578447
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566480539860656,
+          -20.378117143271552
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57204429849955,
+          -20.378550541815116
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6556659589535028
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57204429849955,
+          -20.378550541815116
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8148293604058968
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56904043648809,
+          -20.378680720050873
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160158762437613
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56635820178319,
+          -20.376229227006277
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541250086002
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5701361159115,
+          -20.378836365788334
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5701361159115,
+          -20.378836365788334
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57686381550088,
+          -20.37804990727419
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00026845411420683003
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56492099688127,
+          -20.37745291958292
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8119791429247355
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56492099688127,
+          -20.37745291958292
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977577664
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56753924354623,
+          -20.376040050084125
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56672531725612,
+          -20.376395616443947
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124366044024036
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576262009011955,
+          -20.380206191950077
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576262009011955,
+          -20.380206191950077
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57376320660154,
+          -20.377838012189354
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.793303512654022
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5766859598062,
+          -20.378310222530033
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004121431246873518
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56885687485635,
+          -20.378597528322324
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.816143497757836
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57096001237247,
+          -20.379081907870404
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434794766697
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57141535982357,
+          -20.379075193429905
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004123367258543367
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57167432461836,
+          -20.378212414922643
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254080778829494
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56799458329677,
+          -20.37603334552679
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412108956846
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57671450334368,
+          -20.380027714174727
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161417441406957
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57195892744521,
+          -20.378895384725222
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412520788054
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.576067027504,
+          -20.379436011505792
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125411170037
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56721193743329,
+          -20.378278169254525
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578157
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57678130994126,
+          -20.378566500549113
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004122546844975877
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57678130994126,
+          -20.378566500549113
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6185258906450468
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57075224446426,
+          -20.377538843447663
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412538082979
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57341746108551,
+          -20.378959760993418
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977575867
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56464210844847,
+          -20.3771134362503
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8152338023854104
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575530597268234,
+          -20.38004520598923
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004102436656061686
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57606845435441,
+          -20.37952188612786
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253696767753003
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575530597268234,
+          -20.38004520598923
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160766110049312
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57195465388311,
+          -20.378637760002725
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.5297033478419735
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571051081877336,
+          -20.379080565077203
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434794766697
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57551062563948,
+          -20.37884296075633
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003624637726604766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56491389433924,
+          -20.377023542591658
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56491389433924,
+          -20.377023542591658
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977576822
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57550777266702,
+          -20.378671211422308
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254117221116535
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571598923101526,
+          -20.379158382249916
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125373097253755
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57046195578907,
+          -20.376512370624337
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6590398897028812
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56700136513573,
+          -20.37656334558935
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161343740675188
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575620240367456,
+          -20.37995798610252
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7484424446028115
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56629129471247,
+          -20.377690447424797
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125410581724766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57141535982357,
+          -20.379075193429905
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8068037943566092
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575529170675644,
+          -20.37995933133585
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7484424446028115
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56721193743329,
+          -20.378278169254525
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57095858838315,
+          -20.37899603289809
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161262610919734
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57095858838315,
+          -20.37899603289809
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434976884503
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56727741358237,
+          -20.37673107423037
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8157615286614199
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57660916205701,
+          -20.379170314146666
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125362747808457
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571865009166075,
+          -20.37872497815426
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125399958947446
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56818240808632,
+          -20.376374164124265
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412534480303
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56565665326511,
+          -20.377871578665506
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125381660240421
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56473317725063,
+          -20.377112096878243
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8152338023854104
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510171421326,
+          -20.377364365073525
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125383607796
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568091339964276,
+          -20.37637550525006
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412534480303
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566662678372666,
+          -20.378114462434947
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125397005315
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566662678372666,
+          -20.378114462434947
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004123281772874868
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57607701561096,
+          -20.38003713384052
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254113618946974
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57677274701848,
+          -20.37805125303626
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00026845411420683003
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57607844251273,
+          -20.380123008456007
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977575083
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564915314833044,
+          -20.377109417991793
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434221506331
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570128998411676,
+          -20.378406990626658
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254119276411185
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572697456548084,
+          -20.379485760949194
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124816966319461
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572697456548084,
+          -20.379485760949194
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56920265400378,
+          -20.377475785072843
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004122312328464682
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567024111839444,
+          -20.377937349695973
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004103792946229538
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.569222575294845,
+          -20.378678036471282
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160158762437613
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56584021267672,
+          -20.377954774049147
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541165121003
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56584021267672,
+          -20.377954774049147
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56913150589512,
+          -20.3786793782848
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160158762437613
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56817956360143,
+          -20.37620241374989
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6940822436745395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57022718533133,
+          -20.3788350234406
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57022718533133,
+          -20.3788350234406
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5720457230559,
+          -20.378636416718344
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.5297033478419735
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.574968489866635,
+          -20.379108654784424
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8132026559312365
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57597453135793,
+          -20.379351482310252
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125411629663
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57047619137348,
+          -20.37737112088509
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540763993
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56693730778131,
+          -20.378196316077133
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56693730778131,
+          -20.378196316077133
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57668881402786,
+          -20.37848197171143
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412538074301
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56827205390466,
+          -20.376286947770442
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412537177545553
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567116602736064,
+          -20.378021884271526
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00025391019955978936
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565743459424766,
+          -20.377612612704116
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8144314634481873
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56894794422772,
+          -20.37859618665729
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.5167406679466565
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56894794422772,
+          -20.37859618665729
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.816143497757836
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57114072728495,
+          -20.37899334727653
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041095608813704755
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56565239040114,
+          -20.377613952634874
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8144314634481873
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565470252332,
+          -20.37761663235404
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041112313742654194
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57287959577522,
+          -20.379483073450796
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124816966319461
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57287959577522,
+          -20.379483073450796
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5647431202075,
+          -20.377713224738724
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575512052136716,
+          -20.378928835421938
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003624637726604766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501490703127,
+          -20.37762333082167
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6926876992079324
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57114215137487,
+          -20.379079222236548
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56702837705473,
+          -20.378194975439186
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56702837705473,
+          -20.378194975439186
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501490703127,
+          -20.37762333082167
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434975038463
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568764382739595,
+          -20.37851299481448
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568764382739595,
+          -20.37851299481448
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501064528941,
+          -20.377365704653766
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540055101
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57671735785887,
+          -20.380199463318505
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434356801132
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57671735785887,
+          -20.380199463318505
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977570763
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57489025639444,
+          -20.379882871943177
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254087558673395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57660773493411,
+          -20.379084439557804
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7873839009024532
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570639821012215,
+          -20.376252060774092
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125365839886
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57662628810416,
+          -20.38020080913972
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434356801132
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57662628810416,
+          -20.38020080913972
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977570763
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501348644335,
+          -20.37753745543331
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57534845776197,
+          -20.380047896325873
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254122632282294
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57534845776197,
+          -20.380047896325873
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56955412111475,
+          -20.376697541913266
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161410398360159
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570045046484346,
+          -20.378837708088618
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575329913938425,
+          -20.378931525598457
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003624637726604766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56599961323908,
+          -20.376578088714613
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977577925
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56572924985014,
+          -20.376753859268963
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002495720716373201
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501064528941,
+          -20.377365704653766
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125383607796
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567668705981625,
+          -20.378357340049874
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125374913995574
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56537918328646,
+          -20.377617972142456
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041112313742654194
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56817814136996,
+          -20.3761165385613
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125408172397
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57196462563056,
+          -20.379238884342065
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57385427517506,
+          -20.37783666801143
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.793303512654022
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5650092247234,
+          -20.37727982926258
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8006532116732428
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5650092247234,
+          -20.37727982926258
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434807678684
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57055302382148,
+          -20.376511028252768
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6590398897028812
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57066117584289,
+          -20.37754018598788
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412538082979
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56608783942945,
+          -20.37640499801474
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161428234434517
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5641938648946,
+          -20.377549509630793
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5641938648946,
+          -20.377549509630793
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57286107027603,
+          -20.37836670047739
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125399090556
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572421397998085,
+          -20.379318042101524
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572421397998085,
+          -20.379318042101524
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565561321370225,
+          -20.37761529251818
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041112313742654194
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57477922090512,
+          -20.378681970841882
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003917122811046372
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565454623500024,
+          -20.37667200336776
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7594188640241963
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571865009166075,
+          -20.37872497815426
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253641178280395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565012065862724,
+          -20.377451580044
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565012065862724,
+          -20.377451580044
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570685379975544,
+          -20.37900006097457
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160990700975358
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510171421326,
+          -20.377364365073525
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540055101
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56538344569769,
+          -20.377875598228297
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57671593059761,
+          -20.38011358874708
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540919626
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57671593059761,
+          -20.38011358874708
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041227677761210827
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564915314833044,
+          -20.377109417991793
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7623512913093644
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57607844251273,
+          -20.380123008456007
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161358033890649
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56500780416469,
+          -20.377193953870464
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8006532116732428
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56500780416469,
+          -20.377193953870464
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434807678684
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57470811698675,
+          -20.379885561590882
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57470811698675,
+          -20.379885561590882
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510029359695,
+          -20.37727848968848
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8006532116732428
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510029359695,
+          -20.37727848968848
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434807678684
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575328487541796,
+          -20.378845650920535
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003624637726604766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572148189338336,
+          -20.379322072529305
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5735199337304,
+          -20.379645415299745
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004114270839797143
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570592886710934,
+          -20.37891552857398
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125070168716
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570592886710934,
+          -20.37891552857398
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000373164257726452
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56809276216739,
+          -20.376461380441967
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412534480303
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56745244106146,
+          -20.376299016566403
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253173098903075
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575073822106525,
+          -20.379966056790785
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041186867955172497
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565732091706614,
+          -20.37692560996351
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00035648951511586596
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56931364468725,
+          -20.378676694610313
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412540867889891
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56931364468725,
+          -20.378676694610313
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7863853471507517
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57659489115821,
+          -20.378311568215704
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004121431246873518
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568274898504775,
+          -20.37645869813066
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8159937996689843
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567183501749184,
+          -20.376560664404373
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161343740675188
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57114215137487,
+          -20.379079222236548
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412522173722
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5645553005606,
+          -20.377372401843264
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002405157120480677
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567118024524795,
+          -20.378107759513117
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253290580272234
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567118024524795,
+          -20.378107759513117
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434952242781
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56748514531674,
+          -20.378274146752904
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.81614349768676
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571233220865096,
+          -20.379077879348444
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412522173722
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571233220865096,
+          -20.379077879348444
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56711944632084,
+          -20.37819363475379
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56711944632084,
+          -20.37819363475379
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568183830339734,
+          -20.376460039310032
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412534480303
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570220067579996,
+          -20.378405648309656
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254119276411185
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57532563477054,
+          -20.37867390156188
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254117221116535
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5704818858122,
+          -20.37771462096309
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125322119276
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57487028990102,
+          -20.3786806260805
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003917122811046372
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5662969799834,
+          -20.37803394862154
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125411917798776
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5662969799834,
+          -20.37803394862154
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578389
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56837165615167,
+          -20.37680085758841
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003336184684860147
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5731428280819,
+          -20.378877918087515
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540879275
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568124052486176,
+          -20.378350634426408
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434860386175
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56637099314176,
+          -20.3770021047663
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161429598748786
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567394076029565,
+          -20.378275487634223
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501774822904,
+          -20.37779508159558
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125189665164
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501774822904,
+          -20.37779508159558
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041249476772295054
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5746170472719,
+          -20.379886906343565
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5746170472719,
+          -20.379886906343565
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565931281886925,
+          -20.37795343399896
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541165121003
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56883553379871,
+          -20.377309401434267
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7924470146749218
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56781244741849,
+          -20.37603602749204
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412108956846
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57670023120804,
+          -20.379168968399387
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125362747808457
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57606560066092,
+          -20.379350136882785
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125411629663
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57397528191659,
+          -20.379638694001137
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8035576899641815
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572604961992084,
+          -20.379401229770302
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254061002261806
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572604961992084,
+          -20.379401229770302
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.34121154342334875
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57415884694839,
+          -20.379721879899048
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57039366423095,
+          -20.37788771341891
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254124826273984
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5651045554678,
+          -20.377536115840805
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125369109395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56428493398479,
+          -20.3775481704653
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56428493398479,
+          -20.3775481704653
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56428635417029,
+          -20.377634045902713
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56428635417029,
+          -20.377634045902713
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5717653935616,
+          -20.378211071811354
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254080778829494
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.569768991539526,
+          -20.378669984593767
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412531150138
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.569768991539526,
+          -20.378669984593767
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578418
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510739675156,
+          -20.37770786660432
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003655943943569826
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57077644945207,
+          -20.37899871832985
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160990700975358
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5749827523707,
+          -20.37996740173942
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041186867955172497
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568062897437684,
+          -20.374658001214456
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412537610180154
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568062897437684,
+          -20.374658001214456
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572592137938784,
+          -20.378628356015675
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00031964103633830033
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57222928604378,
+          -20.378719604897235
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00029077006992265695
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568306191036804,
+          -20.378347951844887
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977559686
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565474514894134,
+          -20.377874258421482
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412530649616
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565474514894134,
+          -20.377874258421482
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56638947059368,
+          -20.378118483618685
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56663424901709,
+          -20.376396956810673
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124366044024036
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56482424604548,
+          -20.37711075745874
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7623512913093644
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56482424604548,
+          -20.37711075745874
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434221506331
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56836312196178,
+          -20.37628560655591
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412537177545553
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57543952751877,
+          -20.380046551181273
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254122632282294
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57543952751877,
+          -20.380046551181273
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56599677113927,
+          -20.37640633804937
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161428234434517
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57443348184597,
+          -20.379803720977435
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7871158516360413
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57406635153183,
+          -20.379637349599076
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8035576899641815
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568765805477675,
+          -20.378598869939914
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568765805477675,
+          -20.378598869939914
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570843313078306,
+          -20.37753750086001
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412538082979
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57589487619273,
+          -20.380039824746557
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8103162428955569
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568088495579985,
+          -20.376203754863404
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6940822436745395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57659774527927,
+          -20.37848331740942
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412538074301
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57671307609709,
+          -20.379941839601425
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004076967945524963
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565105976106025,
+          -20.37762199122303
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6926876992079324
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565105976106025,
+          -20.37762199122303
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434975038463
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57677988276912,
+          -20.378480625965995
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434972387777
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57132571454585,
+          -20.37916241135969
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.815492380253787
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57031967836639,
+          -20.378919556062637
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977564181
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.574039263516234,
+          -20.37800572906308
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00040416330878157255
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567667283869135,
+          -20.378271464847924
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565103134836875,
+          -20.377450240457634
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567667283869135,
+          -20.378271464847924
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578418
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565103134836875,
+          -20.377450240457634
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57394676929534,
+          -20.377921198567602
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00040416330878157255
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56836454430848,
+          -20.376371481730352
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8159937996689843
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57580380647261,
+          -20.3800411701284
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8103162428955569
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570045046484346,
+          -20.378837708088618
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57617093922057,
+          -20.380207537534037
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57617093922057,
+          -20.380207537534037
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568185252600465,
+          -20.376545914494866
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004025130946590571
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57196462563056,
+          -20.379238884342065
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56858224406089,
+          -20.378515677895024
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434888877857
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56790351536129,
+          -20.376034686533135
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412108956846
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56492383794921,
+          -20.377624670372857
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56736848197142,
+          -20.376729733507
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8157615286614199
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56538344569769,
+          -20.377875598228297
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412530649616
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567543509184404,
+          -20.37629767577884
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253173098903075
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56482992789251,
+          -20.3774542590744
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8119791429247355
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56482992789251,
+          -20.3774542590744
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977577664
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575420983041234,
+          -20.37893018053392
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003624637726604766
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5735199337304,
+          -20.379645415299745
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8150586058022546
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565641023085405,
+          -20.376926949845185
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00035648951511586596
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564922417411594,
+          -20.377538794978364
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412524024471
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564922417411594,
+          -20.377538794978364
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254016080202987
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56599535010032,
+          -20.376320462715327
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161428234434517
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5683901477997,
+          -20.377917234709454
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434152061834
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56618885589374,
+          -20.377004785158682
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161429598748786
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57267893235682,
+          -20.378369387815834
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125399090556
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56636388675836,
+          -20.376572728242348
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540800019
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571226100237176,
+          -20.378648504569686
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254036660616836
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571773939928335,
+          -20.37872632134989
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00040372333203546876
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56748514531674,
+          -20.378274146752904
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5765152387608,
+          -20.3789999106555
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125367179165898
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571025450284445,
+          -20.377534815542365
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125399436096
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568279165459785,
+          -20.37671632366392
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003336184684860147
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56967792218371,
+          -20.37867132669197
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412531150138
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56967792218371,
+          -20.37867132669197
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578418
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57185646249751,
+          -20.378209728652617
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254080778829494
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575059559099394,
+          -20.379107309897357
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8132026559312365
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57616951226115,
+          -20.380121662925653
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57616951226115,
+          -20.380121662925653
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57213821683535,
+          -20.378720948282666
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00029077006992265695
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57204714761958,
+          -20.37872229162064
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253641178280395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57204714761958,
+          -20.37872229162064
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125399958947446
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5725907130806,
+          -20.378542481149353
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00031964103633830033
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57278852616532,
+          -20.37948441722372
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124816966319461
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57278852616532,
+          -20.37948441722372
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56464636952097,
+          -20.377371062500256
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002405157120480677
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56473601805893,
+          -20.377283847700213
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002405157120480677
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56730300673509,
+          -20.3782768284681
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578157
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56730300673509,
+          -20.3782768284681
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56849117471057,
+          -20.37851701936413
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8049529850681812
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56849117471057,
+          -20.37851701936413
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434888877857
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56885545206797,
+          -20.37851165320303
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254121754562197
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56885545206797,
+          -20.37851165320303
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8093601007170131
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56946305290123,
+          -20.37669888377526
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161410398360159
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5691115853083,
+          -20.377477126800354
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004122312328464682
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573973856215886,
+          -20.379552819238395
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540471134
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57169141701185,
+          -20.37924291403967
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57186785811419,
+          -20.378896727980607
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412520788054
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56785084460538,
+          -20.378354657942825
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434957019051
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56785084460538,
+          -20.378354657942825
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.7816356208180293
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57113503099847,
+          -20.37864984742704
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254036660616836
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573336369056065,
+          -20.379562228681213
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573336369056065,
+          -20.379562228681213
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56745101922506,
+          -20.376213141329636
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412535005191
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568299078786865,
+          -20.377918576040678
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434152061834
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575416703722446,
+          -20.378672556515813
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254117221116535
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.574064925780824,
+          -20.379551474842486
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540471134
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567394076029565,
+          -20.378275487634223
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578157
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.565931281886925,
+          -20.37795343399896
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57260353706796,
+          -20.37931535491243
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00023705957369192106
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5651045554678,
+          -20.377536115840805
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.566090681629866,
+          -20.37657674866771
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977577925
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57021722053069,
+          -20.378233898250695
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125355893254375
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56638947059368,
+          -20.378118483618685
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578447
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570457685256486,
+          -20.37625474552778
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125365839886
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56808707339881,
+          -20.376117879668666
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125408172397
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57277000132009,
+          -20.378368044170333
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125399090556
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57589487619273,
+          -20.380039824746557
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041251512180182347
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56464494915617,
+          -20.37728518708454
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002405157120480677
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57580380647261,
+          -20.3800411701284
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041251512180182347
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56501348644335,
+          -20.37753745543331
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125369109395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56858224406089,
+          -20.378515677895024
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8049529850681812
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57312145112152,
+          -20.37758979558995
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541252567
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570567259908884,
+          -20.377369778452056
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540763993
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56894652138904,
+          -20.378510311544137
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254121754562197
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5725138924105,
+          -20.379402573394724
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254061002261806
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56894652138904,
+          -20.378510311544137
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8093601007170131
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5725138924105,
+          -20.379402573394724
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.34121154342334875
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57150358071685,
+          -20.378902100527664
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541254112852
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56702695530899,
+          -20.37810910019238
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253290580272234
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56702695530899,
+          -20.37810910019238
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434952242781
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57323389731035,
+          -20.378876574167865
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412540879275
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571957502917186,
+          -20.378809509818666
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124033239882599
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56790209329533,
+          -20.375948811324246
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041242460282678805
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568216544186775,
+          -20.37843516832354
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412089105946
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568216544186775,
+          -20.37843516832354
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8147492762189061
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568273476201064,
+          -20.37637282295103
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8159937996689843
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57233032845216,
+          -20.379319385624903
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57233032845216,
+          -20.379319385624903
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57204857219058,
+          -20.378808166521985
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004124033239882599
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510881740439,
+          -20.377793741984675
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125189665164
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56510881740439,
+          -20.377793741984675
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041249476772295054
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56799316118052,
+          -20.375947470324036
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041242460282678805
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570548753138006,
+          -20.376253403174662
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125365839886
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57195607839649,
+          -20.378723634911175
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041253641178280395
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57195607839649,
+          -20.378723634911175
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125399958947446
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57251246753669,
+          -20.3793166985307
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00023705957369192106
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56999095998613,
+          -20.375574456037157
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161433571193394
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57332639182141,
+          -20.378961105014117
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977575867
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56999095998613,
+          -20.375574456037157
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161382603380893
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564195285029804,
+          -20.377635385074345
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.564195285029804,
+          -20.377635385074345
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57589630299388,
+          -20.38012569937436
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412528523275
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575712736745146,
+          -20.380042515462797
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004102436656061686
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575712736745146,
+          -20.380042515462797
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8160766110049312
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567005630000125,
+          -20.37682097137766
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412532642189
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.568397260301154,
+          -20.37834661048296
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977559686
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57687237872548,
+          -20.37856515475007
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004122546844975877
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571594650077174,
+          -20.378900757462073
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000412541254112852
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571682870683276,
+          -20.378727664498083
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00040372333203546876
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57687237872548,
+          -20.37856515475007
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6185258906450468
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56483134837253,
+          -20.377540134475975
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412524024471
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56483134837253,
+          -20.377540134475975
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254016080202987
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56574772243963,
+          -20.37787023871635
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125381660240421
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56563818132953,
+          -20.376755199138366
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002495720716373201
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573884212294004,
+          -20.37964003835576
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161351041633688
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.567542087297696,
+          -20.37621180054821
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125412535005191
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56989989246306,
+          -20.37557579805647
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161433571193394
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56989989246306,
+          -20.37557579805647
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161382603380893
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5648285074198,
+          -20.377368383671897
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8148154165851118
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5648285074198,
+          -20.377368383671897
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434975831832
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5645538802461,
+          -20.377286526421415
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0002405157120480677
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57240287595919,
+          -20.37820166870382
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000324314458482131
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.573884212294004,
+          -20.37964003835576
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041206837346041236
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57086751892127,
+          -20.378997375637695
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161262610919734
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57086751892127,
+          -20.378997375637695
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434976884503
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56803298319989,
+          -20.37835197564599
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434860386175
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570934381685035,
+          -20.377536158224913
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041254125399436096
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57123179672487,
+          -20.378992004394572
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041095608813704755
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.569915547440885,
+          -20.37652042385745
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0003722328077209931
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571953229377065,
+          -20.37855188509335
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.6556659589535028
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.571953229377065,
+          -20.37855188509335
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8148293604058968
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575255961556174,
+          -20.37996336675116
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.575255961556174,
+          -20.37996336675116
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977569052
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57231180706722,
+          -20.378203012147235
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.000324314458482131
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.572239258898904,
+          -20.379320729100826
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977578476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.57394819485677,
+          -20.378007073348208
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00040416330878157255
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56590143989776,
+          -20.376150052013223
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004121239304847371
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5737931426641,
+          -20.379641382662925
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.00041206837346041236
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.5737931426641,
+          -20.379641382662925
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161351041633688
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.56821512176515,
+          -20.378349293159374
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.8161434977559686
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.570126151462986,
+          -20.3782352405554
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "label": "Psilideo",
+        "probability": 0.0004125355893254375
+      },
+      "type": "Feature"
+    }
+  ]
+}

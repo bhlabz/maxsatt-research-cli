@@ -4,5 +4,6 @@ data/result/*
 data/final/*
 data/delta/*
 data/model/*
-tests/*
+tests/pest_spread/images/*
+tests/pest_spread/centroids/*
 .DS_Store
