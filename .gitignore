@@ -6,4 +6,6 @@ data/delta/*
 data/model/*
 tests/pest_spread/images/*
 tests/pest_spread/centroids/*
+tests/resultant_geojson/output/*
+tests/resultant_geojson/input/*
 .DS_Store
