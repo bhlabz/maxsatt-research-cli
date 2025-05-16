@@ -3,6 +3,7 @@ package sentinel
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"time"
@@ -14,6 +15,78 @@ import (
 
 type Bands struct {
 	NDMI, CLD, SCL, NDRE, PSRI, B02, B04, NDVI float64
+}
+
+func reprojectAutoUTM(inputPath, outputPath string) error {
+	// Register drivers and open source GeoTIFF
+	godal.RegisterAll()
+	ds, err := godal.Open(inputPath, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
+		if ec == godal.CE_Warning {
+			return nil
+		}
+		return fmt.Errorf("error opening dataset: %s", msg)
+	}))
+	if err != nil {
+		return err
+	}
+	defer ds.Close()
+
+	// Inspect current projection
+	sr := ds.SpatialRef()
+	defer sr.Close()
+
+	// Compute image center in source CRS
+	bounds, err := ds.Bounds()
+	if err != nil {
+		return err
+	}
+	centerX := (bounds[0] + bounds[2]) / 2.0
+	centerY := (bounds[1] + bounds[3]) / 2.0
+
+	// Transform to WGS84 lat/lon if needed
+	var lon, lat float64
+	if !sr.EPSGTreatsAsLatLong() {
+		dstSR, _ := godal.NewSpatialRefFromEPSG(4326)
+		defer dstSR.Close()
+		tr, _ := godal.NewTransform(sr, dstSR)
+		defer tr.Close()
+		xs := []float64{centerX}
+		ys := []float64{centerY}
+		err := tr.TransformEx(xs, ys, nil, nil)
+		if err != nil {
+			panic(err)
+		}
+		lon = xs[0]
+		lat = ys[0]
+	} else {
+		lon, lat = centerX, centerY
+	}
+
+	// Compute UTM zone/EPSG
+	zone := int(math.Floor((lon+180.0)/6.0)) + 1
+	var utmEPSG int
+	if lat >= 0 {
+		utmEPSG = 32600 + zone
+	} else {
+		utmEPSG = 32700 + zone
+	}
+	utmCode := fmt.Sprintf("EPSG:%d", utmEPSG)
+	// Reproject (warp) to UTM and save result
+	outDS, err := ds.Warp(outputPath,
+		[]string{"-t_srs", utmCode},
+		godal.CreationOption("TILED=YES", "COMPRESS=LZW"),
+		godal.GTiff, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
+			if ec == godal.CE_Warning {
+				return nil
+			}
+			return fmt.Errorf("error warp dataset: %s", msg)
+		}))
+	if err != nil {
+		return err
+	}
+	defer outDS.Close()
+
+	return nil
 }
 
 func getIndexesFromImage(ds *godal.Dataset) (map[string][][]float64, error) {
@@ -193,13 +266,18 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			}
 		}
 
-		permanentFileName := filepath.Join(imagePath, fmt.Sprintf("%s_%s_%s.tif", farm, plot, currentDate.Format("2006-01-02")))
-
-		if err := os.WriteFile(permanentFileName, imageBytes, 0644); err != nil {
+		permImageName := filepath.Join(imagePath, imageName)
+		tempImageName := imagePath + ".temp"
+		if err := os.WriteFile(tempImageName, imageBytes, 0644); err != nil {
 			return nil, fmt.Errorf("failed to write image file: %v", err)
 		}
+		defer os.Remove(tempImageName)
 
-		ds, err := godal.Open(permanentFileName, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
+		if err = reprojectAutoUTM(tempImageName, permImageName); err != nil {
+			return nil, fmt.Errorf("failed to reproject image: %v", err)
+		}
+
+		ds, err := godal.Open(permImageName, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
 			if ec == godal.CE_Warning {
 				return nil
 			}
@@ -209,6 +287,13 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			fmt.Println(err.Error())
 			return nil, err
 		}
+
+		// gt, _ := ds.GeoTransform()
+		// srs := ds.SpatialRef()
+		// wkt, _ := srs.WKT()
+
+		// fmt.Printf("GeoTransform: %+v\n", gt)
+		// fmt.Println("Projection:", wkt)
 
 		indexes, err := getIndexesFromImage(ds)
 		if err != nil {
@@ -231,8 +316,8 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 		if count == totalPixels {
 			imagesNotFound = append(imagesNotFound, imageName)
 			saveImagesNotFound(imagesNotFoundFile, imagesNotFound)
-			if err := os.Remove(permanentFileName); err != nil {
-				fmt.Printf("failed to delete image file %s: %v\n", permanentFileName, err)
+			if err := os.Remove(permImageName); err != nil {
+				fmt.Printf("failed to delete image file %s: %v\n", permImageName, err)
 			}
 			progressbar.Add(1)
 			continue

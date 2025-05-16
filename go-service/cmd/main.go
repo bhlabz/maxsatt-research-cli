@@ -64,11 +64,12 @@ func initCLI() {
 	for {
 		fmt.Println("\033[34m===================\033[0m")
 		fmt.Println("\033[34m1. Analyze pest infestation in a forest plot for a specific date\033[0m")
+		fmt.Println("\033[34m2. Analyze pest infestation in forest for a specific date\033[0m")
 		fmt.Println("\033[34m2. Analyze forest plot image indices over time\033[0m")
-		fmt.Println("\033[34m3. Create a new dataset\033[0m")
-		fmt.Println("\033[34m4. View the list of available forests\033[0m")
-		fmt.Println("\033[34m5. View the list of available forest plots\033[0m")
-		fmt.Println("\033[34m6. Exit the application\033[0m")
+		fmt.Println("\033[34m4. Create a new dataset\033[0m")
+		fmt.Println("\033[34m5. View the list of available forests\033[0m")
+		fmt.Println("\033[34m6. View the list of available forest plots\033[0m")
+		fmt.Println("\033[34m7. Exit the application\033[0m")
 		fmt.Println("\033[34mPlease enter your choice:\033[0m")
 
 		var choice int
@@ -179,6 +180,171 @@ func initCLI() {
 			fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s.jpeg\n Resultant geojson located at: %s.geojson\033[0m\n", outputFilePath, outputFilePath)
 			// notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nSuccessful analysis!\nResultant image located at: %s\nResultant geojson located at: %s", outputImageFilePath, outputGeoJsonFilePath))
 		case 2:
+			fmt.Println("\033[33m\nWarning:\033[0m")
+			fmt.Println("\033[33m- A '.geojson' file with the farm name should be present in data/geojsons folder.\033[0m")
+			fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
+			reader := bufio.NewReader(os.Stdin)
+
+			modelFolderPath := fmt.Sprintf("%s/data/model/", properties.RootPath())
+
+			modelFiles, err := os.ReadDir(modelFolderPath)
+			if err != nil {
+				fmt.Printf("\n\033[31mError reading model folder: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			if len(modelFiles) == 0 {
+				fmt.Printf("\n\033[31mNo models found in the model folder.\033[0m\n")
+				continue
+			}
+
+			fmt.Println("\033[32m\nAvailable models:\033[0m")
+			for i, file := range modelFiles {
+				fmt.Printf("\033[32m%d. %s\033[0m\n", i+1, file.Name())
+			}
+
+			fmt.Print("\033[34mEnter the number of the model you want to use: \033[0m")
+			var modelChoice int
+			_, err = fmt.Scan(&modelChoice)
+			if err != nil || modelChoice < 1 || modelChoice > len(modelFiles) {
+				fmt.Printf("\n\033[31mInvalid choice. Please select a valid model number.\033[0m\n")
+				continue
+			}
+
+			selectedModel := modelFiles[modelChoice-1].Name()
+			fmt.Printf("\033[32mYou selected the model: %s\033[0m\n", selectedModel)
+
+			fmt.Print("\033[34mEnter the forest name: \033[0m")
+			forest, _ := reader.ReadString('\n')
+			forest = strings.TrimSpace(forest)
+
+			fmt.Print("\033[34mEnter the date to be analyzed (YYYY-MM-DD):  \033[0m")
+			date, _ := reader.ReadString('\n')
+			date = strings.TrimSpace(date)
+			endDate, err := time.Parse("2006-01-02", date)
+			if err != nil {
+				continue
+			}
+
+			filePath := properties.RootPath() + "/data/geojsons/" + forest + ".geojson"
+			file, err := os.Open(filePath)
+			if err != nil {
+				fmt.Printf("\n\033[31mError opening file: %s\033[0m\n", err.Error())
+				continue
+			}
+			defer file.Close()
+
+			var geojsonData map[string]interface{}
+			decoder := json.NewDecoder(file)
+			err = decoder.Decode(&geojsonData)
+			if err != nil {
+				fmt.Printf("\n\033[31mError decoding GEOJSON: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			features, ok := geojsonData["features"].([]interface{})
+			if !ok {
+				fmt.Printf("\n\033[31mError: Invalid GEOJSON format.\033[0m\n")
+				continue
+			}
+
+			plotIDs := []string{}
+			for _, feature := range features {
+				featureMap, ok := feature.(map[string]interface{})
+				if !ok {
+					fmt.Printf("\n\033[31mError: Invalid feature format.\033[0m\n")
+					break
+				}
+				properties, ok := featureMap["properties"].(map[string]interface{})
+				if !ok {
+					fmt.Printf("\n\033[31mError: Invalid properties format.\033[0m\n")
+					break
+				}
+				plotID, ok := properties["plot_id"].(string)
+				if ok {
+					plotIDs = append(plotIDs, plotID)
+				}
+			}
+			if len(plotIDs) == 0 {
+				fmt.Printf("\n\033[31mNo plot IDs found in the GEOJSON file.\033[0m\n")
+				continue
+			}
+			fmt.Printf("\033[33mForest %s has %d plots that will be analyzed\n\033[0m", forest, len(plotIDs))
+			errs := []error{}
+			startTime := time.Now()
+			completed := 0
+			for _, plot := range plotIDs {
+				fmt.Printf("\033[32m\nStarting forest %s plot %s analysis\033[0m\n", forest, plot)
+				fmt.Printf("\033[32m\n- %d/%d \033[0m\n", completed, len(plotIDs))
+
+				result, err := delivery.EvaluatePlotFinalData(selectedModel, forest, plot, endDate)
+				if err != nil {
+					fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+					if !strings.Contains(err.Error(), "empty csv file given") {
+						// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+					}
+					errs = append(errs, err)
+					completed++
+					continue
+				}
+
+				imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
+
+				files, err := os.ReadDir(imageFolderPath)
+				if err != nil {
+					fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
+					// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError reading images folder: %s", err.Error()))
+
+					errs = append(errs, err)
+				}
+
+				if len(files) == 0 {
+					fmt.Printf("\n\033[31mNo tiff images found to create resultant image\033[0m\n")
+					// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
+					errs = append(errs, err)
+					completed++
+					continue
+				}
+
+				firstFileName := files[0].Name()
+				firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
+				resultPath := fmt.Sprintf("%s/data/result/%s/%s/final", properties.RootPath(), forest, plot)
+
+				err = os.MkdirAll(resultPath, os.ModePerm)
+				if err != nil {
+					log.Fatalf("Failed to create result folder: %v", err)
+				}
+
+				outputFilePath := fmt.Sprintf("%s/%s_%s_%s_%s", resultPath, forest, plot, endDate.Format("2006-01-02"), strings.TrimSuffix(selectedModel, ".csv"))
+
+				output.CreateFinalDataGeoJson(result, outputFilePath)
+
+				err = output.CreateFinalDataImage(result, firstFilePath, outputFilePath)
+				if err != nil {
+					fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
+					// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", err.Error()))
+					errs = append(errs, err)
+					completed++
+					continue
+				}
+
+				fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s.jpeg\n Resultant geojson located at: %s.geojson\033[0m\n", outputFilePath, outputFilePath)
+				completed++
+			}
+			endTime := time.Now()
+			elapsedTime := endTime.Sub(startTime)
+			if len(errs) > 0 {
+				errorMessages := strings.Builder{}
+				for _, err := range errs {
+					errorMessages.WriteString(fmt.Sprintf("- %s\n", err.Error()))
+				}
+				notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nErrors occurred during analysis:\n%s", errorMessages.String()))
+				fmt.Printf("\n\033[31mErrors occurred during analysis: %s\033[0m\n", errorMessages.String())
+
+			} else {
+				notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nSuccessful forest analysis!\n - Forest: %s\n - Model: %s\n - Date: %s\n - Plots: %d\n - Processing time: %s", forest, selectedModel, endDate.Format("2006-01-02"), len(plotIDs), elapsedTime.String()))
+			}
+		case 3:
 			fmt.Println("\033[33m\nWarning:\033[0m")
 			fmt.Println("\033[33m- A '.geojson' file with the farm name should be present in data/geojsons folder.\033[0m")
 			fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
@@ -304,7 +470,7 @@ func initCLI() {
 
 			}
 
-		case 3:
+		case 4:
 			fmt.Println("\033[33m\nWarning:\033[0m")
 			fmt.Println("\033[33mThe resultant dataset will be created at data/model folder\033[0m")
 			fmt.Println("\033[33mThe input data should be a '.csv' file present in data/training_input folder\n\033[0m")
@@ -332,7 +498,7 @@ func initCLI() {
 			}
 			fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
 			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s", outputDataFileName))
-		case 4:
+		case 5:
 			files, err := os.ReadDir(properties.RootPath() + "/data/geojsons")
 			if err != nil {
 				fmt.Printf("\n\033[31mError reading geojsons folder: %s\033[0m\n", err.Error())
@@ -348,7 +514,7 @@ func initCLI() {
 				}
 			}
 
-		case 5:
+		case 6:
 			fmt.Println("\033[33m\nWarning:\033[0m")
 			fmt.Println("\033[33mTo add a plot to a forest add the 'plot_id' property at the '.geojson' file from the forest fo your choice.\033[0m")
 			fmt.Println("\033[33mThe 'plot_id' property should be located at 'features[N]properties.plot_id'.\n\033[0m")
@@ -406,7 +572,7 @@ func initCLI() {
 			for _, plotID := range plotIDs {
 				fmt.Printf("\033[32m- %s\033[0m\n", plotID)
 			}
-		case 6:
+		case 7:
 			println("Exiting...")
 			return
 		default:

@@ -37,13 +37,27 @@ type PixelData struct {
 func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
 	geoTransform, err := dataset.GeoTransform()
 	if err != nil {
-		return 0, 0, fmt.Errorf("failed to retrieve GeoTransform: %w", err)
+		return 0, 0, fmt.Errorf("failed to get GeoTransform: %w", err)
 	}
 
-	lon := geoTransform[0] + float64(x)*geoTransform[1] + float64(y)*geoTransform[2]
-	lat := geoTransform[3] + float64(x)*geoTransform[4] + float64(y)*geoTransform[5]
+	xCoord := geoTransform[0] + geoTransform[1]*(float64(x)+0.5) + geoTransform[2]*(float64(y)+0.5)
+	yCoord := geoTransform[3] + geoTransform[4]*(float64(x)+0.5) + geoTransform[5]*(float64(y)+0.5)
 
-	return lat, lon, nil
+	// Transform to WGS84
+	srcSR := dataset.SpatialRef()
+	defer srcSR.Close()
+	dstSR, _ := godal.NewSpatialRefFromEPSG(4326) // WGS84
+	defer dstSR.Close()
+	tr, _ := godal.NewTransform(srcSR, dstSR)
+	defer tr.Close()
+
+	xs := []float64{xCoord}
+	ys := []float64{yCoord}
+	if err := tr.TransformEx(xs, ys, nil, nil); err != nil {
+		return 0, 0, fmt.Errorf("transform error: %w", err)
+	}
+
+	return ys[0], xs[0], nil
 }
 
 func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
@@ -60,7 +74,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	count := 0
 	sortedImageDates := getSortedKeys(images)
 	target := len(sortedImageDates) * width * height
-	progressBar := progressbar.Default(int64(target), "Creating delta dataset")
+	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 
 	var errGlobal error
 	for y := 0; y < height; y++ {
