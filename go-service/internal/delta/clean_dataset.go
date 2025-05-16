@@ -48,18 +48,11 @@ func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) (map[str
 	// Return the smoothed data
 	return convertFromProtobufList(resp.SmoothedData), nil
 }
-func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
-	groupedData := make(map[[2]int][]PixelData)
-
-	for _, data := range pixelDataset {
-		key := [2]int{data.X, data.Y}
-		groupedData[key] = append(groupedData[key], data)
-	}
-
+func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, error) {
 	var (
 		mu          sync.Mutex
-		newArray    []PixelData
-		progressBar = progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
+		cleanData   = make(map[[2]int][]PixelData)
+		progressBar = progressbar.Default(int64(len(pixelDataset)), "Cleaning dataset")
 	)
 
 	wp := workerpool.New(100)
@@ -72,7 +65,7 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 	errChan := make(chan error, 1)
 	var stopProcessing sync.Once
 
-	for _, data := range groupedData {
+	for _, data := range pixelDataset {
 		d := data // capture range variable
 		wp.Submit(func() {
 			var ndre, ndmi, psri, ndvi []float64
@@ -106,7 +99,7 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 			}
 
 			mu.Lock()
-			newArray = append(newArray, validData...)
+			cleanData[[2]int{d[0].X, d[0].Y}] = append(cleanData[[2]int{d[0].X, d[0].Y}], validData...)
 			progressBar.Add(1)
 			mu.Unlock()
 		})
@@ -123,8 +116,8 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 		return nil, fmt.Errorf("error during dataset cleaning: %v", err)
 	}
 
-	if len(newArray) == 0 {
+	if len(cleanData) == 0 {
 		return nil, fmt.Errorf("no valid data found after cleaning")
 	}
-	return newArray, nil
+	return cleanData, nil
 }

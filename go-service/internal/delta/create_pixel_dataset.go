@@ -60,7 +60,7 @@ func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
 	return ys[0], xs[0], nil
 }
 
-func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
+func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int][]PixelData, error) {
 	var width, height, totalPixels int
 
 	for _, imageData := range images {
@@ -70,7 +70,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 		break
 	}
 
-	fileResults := []PixelData{}
+	fileResults := make(map[[2]int][]PixelData)
 	count := 0
 	sortedImageDates := getSortedKeys(images)
 	target := len(sortedImageDates) * width * height
@@ -94,7 +94,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 						break
 					}
 					count++
-					fileResults = append(fileResults, *result)
+					fileResults[[2]int{x, y}] = append(fileResults[[2]int{x, y}], *result)
 				}
 				progressBar.Add(1)
 			}

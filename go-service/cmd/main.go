@@ -620,5 +620,14 @@ func main() {
 	}
 
 	properties.GrpcPort = port
-	initCLI()
+	// initCLI()
+
+	_, err = delivery.EvaluatePlotFinalData("166_2025-05-07_5_20.csv", "Fazendas_Manulife_Gema", "GMA-025", time.Now())
+	if err != nil {
+		fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
+		if !strings.Contains(err.Error(), "empty csv file given") {
+			// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
+		}
+	}
+
 }

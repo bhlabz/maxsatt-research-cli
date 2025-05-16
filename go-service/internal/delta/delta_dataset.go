@@ -3,7 +3,6 @@ package delta
 import (
 	"errors"
 	"fmt"
-	"sort"
 	"time"
 
 	"github.com/airbusgeo/godal"
@@ -26,28 +25,16 @@ type DeltaData struct {
 	Label          *string   `csv:"label"`
 }
 
-func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []PixelData) ([]DeltaData, error) {
-	// Sort the dataset by date
-	sort.Slice(clearDataset, func(i, j int) bool {
-		dateI := clearDataset[i].Date
-		dateJ := clearDataset[j].Date
-		return dateI.Before(dateJ)
-	})
-
-	groupedPixels := make(map[string][]PixelData)
-	for _, row := range clearDataset {
-		key := fmt.Sprintf("%d,%d", row.X, row.Y)
-		groupedPixels[key] = append(groupedPixels[key], row)
-	}
+func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int][]PixelData) ([]DeltaData, error) {
 
 	deltaDataset := []DeltaData{}
 	found := 0
 	notFound := 0
-	target := len(groupedPixels)
+	target := len(cleanDataset)
 
 	progressBar := progressbar.Default(int64(target), "Creating delta dataset")
 
-	for _, data := range groupedPixels {
+	for _, data := range cleanDataset {
 		if len(data) < 3 {
 			notFound++
 			progressBar.Add(1)
@@ -115,26 +102,26 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, clearDataset []Pixe
 	return deltaDataset, nil
 }
 
-func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) ([]PixelData, error) {
+func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int][]PixelData, error) {
 	pixelDataset, err := CreatePixelDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}
-	clearDataset, err := cleanDataset(pixelDataset)
+	cleanDataset, err := cleanDataset(pixelDataset)
 	if err != nil {
 		return nil, err
 	}
 
-	return clearDataset, nil
+	return cleanDataset, nil
 }
 
 func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaMin, deltaMax int) ([]DeltaData, error) {
-	clearDataset, err := CreateCleanDataset(farm, plot, images)
+	cleanDataset, err := CreateCleanDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}
 
-	deltaDataset, err := deltaDataset(farm, plot, deltaMin, deltaMax, clearDataset)
+	deltaDataset, err := deltaDataset(farm, plot, deltaMin, deltaMax, cleanDataset)
 	if err != nil {
 		return nil, err
 	}
