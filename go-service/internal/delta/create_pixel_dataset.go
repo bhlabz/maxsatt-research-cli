@@ -22,16 +22,19 @@ type Indexes struct {
 	B04   []float64
 	NDVI  []float64
 }
+
 type PixelData struct {
-	Date      time.Time `csv:"date"`
-	X         int       `csv:"x"`
-	Y         int       `csv:"y"`
-	Latitude  float64   `csv:"latitude"`
-	Longitude float64   `csv:"longitude"`
-	NDRE      float64   `csv:"ndre"`
-	NDMI      float64   `csv:"ndmi"`
-	PSRI      float64   `csv:"psri"`
-	NDVI      float64   `csv:"ndvi"`
+	Date               time.Time `csv:"date"`
+	X                  int       `csv:"x"`
+	Y                  int       `csv:"y"`
+	Latitude           float64   `csv:"latitude"`
+	Longitude          float64   `csv:"longitude"`
+	NDRE               float64   `csv:"ndre"`
+	NDMI               float64   `csv:"ndmi"`
+	PSRI               float64   `csv:"psri"`
+	NDVI               float64   `csv:"ndvi"`
+	Status             sentinel.PixelStatus
+	validPastNeighbors []PixelData
 }
 
 func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
@@ -132,18 +135,18 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 	}
 	bands := sentinel.GetBands(indexes, x, y)
 
-	if valid, _ := bands.Valid(); valid {
-		return &PixelData{
-			Date: date,
-			X:    x,
-			Y:    y,
-			NDRE: bands.NDRE,
-			NDMI: bands.NDMI,
-			PSRI: bands.PSRI,
-			NDVI: bands.NDVI,
-		}, nil
-	}
-	return nil, nil
+	pixelStatus := bands.Valid()
+	return &PixelData{
+		Date:   date,
+		X:      x,
+		Y:      y,
+		NDRE:   bands.NDRE,
+		NDMI:   bands.NDMI,
+		PSRI:   bands.PSRI,
+		NDVI:   bands.NDVI,
+		Status: pixelStatus,
+	}, nil
+
 }
 
 func getSortedKeys(m map[time.Time]*godal.Dataset) []time.Time {

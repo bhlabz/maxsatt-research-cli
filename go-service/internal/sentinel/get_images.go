@@ -16,6 +16,13 @@ import (
 type Bands struct {
 	NDMI, CLD, SCL, NDRE, PSRI, B02, B04, NDVI float64
 }
+type PixelStatus string
+
+var (
+	PixelStatusValid     PixelStatus = "valid"
+	PixelStatusInvalid   PixelStatus = "invalid"
+	PixelStatusTreatable PixelStatus = "treatable"
+)
 
 func reprojectAutoUTM(inputPath, outputPath string) error {
 	// Register drivers and open source GeoTIFF
@@ -174,23 +181,24 @@ func GetBands(indexes map[string][][]float64, x, y int) Bands {
 	}
 }
 
-func (bands Bands) Valid() (bool, string) {
+func (bands Bands) Valid() PixelStatus {
 	invalidConditions := []struct {
-		Condition bool
-		Reason    string
+		Condition   bool
+		PixelStatus PixelStatus
 	}{
-		{bands.CLD > 0, "Cloud value > 0"},
-		{bands.SCL == 2 || bands.SCL == 3 || bands.SCL == 8 || bands.SCL == 9 || bands.SCL == 10, "Invalid SCL [2,3,8,9,10]"},
-		{(bands.B04+bands.B02)/2 > 0.9, "High reflectance (bright surface)"},
-		{bands.PSRI == 0 && bands.NDVI == 0 && bands.NDMI == 0 && bands.NDRE == 0, "Null indices"},
+		{bands.CLD > 0, PixelStatusTreatable},
+		{bands.SCL == 2 || bands.SCL == 3 || bands.SCL == 10, PixelStatusInvalid},
+		{bands.SCL == 8 || bands.SCL == 9, PixelStatusTreatable},
+		{(bands.B04+bands.B02)/2 > 0.9, PixelStatusInvalid},
+		{bands.PSRI == 0 && bands.NDVI == 0 && bands.NDMI == 0 && bands.NDRE == 0, PixelStatusInvalid},
 	}
 
 	for _, condition := range invalidConditions {
 		if condition.Condition {
-			return false, condition.Reason
+			return condition.PixelStatus
 		}
 	}
-	return true, ""
+	return PixelStatusValid
 }
 
 // GetImages retrieves satellite images based on the given parameters
@@ -307,8 +315,8 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 		for y := 0; y < height; y++ {
 			for x := 0; x < width; x++ {
 				bands := GetBands(indexes, x, y)
-				valid, _ := bands.Valid()
-				if valid {
+				pixelStatus := bands.Valid()
+				if pixelStatus == PixelStatusValid {
 					count++
 				}
 			}

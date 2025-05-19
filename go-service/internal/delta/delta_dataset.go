@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"container/heap"
+
 	"github.com/airbusgeo/godal"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -100,6 +103,107 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2
 	}
 
 	return deltaDataset, nil
+}
+
+type PixelDataPriorityQueue []PixelData
+
+func (pq PixelDataPriorityQueue) Len() int { return len(pq) }
+
+func (pq PixelDataPriorityQueue) Less(i, j int) bool {
+	// Sort by the length of validPastNeighbors in descending order
+	return len(pq[i].validPastNeighbors) > len(pq[j].validPastNeighbors)
+}
+
+func (pq PixelDataPriorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+}
+
+func (pq *PixelDataPriorityQueue) Push(x interface{}) {
+	*pq = append(*pq, x.(PixelData))
+}
+
+func (pq *PixelDataPriorityQueue) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	*pq = old[0 : n-1]
+	return item
+}
+
+// NewPixelDataPriorityQueue initializes a new priority queue
+func NewPixelDataPriorityQueue() *PixelDataPriorityQueue {
+	pq := &PixelDataPriorityQueue{}
+	heap.Init(pq)
+	return pq
+}
+func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData {
+	/*
+	   - For each treatable pixel
+	   	- Search for most recent image where its a valid pixel
+	*/
+	pq := NewPixelDataPriorityQueue()
+	for k, v := range pixelDataset {
+		if len(v) == 0 || v[0].Status != sentinel.PixelStatusTreatable {
+			continue
+		}
+
+		var (
+			x, y       = k[0], k[1]
+			directions = [8][2]int{{x, y + 1},
+				{x, y - 1},
+				{x - 1, y},
+				{x + 1, y},
+				{x + 1, y + 1},
+				{x - 1, y + 1},
+				{x + 1, y - 1},
+				{x - 1, y - 1},
+			}
+			currentDateValidPixelsDirections = [][2]int{}
+		)
+		// Find directions with valid pixels for the currentDate
+		for _, direction := range directions {
+			if _, ok := pixelDataset[direction]; !ok {
+				continue
+			}
+			for _, pixel := range pixelDataset[direction] {
+				if pixel.Date.Equal(v[0].Date) {
+					if pixel.Status == sentinel.PixelStatusValid {
+						currentDateValidPixelsDirections = append(currentDateValidPixelsDirections, direction)
+						break
+					}
+				}
+			}
+		}
+
+		for i := 0; i < len(v); i++ {
+			if v[i].Status != sentinel.PixelStatusValid {
+				continue
+			}
+			mostRecentValidDate := v[i].Date
+
+			for _, direction := range currentDateValidPixelsDirections {
+				if _, ok := pixelDataset[direction]; !ok {
+					continue
+				}
+				for _, pixel := range pixelDataset[direction] {
+					if pixel.Date.Equal(mostRecentValidDate) {
+						if pixel.Status == sentinel.PixelStatusValid {
+							pixelDataset[k][0].validPastNeighbors = append(pixelDataset[k][i].validPastNeighbors, pixel)
+							break
+						}
+					}
+				}
+
+			}
+			if len(pixelDataset[k][0].validPastNeighbors) == 0 {
+				continue
+			}
+
+			pq.Push(pixelDataset[k][0])
+		}
+
+	}
+	return pixelDataset
 }
 
 func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int][]PixelData, error) {
