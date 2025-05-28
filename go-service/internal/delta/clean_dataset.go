@@ -7,6 +7,7 @@ import (
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/gammazero/workerpool"
 	"github.com/schollz/progressbar/v3"
 	"google.golang.org/grpc"
@@ -88,6 +89,10 @@ func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, 
 
 			validData := []PixelData{}
 			for i := range d {
+				if d[i].Status != sentinel.PixelStatusValid {
+					continue
+				}
+
 				if smoothed["ndmi"][i] == 0 || smoothed["psri"][i] == 0 || smoothed["ndre"][i] == 0 || smoothed["ndvi"][i] == 0 {
 					continue
 				}
