@@ -296,13 +296,6 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			return nil, err
 		}
 
-		// gt, _ := ds.GeoTransform()
-		// srs := ds.SpatialRef()
-		// wkt, _ := srs.WKT()
-
-		// fmt.Printf("GeoTransform: %+v\n", gt)
-		// fmt.Println("Projection:", wkt)
-
 		indexes, err := getIndexesFromImage(ds)
 		if err != nil {
 			return nil, err
@@ -316,7 +309,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			for x := 0; x < width; x++ {
 				bands := GetBands(indexes, x, y)
 				pixelStatus := bands.Valid()
-				if pixelStatus == PixelStatusValid {
+				if pixelStatus == PixelStatusValid || pixelStatus == PixelStatusTreatable {
 					count++
 				}
 			}

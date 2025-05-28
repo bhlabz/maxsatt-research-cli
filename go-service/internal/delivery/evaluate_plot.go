@@ -31,6 +31,9 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 
 	groupedData := make(map[time.Time][]delta.PixelData)
 	for _, pixel := range cleanDataset {
+		if len(pixel) == 0 {
+			continue
+		}
 		groupedData[pixel[0].Date] = append(groupedData[pixel[0].Date], pixel...)
 	}
 

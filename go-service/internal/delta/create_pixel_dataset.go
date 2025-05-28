@@ -24,17 +24,17 @@ type Indexes struct {
 }
 
 type PixelData struct {
-	Date               time.Time `csv:"date"`
-	X                  int       `csv:"x"`
-	Y                  int       `csv:"y"`
-	Latitude           float64   `csv:"latitude"`
-	Longitude          float64   `csv:"longitude"`
-	NDRE               float64   `csv:"ndre"`
-	NDMI               float64   `csv:"ndmi"`
-	PSRI               float64   `csv:"psri"`
-	NDVI               float64   `csv:"ndvi"`
-	Status             sentinel.PixelStatus
-	validPastNeighbors []PixelData
+	Date                               time.Time `csv:"date"`
+	X                                  int       `csv:"x"`
+	Y                                  int       `csv:"y"`
+	Latitude                           float64   `csv:"latitude"`
+	Longitude                          float64   `csv:"longitude"`
+	NDRE                               float64   `csv:"ndre"`
+	NDMI                               float64   `csv:"ndmi"`
+	PSRI                               float64   `csv:"psri"`
+	NDVI                               float64   `csv:"ndvi"`
+	Status                             sentinel.PixelStatus
+	historicalValidNeighborsDirections [][2]int
 }
 
 func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
@@ -73,17 +73,18 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 		break
 	}
 
-	fileResults := make(map[[2]int][]PixelData)
-	count := 0
+	historicalPixelDataset := make(map[[2]int][]PixelData)
 	sortedImageDates := getSortedKeys(images)
 	target := len(sortedImageDates) * width * height
 	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 
 	var errGlobal error
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			for _, date := range sortedImageDates {
-				image := images[date]
+	for _, date := range sortedImageDates {
+		pixelDataset := make(map[[2]int]PixelData)
+		treatablePixelsCount, invalidPixelsCount, validPixelsCount := 0, 0, 0
+		image := images[date]
+		for y := range height {
+			for x := range width {
 				result, err := getData(image, totalPixels, width, height, x, y, date)
 				if err != nil {
 					errGlobal = err
@@ -96,29 +97,50 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 						errGlobal = err
 						break
 					}
-					count++
-					fileResults[[2]int{x, y}] = append(fileResults[[2]int{x, y}], *result)
+					pixelDataset[[2]int{x, y}] = *result
+
+					switch result.Status {
+					case sentinel.PixelStatusTreatable:
+						treatablePixelsCount++
+					case sentinel.PixelStatusInvalid:
+						invalidPixelsCount++
+					case sentinel.PixelStatusValid:
+						validPixelsCount++
+					}
+
+					progressBar.Add(1)
 				}
-				progressBar.Add(1)
+				if errGlobal != nil {
+					break
+				}
 			}
 			if errGlobal != nil {
 				break
 			}
 		}
 		if errGlobal != nil {
-			break
+			continue
+		}
+
+		if validPixelsCount == 0 {
+			continue
+		}
+
+		for k, pixelData := range pixelDataset {
+			historicalPixelDataset[k] = append(historicalPixelDataset[k], pixelData)
 		}
 	}
+
 	progressBar.Finish()
 
 	if errGlobal != nil {
 		return nil, fmt.Errorf("error while creating pixel dataset: %w", errGlobal)
 	}
 
-	if len(fileResults) == 0 {
+	if len(historicalPixelDataset) == 0 {
 		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images from dates %v", farm, plot, len(images), sortedImageDates)
 	}
-	return fileResults, nil
+	return historicalPixelDataset, nil
 }
 
 func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date time.Time) (*PixelData, error) {
