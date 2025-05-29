@@ -3,6 +3,7 @@ package delta
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	"time"
 
 	"container/heap"
@@ -266,6 +267,10 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 				pixel.NDVI += meanDelta.NDVI
 				pixel.Status = sentinel.PixelStatusValid
 				pixel.historicalValidNeighborsDirections = [][2]int{}
+				pixel.Color = &color.RGBA{
+					R: uint8(255),
+				}
+				pixel.Date = pixelDataset[[2]int{pixel.X, pixel.Y}][depth].Date
 				pixelDataset[[2]int{pixel.X, pixel.Y}][depth] = pixel
 				treatedPixelsCount++
 				//todo: reindex pq
@@ -301,7 +306,9 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 
 		// for _, sortedPixels := range pixelDataset {
 		// 	for _, pixel := range sortedPixels {
-		// 		fmt.Println("Pixel:", pixel.X, pixel.Y, "Date:", pixel.Date, "Status:", pixel.Status, "NDMI", pixel.NDMI, "NDRE:", pixel.NDRE, "PSRI:", pixel.PSRI, "NDVI:", pixel.NDVI)
+		// 		if pixel.Color != nil {
+		// 			fmt.Println("Pixel:", pixel.X, pixel.Y, "Date:", pixel.Date, "Status:", pixel.Status, "NDMI", pixel.NDMI, "NDRE:", pixel.NDRE, "PSRI:", pixel.PSRI, "NDVI:", pixel.NDVI, "Color:", pixel.Color)
+		// 		}
 		// 	}
 		// }
 
@@ -323,7 +330,6 @@ func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	if err != nil {
 		return nil, err
 	}
-
 	return cleanDataset, nil
 }
 

@@ -3,6 +3,7 @@ package delta
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	"sort"
 	"time"
 
@@ -34,6 +35,7 @@ type PixelData struct {
 	PSRI                               float64   `csv:"psri"`
 	NDVI                               float64   `csv:"ndvi"`
 	Status                             sentinel.PixelStatus
+	Color                              *color.RGBA
 	historicalValidNeighborsDirections [][2]int
 }
 

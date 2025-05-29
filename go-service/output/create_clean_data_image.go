@@ -94,8 +94,13 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 			if pixel.X >= 0 && pixel.X < width && pixel.Y >= 0 && pixel.Y < height {
 				index := getPixelIndex(index, pixel)
 				norm := normalize(index, 0, 1)
-				clr := valueToColor(norm)
-				newImage.Set(pixel.X, pixel.Y, clr)
+				if pixel.Color == nil {
+					clr := valueToColor(norm)
+					pixel.Color = &clr
+				} else {
+					fmt.Println("Pixel color already set, skipping normalization for pixel at", pixel.X, pixel.Y)
+				}
+				newImage.Set(pixel.X, pixel.Y, *pixel.Color)
 			}
 		}
 

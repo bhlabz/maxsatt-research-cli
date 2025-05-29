@@ -43,6 +43,12 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 			mostRecentDate = date
 		}
 	}
+	// this is not printing anything
+	// for _, data := range groupedData[mostRecentDate] {
+	// 	if data.Color != nil {
+	// 		fmt.Println("Pixel Color:", data.Color)
+	// 	}
+	// }
 	fmt.Printf("Image Date: %v\n", mostRecentDate)
 	return groupedData[mostRecentDate], nil
 }
