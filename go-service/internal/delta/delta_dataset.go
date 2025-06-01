@@ -141,9 +141,18 @@ func NewPixelDataPriorityQueue() *PixelDataPriorityQueue {
 func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData {
 
 	maxDepth := 1
+	for _, sortedPixels := range pixelDataset {
+		if maxDepth < len(sortedPixels) {
+			maxDepth = len(sortedPixels)
+		}
+	}
+	
 	for depth := range maxDepth {
+		fmt.Printf("Treating pixels at depth %d\n", depth)
 		treatablePixelsCount := 0
+		validPixelsCount := 0
 		treatedPixelsCount := 0
+		var date *time.Time
 		for _, sortedPixels := range pixelDataset {
 			if depth >= len(sortedPixels) {
 				continue
@@ -151,13 +160,17 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 			if sortedPixels[depth].Status == sentinel.PixelStatusTreatable {
 				treatablePixelsCount++
 			}
+			if sortedPixels[depth].Status == sentinel.PixelStatusValid {
+				validPixelsCount++
+			}
+			if date == nil {
+				date = &sortedPixels[depth].Date
+			}
 		}
+		fmt.Println(*date)
 		for treatablePixelsCount != 0 {
 			pq := NewPixelDataPriorityQueue()
 			for k, sortedPixels := range pixelDataset {
-				if maxDepth != len(sortedPixels) {
-					maxDepth = len(sortedPixels)
-				}
 
 				var (
 					x, y       = k[0], k[1]
@@ -179,14 +192,13 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 					if pixelDataset[direction][depth].Date.Equal(sortedPixels[depth].Date) {
 						if pixelDataset[direction][depth].Status == sentinel.PixelStatusValid {
 							pixelDataset[k][depth].historicalValidNeighborsDirections = append(pixelDataset[k][depth].historicalValidNeighborsDirections, direction)
-							break
 						}
 					}
 				}
 
 				// For each sortedPixel date find the valid neighbors past value (in the best case, this will stop at the most recent date (index 0))
 				for _, pixel := range sortedPixels {
-					if pixel.Status != sentinel.PixelStatusValid {
+					if pixel.Status != sentinel.PixelStatusTreatable || len(pixel.historicalValidNeighborsDirections) == 0 {
 						continue
 					}
 					mostRecentValidDate := pixel.Date
@@ -199,9 +211,9 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 						found := false
 						// for each valid pixel in the direction, look for the most recent valid pixel
 						for _, pixel := range pixelDataset[direction] {
-							if pixel.Date.Equal(mostRecentValidDate) {
+							if len(pixelDataset[k]) > depth && pixel.Date.Equal(mostRecentValidDate) {
 								if pixel.Status == sentinel.PixelStatusValid {
-									pixelDataset[k][depth].historicalValidNeighborsDirections = append(pixelDataset[k][i].historicalValidNeighborsDirections, direction)
+									pixelDataset[k][depth].historicalValidNeighborsDirections = append(pixelDataset[k][depth].historicalValidNeighborsDirections, direction)
 									found = true
 									break
 								}
@@ -269,10 +281,13 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 				pixel.historicalValidNeighborsDirections = [][2]int{}
 				pixel.Color = &color.RGBA{
 					R: uint8(255),
+					G: uint8(192),
+					B: uint8(203),
 				}
 				pixel.Date = pixelDataset[[2]int{pixel.X, pixel.Y}][depth].Date
 				pixelDataset[[2]int{pixel.X, pixel.Y}][depth] = pixel
 				treatedPixelsCount++
+				// fmt.Println("Treating pixel at date:", pixel.Date)
 				//todo: reindex pq
 				heap.Init(pq)
 
@@ -302,7 +317,7 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 		// 	}
 		// }
 
-		fmt.Println("treatedPixelsCount:", treatedPixelsCount)
+		fmt.Println("treatedPixelsCount:", treatedPixelsCount, "validPixelsCount:", validPixelsCount, "treatablePixelsCount:", treatablePixelsCount)
 
 		// for _, sortedPixels := range pixelDataset {
 		// 	for _, pixel := range sortedPixels {
