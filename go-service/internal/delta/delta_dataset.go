@@ -6,8 +6,6 @@ import (
 	"image/color"
 	"time"
 
-	"container/heap"
-
 	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/schollz/progressbar/v3"
@@ -106,54 +104,44 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2
 	return deltaDataset, nil
 }
 
-type PixelDataPriorityQueue []PixelData
-
-func (pq PixelDataPriorityQueue) Len() int { return len(pq) }
-
-func (pq PixelDataPriorityQueue) Less(i, j int) bool {
-	// Sort by the length of validPastNeighbors in descending order
-	return len(pq[i].historicalValidNeighborsDirections) > len(pq[j].historicalValidNeighborsDirections)
+func getValidNeighbors(images map[[2]int][]PixelData, k [2]int, depth int) []PixelData {
+	//look for valid neighbors
+	directions := [][2]int{
+		{k[0] - 1, k[1]},     // Up
+		{k[0] + 1, k[1]},     // Down
+		{k[0], k[1] - 1},     // Left
+		{k[0], k[1] + 1},     // Right
+		{k[0] - 1, k[1] - 1}, // Up-Left
+		{k[0] - 1, k[1] + 1}, // Up-Right
+		{k[0] + 1, k[1] - 1}, // Down-Left
+		{k[0] + 1, k[1] + 1}, // Down-Right
+	}
+	validNeighbors := []PixelData{}
+	for _, direction := range directions {
+		if pixelData, ok := images[direction]; ok && depth < len(pixelData) && pixelData[depth].Status == sentinel.PixelStatusValid {
+			validNeighbors = append(validNeighbors, pixelData[depth])
+		}
+	}
+	return validNeighbors
 }
 
-func (pq PixelDataPriorityQueue) Swap(i, j int) {
-	pq[i], pq[j] = pq[j], pq[i]
-}
-
-func (pq *PixelDataPriorityQueue) Push(x interface{}) {
-	*pq = append(*pq, x.(PixelData))
-}
-
-func (pq *PixelDataPriorityQueue) Pop() interface{} {
-	old := *pq
-	n := len(old)
-	item := old[n-1]
-	*pq = old[0 : n-1]
-	return item
-}
-
-// NewPixelDataPriorityQueue initializes a new priority queue
-func NewPixelDataPriorityQueue() *PixelDataPriorityQueue {
-	pq := &PixelDataPriorityQueue{}
-	heap.Init(pq)
-	return pq
-}
-
-func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData {
+func treatPixelData(images map[[2]int][]PixelData) map[[2]int][]PixelData {
 
 	maxDepth := 1
-	for _, sortedPixels := range pixelDataset {
+	for _, sortedPixels := range images {
 		if maxDepth < len(sortedPixels) {
 			maxDepth = len(sortedPixels)
 		}
 	}
-	
-	for depth := range maxDepth {
+
+	for depth := 1; depth < maxDepth; depth++ {
 		fmt.Printf("Treating pixels at depth %d\n", depth)
 		treatablePixelsCount := 0
+		untreatablePixelsCount := 0
 		validPixelsCount := 0
 		treatedPixelsCount := 0
 		var date *time.Time
-		for _, sortedPixels := range pixelDataset {
+		for _, sortedPixels := range images {
 			if depth >= len(sortedPixels) {
 				continue
 			}
@@ -167,133 +155,135 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 				date = &sortedPixels[depth].Date
 			}
 		}
+
 		fmt.Println(*date)
 		for treatablePixelsCount != 0 {
-			pq := NewPixelDataPriorityQueue()
-			for k, sortedPixels := range pixelDataset {
-
-				var (
-					x, y       = k[0], k[1]
-					directions = [8][2]int{{x, y + 1},
-						{x, y - 1},
-						{x - 1, y},
-						{x + 1, y},
-						{x + 1, y + 1},
-						{x - 1, y + 1},
-						{x + 1, y - 1},
-						{x - 1, y - 1},
-					}
-				)
-				// Find directions with valid pixels for the currentDate
-				for _, direction := range directions {
-					if _, ok := pixelDataset[direction]; !ok {
-						continue
-					}
-					if pixelDataset[direction][depth].Date.Equal(sortedPixels[depth].Date) {
-						if pixelDataset[direction][depth].Status == sentinel.PixelStatusValid {
-							pixelDataset[k][depth].historicalValidNeighborsDirections = append(pixelDataset[k][depth].historicalValidNeighborsDirections, direction)
-						}
-					}
+			readyToTreat := []PixelData{}
+			notEligiblePixelsCount := 0
+			for k, sortedPixels := range images {
+				// if pixel is not treatable, skip it
+				if depth >= len(sortedPixels) || sortedPixels[depth].Status != sentinel.PixelStatusTreatable {
+					continue
 				}
 
-				// For each sortedPixel date find the valid neighbors past value (in the best case, this will stop at the most recent date (index 0))
-				for _, pixel := range sortedPixels {
-					if pixel.Status != sentinel.PixelStatusTreatable || len(pixel.historicalValidNeighborsDirections) == 0 {
-						continue
-					}
-					mostRecentValidDate := pixel.Date
+				currentPixelValidNeighbors := getValidNeighbors(images, k, depth)
+				// if the pixel has no valid neighbors, it cannot be treated now. But maybe in future iterations when its neighbors are treated
+				if len(currentPixelValidNeighbors) == 0 {
+					// maybe add this pixel will be eligible in the future
+					notEligiblePixelsCount++
+					continue
+				}
 
-					// for each currently valid neighbor direction, find the second most recent pixel value (the most recent is the current date, the date whe found a cloudy pixel and we are treating)
-					for i, direction := range pixel.historicalValidNeighborsDirections {
-						if _, ok := pixelDataset[direction]; !ok {
+				// look for the most recent valid pixel in the past
+				depthRegressive := depth - 1
+				for depthRegressive >= 0 {
+					if sortedPixels[depthRegressive].Status == sentinel.PixelStatusValid {
+						// for the pixel to ba valid it must have at least one valid neighbor matching the historicalValidNeighborsDirections from the current pixel
+						mostRecentValidPixelValidNeighbors := getValidNeighbors(images, k, depthRegressive)
+						if len(mostRecentValidPixelValidNeighbors) == 0 {
+							depthRegressive--
 							continue
 						}
-						found := false
-						// for each valid pixel in the direction, look for the most recent valid pixel
-						for _, pixel := range pixelDataset[direction] {
-							if len(pixelDataset[k]) > depth && pixel.Date.Equal(mostRecentValidDate) {
-								if pixel.Status == sentinel.PixelStatusValid {
-									pixelDataset[k][depth].historicalValidNeighborsDirections = append(pixelDataset[k][depth].historicalValidNeighborsDirections, direction)
-									found = true
+						for _, currentPixelValidNeighbor := range currentPixelValidNeighbors {
+							for _, mostRecentValidPixelValidNeighbor := range mostRecentValidPixelValidNeighbors {
+								if currentPixelValidNeighbor.X == mostRecentValidPixelValidNeighbor.X && currentPixelValidNeighbor.Y == mostRecentValidPixelValidNeighbor.Y {
+									sortedPixels[depth].mostRecentValidPixel = &sortedPixels[depthRegressive]
+									break
+								}
+								if sortedPixels[depth].mostRecentValidPixel != nil {
 									break
 								}
 							}
+							if sortedPixels[depth].mostRecentValidPixel != nil {
+								break
+							}
 						}
-
-						if !found {
-							// remove the direction from the historicalValidNeighborsDirections
-							pixelDataset[k][depth].historicalValidNeighborsDirections = append(pixelDataset[k][depth].historicalValidNeighborsDirections[:i], pixelDataset[k][depth].historicalValidNeighborsDirections[i+1:]...)
-						}
+						depthRegressive--
 					}
-					// if the pixel has no valid neighbors, continue. Whe cannot treat it
-					if len(pixelDataset[k][depth].historicalValidNeighborsDirections) == 0 {
-						pixelDataset[k][depth].Status = sentinel.PixelStatusInvalid
-						continue
-					}
-
-					pq.Push(pixelDataset[k][depth])
+					depthRegressive--
 				}
 
+				// if no valid pixel found, mark the pixel as invalid and continue. It cannot be treated since we don't have a valid reference value
+				if sortedPixels[depth].mostRecentValidPixel == nil {
+					sortedPixels[depth].Status = sentinel.PixelStatusInvalid
+					continue
+				}
+
+				// looks for its mostRecentValidPixel valid neighbors
+				readyToTreat = append(readyToTreat, images[k][depth])
 			}
+
 			type delta struct {
 				NDRE float64
 				NDMI float64
 				PSRI float64
 				NDVI float64
 			}
-			// Pop the most recent valid pixel
-			for pq.Len() > 0 {
-				pixel := heap.Pop(pq).(PixelData)
+			for _, pixel := range readyToTreat {
 				deltaArray := []delta{}
-				if len(pixel.historicalValidNeighborsDirections) < 2 {
-					// If the pixel has no valid neighbors, continue. Whe cannot treat it
-					pixelDataset[[2]int{pixel.X, pixel.Y}][depth].Status = sentinel.PixelStatusInvalid
+				// get its current valid neighbor and get the equivalent valid neighbor from the mostRecentValidPixel
+				// calculate the delta between the current pixel and the mostRecentValidPixel valid neighbors
+				for _, validNeighbor := range getValidNeighbors(images, [2]int{pixel.X, pixel.Y}, depth) {
+					for _, mostRecentValidNeighbor := range getValidNeighbors(images, [2]int{pixel.mostRecentValidPixel.X, pixel.mostRecentValidPixel.Y}, depth) {
+						if validNeighbor.X == mostRecentValidNeighbor.X && validNeighbor.Y == mostRecentValidNeighbor.Y {
+							deltaArray = append(deltaArray, delta{
+								NDRE: validNeighbor.NDRE - mostRecentValidNeighbor.NDRE,
+								NDMI: validNeighbor.NDMI - mostRecentValidNeighbor.NDMI,
+								PSRI: validNeighbor.PSRI - mostRecentValidNeighbor.PSRI,
+								NDVI: validNeighbor.NDVI - mostRecentValidNeighbor.NDVI,
+							})
+						}
+					}
+				}
+				if len(deltaArray) == 0 {
+					// if no valid neighbor found, mark the pixel as invalid
+					pixel.Status = sentinel.PixelStatusInvalid
+					untreatablePixelsCount++
 					continue
 				}
-				for _, direction := range pixel.historicalValidNeighborsDirections {
-					currentNeighborPixel := pixelDataset[direction]
-					deltaArray = append(deltaArray, delta{
-						NDRE: currentNeighborPixel[0].NDRE - currentNeighborPixel[1].NDRE,
-						NDMI: currentNeighborPixel[0].NDMI - currentNeighborPixel[1].NDMI,
-						PSRI: currentNeighborPixel[0].PSRI - currentNeighborPixel[1].PSRI,
-						NDVI: currentNeighborPixel[0].NDVI - currentNeighborPixel[1].NDVI,
-					})
-				}
 
-				// Calculate the mean delta
-				meanDelta := delta{}
+				// calculate the average delta
+				averageDelta := delta{
+					NDRE: 0,
+					NDMI: 0,
+					PSRI: 0,
+					NDVI: 0,
+				}
 				for _, d := range deltaArray {
-					meanDelta.NDRE += d.NDRE
-					meanDelta.NDMI += d.NDMI
-					meanDelta.PSRI += d.PSRI
-					meanDelta.NDVI += d.NDVI
+					averageDelta.NDRE += d.NDRE
+					averageDelta.NDMI += d.NDMI
+					averageDelta.PSRI += d.PSRI
+					averageDelta.NDVI += d.NDVI
 				}
-				meanDelta.NDRE /= float64(len(deltaArray))
-				meanDelta.NDMI /= float64(len(deltaArray))
-				meanDelta.PSRI /= float64(len(deltaArray))
-				meanDelta.NDVI /= float64(len(deltaArray))
-				// Add the mean delta to the pixel
-				pixel.NDMI += meanDelta.NDMI
-				pixel.NDRE += meanDelta.NDRE
-				pixel.PSRI += meanDelta.PSRI
-				pixel.NDVI += meanDelta.NDVI
-				pixel.Status = sentinel.PixelStatusValid
-				pixel.historicalValidNeighborsDirections = [][2]int{}
-				pixel.Color = &color.RGBA{
-					R: uint8(255),
-					G: uint8(192),
-					B: uint8(203),
-				}
-				pixel.Date = pixelDataset[[2]int{pixel.X, pixel.Y}][depth].Date
-				pixelDataset[[2]int{pixel.X, pixel.Y}][depth] = pixel
-				treatedPixelsCount++
-				// fmt.Println("Treating pixel at date:", pixel.Date)
-				//todo: reindex pq
-				heap.Init(pq)
+				averageDelta.NDRE /= float64(len(deltaArray))
+				averageDelta.NDMI /= float64(len(deltaArray))
+				averageDelta.PSRI /= float64(len(deltaArray))
+				averageDelta.NDVI /= float64(len(deltaArray))
 
+				// update the pixel values with the average delta
+				tratedPixel := PixelData{
+					Date:                 pixel.Date,
+					X:                    pixel.X,
+					Y:                    pixel.Y,
+					NDRE:                 pixel.mostRecentValidPixel.NDRE + averageDelta.NDRE,
+					NDMI:                 pixel.mostRecentValidPixel.NDMI + averageDelta.NDMI,
+					PSRI:                 pixel.mostRecentValidPixel.PSRI + averageDelta.PSRI,
+					NDVI:                 pixel.mostRecentValidPixel.NDVI + averageDelta.NDVI,
+					Status:               sentinel.PixelStatusValid,
+					mostRecentValidPixel: pixel.mostRecentValidPixel,
+					Color: &color.RGBA{
+						R: 255,
+						G: 255,
+						B: 255,
+						A: 255,
+					},
+				}
+				images[[2]int{pixel.X, pixel.Y}][depth] = tratedPixel
+				treatedPixelsCount++
 			}
+
 			treatablePixelsCount = 0
-			for _, sortedPixels := range pixelDataset {
+			for _, sortedPixels := range images {
 				if depth >= len(sortedPixels) {
 					continue
 				}
@@ -301,35 +291,34 @@ func treatPixelData(pixelDataset map[[2]int][]PixelData) map[[2]int][]PixelData 
 					treatablePixelsCount++
 				}
 			}
+
+			if treatablePixelsCount == notEligiblePixelsCount {
+				// if all treatable pixels are not eligible, break the loop and set them to invalid
+				for k, sortedPixels := range images {
+					if depth >= len(sortedPixels) {
+						continue
+					}
+					if sortedPixels[depth].Status == sentinel.PixelStatusTreatable {
+						sortedPixels[depth].Status = sentinel.PixelStatusInvalid
+						sortedPixels[depth].Color = &color.RGBA{
+							R: 255,
+							G: 0,
+							B: 0,
+							A: 255,
+						}
+						images[k][depth] = sortedPixels[depth]
+						untreatablePixelsCount++
+					}
+
+					break
+				}
+
+			}
+			fmt.Println("treatedPixelsCount:", treatedPixelsCount, "untreatablePixelsCount:", untreatablePixelsCount, "validPixelsCount:", validPixelsCount, "treatablePixelsCount:", treatablePixelsCount)
 		}
-
-		// for k, pixels := range pixelDataset {
-		// 	validPixels := []PixelData{}
-		// 	for _, pixel := range pixels {
-		// 		if pixel.Status == sentinel.PixelStatusValid {
-		// 			validPixels = append(validPixels, pixel)
-		// 		}
-		// 	}
-		// 	if len(validPixels) == 0 {
-		// 		delete(pixelDataset, k)
-		// 	} else {
-		// 		pixelDataset[k] = validPixels
-		// 	}
-		// }
-
-		fmt.Println("treatedPixelsCount:", treatedPixelsCount, "validPixelsCount:", validPixelsCount, "treatablePixelsCount:", treatablePixelsCount)
-
-		// for _, sortedPixels := range pixelDataset {
-		// 	for _, pixel := range sortedPixels {
-		// 		if pixel.Color != nil {
-		// 			fmt.Println("Pixel:", pixel.X, pixel.Y, "Date:", pixel.Date, "Status:", pixel.Status, "NDMI", pixel.NDMI, "NDRE:", pixel.NDRE, "PSRI:", pixel.PSRI, "NDVI:", pixel.NDVI, "Color:", pixel.Color)
-		// 		}
-		// 	}
-		// }
-
 	}
 
-	return pixelDataset
+	return images
 }
 
 func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int][]PixelData, error) {
@@ -340,8 +329,8 @@ func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	if len(pixelDataset) == 0 {
 		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
 	}
-	treatedPixelDataSet := treatPixelData(pixelDataset)
-	cleanDataset, err := cleanDataset(treatedPixelDataSet)
+	// treatedPixelDataSet := treatPixelData(pixelDataset)
+	cleanDataset, err := cleanDataset(pixelDataset)
 	if err != nil {
 		return nil, err
 	}

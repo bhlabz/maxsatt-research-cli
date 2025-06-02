@@ -92,13 +92,17 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 		// Map the PixelResult to the new image
 		for _, pixel := range result {
 			if pixel.X >= 0 && pixel.X < width && pixel.Y >= 0 && pixel.Y < height {
-				index := getPixelIndex(index, pixel)
-				norm := normalize(index, 0, 1)
 				if pixel.Color == nil {
-					clr := valueToColor(norm)
-					pixel.Color = &clr
+					// index := getPixelIndex(index, pixel)
+					// norm := normalize(index, 0, 1)
+					// clr := valueToColor(norm)
+					pixel.Color = &color.RGBA{
+						R: 255, G: 0, B: 0, A: 255, // Default color if not set
+					}
 				} else {
-					fmt.Println("Pixel color already set, skipping normalization for pixel at", pixel.X, pixel.Y)
+					pixel.Color = &color.RGBA{
+						R: 0, G: 0, B: 255, A: 255, // Default color if not set
+					}
 				}
 				newImage.Set(pixel.X, pixel.Y, *pixel.Color)
 			}

@@ -90,6 +90,9 @@ func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, 
 			validData := []PixelData{}
 			for i := range d {
 				if d[i].Status != sentinel.PixelStatusValid {
+					if d[i].Status == sentinel.PixelStatusTreatable {
+						fmt.Printf("Treatable pixel found\n")
+					}
 					continue
 				}
 
