@@ -209,7 +209,6 @@ func treatPixelData(images map[[2]int][]PixelData) map[[2]int][]PixelData {
 					continue
 				}
 
-				// looks for its mostRecentValidPixel valid neighbors
 				readyToTreat = append(readyToTreat, images[k][depth])
 			}
 
@@ -314,7 +313,8 @@ func treatPixelData(images map[[2]int][]PixelData) map[[2]int][]PixelData {
 				}
 
 			}
-			fmt.Println("treatedPixelsCount:", treatedPixelsCount, "untreatablePixelsCount:", untreatablePixelsCount, "validPixelsCount:", validPixelsCount, "treatablePixelsCount:", treatablePixelsCount)
+
+			fmt.Println("treatedPixelsCount:", treatedPixelsCount, "untreatablePixelsCount:", untreatablePixelsCount, "validPixelsCount:", validPixelsCount, "treatablePixelsCount:", treatablePixelsCount, "notEligiblePixelsCount", notEligiblePixelsCount)
 		}
 	}
 
@@ -329,8 +329,8 @@ func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	if len(pixelDataset) == 0 {
 		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
 	}
-	// treatedPixelDataSet := treatPixelData(pixelDataset)
-	cleanDataset, err := cleanDataset(pixelDataset)
+	treatedPixelDataSet := treatPixelData(pixelDataset)
+	cleanDataset, err := cleanDataset(treatedPixelDataSet)
 	if err != nil {
 		return nil, err
 	}
