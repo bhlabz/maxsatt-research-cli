@@ -71,12 +71,24 @@ func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, 
 		wp.Submit(func() {
 			var ndre, ndmi, psri, ndvi []float64
 			for _, val := range d {
+				if val.Status != sentinel.PixelStatusValid {
+					if val.X == 16 && val.Y == 62 && val.Status == sentinel.PixelStatusTreatable {
+						fmt.Printf("bla\n")
+					}
+					if val.Status == sentinel.PixelStatusTreatable {
+						fmt.Printf("Treatable pixel found\n")
+					}
+					continue
+				}
+
 				ndre = append(ndre, val.NDRE)
 				ndmi = append(ndmi, val.NDMI)
 				psri = append(psri, val.PSRI)
 				ndvi = append(ndvi, val.NDVI)
 			}
-
+			if len(ndre) != len(d) {
+				return
+			}
 			values := map[string][]float64{
 				"ndre": ndre, "ndmi": ndmi, "psri": psri, "ndvi": ndvi,
 			}

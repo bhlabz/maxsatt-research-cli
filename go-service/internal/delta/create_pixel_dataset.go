@@ -25,18 +25,17 @@ type Indexes struct {
 }
 
 type PixelData struct {
-	Date                 time.Time `csv:"date"`
-	X                    int       `csv:"x"`
-	Y                    int       `csv:"y"`
-	Latitude             float64   `csv:"latitude"`
-	Longitude            float64   `csv:"longitude"`
-	NDRE                 float64   `csv:"ndre"`
-	NDMI                 float64   `csv:"ndmi"`
-	PSRI                 float64   `csv:"psri"`
-	NDVI                 float64   `csv:"ndvi"`
-	Status               sentinel.PixelStatus
-	Color                *color.RGBA
-	mostRecentValidPixel *PixelData `csv:"-"`
+	Date      time.Time `csv:"date"`
+	X         int       `csv:"x"`
+	Y         int       `csv:"y"`
+	Latitude  float64   `csv:"latitude"`
+	Longitude float64   `csv:"longitude"`
+	NDRE      float64   `csv:"ndre"`
+	NDMI      float64   `csv:"ndmi"`
+	PSRI      float64   `csv:"psri"`
+	NDVI      float64   `csv:"ndvi"`
+	Status    sentinel.PixelStatus
+	Color     *color.RGBA
 }
 
 func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
