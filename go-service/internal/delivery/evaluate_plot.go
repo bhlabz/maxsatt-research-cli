@@ -30,11 +30,13 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 	}
 
 	groupedData := make(map[time.Time][]delta.PixelData)
-	for _, pixel := range cleanDataset {
-		if len(pixel) == 0 {
-			continue
+	for _, sortedPixels := range cleanDataset {
+		for date, pixel := range sortedPixels {
+			//if pixel.Status == sentinel.PixelStatusTreatable {
+			//	fmt.Println("TREATABLE FOUND")
+			//}
+			groupedData[date] = append(groupedData[date], pixel)
 		}
-		groupedData[pixel[0].Date] = append(groupedData[pixel[0].Date], pixel...)
 	}
 
 	var mostRecentDate time.Time
@@ -43,17 +45,25 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 			mostRecentDate = date
 		}
 	}
-	// this is not printing anything
-	// for _, data := range groupedData[mostRecentDate] {
-	// 	if data.Color != nil {
-	// 		fmt.Println("Pixel Color:", data.Color)
-	// 	}
-	// }
-	fmt.Printf("Image Date: %v\n", mostRecentDate)
+
+	//fmt.Printf("Image Date: %v\n", mostRecentDate)
+	//for pixel := range groupedData[mostRecentDate] {
+	//	// NO TREATABLE PIXELS HERE
+	//	//print color RGB values for each pixel if they are != from 0
+	//	if groupedData[mostRecentDate][pixel].Status == sentinel.PixelStatusTreatable {
+	//		fmt.Println("TREATABLE")
+	//		if groupedData[mostRecentDate][pixel].Color != nil && (groupedData[mostRecentDate][pixel].Color.R != 0 || groupedData[mostRecentDate][pixel].Color.G != 0 || groupedData[mostRecentDate][pixel].Color.B != 0) {
+	//			fmt.Printf("Pixel Position: (%d, %d)\n", groupedData[mostRecentDate][pixel].X, groupedData[mostRecentDate][pixel].Y)
+	//			fmt.Printf("Pixel Color RGB: (%d, %d, %d)\n", groupedData[mostRecentDate][pixel].Color.R, groupedData[mostRecentDate][pixel].Color.G, groupedData[mostRecentDate][pixel].Color.B)
+	//		} else {
+	//			fmt.Printf("Pixel Position: (%d, %d) has no color - %s\n", groupedData[mostRecentDate][pixel].X, groupedData[mostRecentDate][pixel].Y, groupedData[mostRecentDate][pixel].Status)
+	//		}
+	//	}
+	//}
 	return groupedData[mostRecentDate], nil
 }
 
-func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) ([]delta.DeltaData, error) {
+func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) ([]delta.Data, error) {
 
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)

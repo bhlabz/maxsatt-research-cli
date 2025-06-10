@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
@@ -49,10 +50,10 @@ func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) (map[str
 	// Return the smoothed data
 	return convertFromProtobufList(resp.SmoothedData), nil
 }
-func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, error) {
+func cleanDataset(pixelDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]PixelData, error) {
 	var (
 		mu          sync.Mutex
-		cleanData   = make(map[[2]int][]PixelData)
+		cleanData   = make(map[[2]int]map[time.Time]PixelData)
 		progressBar = progressbar.Default(int64(len(pixelDataset)), "Cleaning dataset")
 	)
 
@@ -70,21 +71,22 @@ func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, 
 		d := data // capture range variable
 		wp.Submit(func() {
 			var ndre, ndmi, psri, ndvi []float64
-			for _, val := range d {
-				if val.Status != sentinel.PixelStatusValid {
-					if val.X == 16 && val.Y == 62 && val.Status == sentinel.PixelStatusTreatable {
-						fmt.Printf("bla\n")
-					}
-					if val.Status == sentinel.PixelStatusTreatable {
-						fmt.Printf("Treatable pixel found\n")
-					}
+			ascDates := getSortedKeys(d, true)
+			for _, date := range ascDates {
+				pixel := d[date]
+				if pixel.Status == sentinel.PixelStatusInvalid {
+					//if val.Status == sentinel.PixelStatusTreatable {
+					//	//panic("treatable pixel found")
+					//}
 					continue
 				}
-
-				ndre = append(ndre, val.NDRE)
-				ndmi = append(ndmi, val.NDMI)
-				psri = append(psri, val.PSRI)
-				ndvi = append(ndvi, val.NDVI)
+				if pixel.Status == sentinel.PixelStatusTreatable {
+					//fmt.Println("treatable pixel found during cleaning at position:", pixel.X, pixel.Y)
+				}
+				ndre = append(ndre, pixel.NDRE)
+				ndmi = append(ndmi, pixel.NDMI)
+				psri = append(psri, pixel.PSRI)
+				ndvi = append(ndvi, pixel.NDVI)
 			}
 			if len(ndre) != len(d) {
 				return
@@ -99,27 +101,28 @@ func cleanDataset(pixelDataset map[[2]int][]PixelData) (map[[2]int][]PixelData, 
 				return
 			}
 
-			validData := []PixelData{}
-			for i := range d {
-				if d[i].Status != sentinel.PixelStatusValid {
-					if d[i].Status == sentinel.PixelStatusTreatable {
-						fmt.Printf("Treatable pixel found\n")
-					}
-					continue
-				}
-
+			var validData = make(map[time.Time]PixelData)
+			for i, date := range ascDates {
+				pixel := d[date]
 				if smoothed["ndmi"][i] == 0 || smoothed["psri"][i] == 0 || smoothed["ndre"][i] == 0 || smoothed["ndvi"][i] == 0 {
 					continue
 				}
-				d[i].NDMI = smoothed["ndmi"][i]
-				d[i].PSRI = smoothed["psri"][i]
-				d[i].NDRE = smoothed["ndre"][i]
-				d[i].NDVI = smoothed["ndvi"][i]
-				validData = append(validData, d[i])
+				pixel.NDMI = smoothed["ndmi"][i]
+				pixel.PSRI = smoothed["psri"][i]
+				pixel.NDRE = smoothed["ndre"][i]
+				pixel.NDVI = smoothed["ndvi"][i]
+
+				validData[date] = pixel
 			}
 
 			mu.Lock()
-			cleanData[[2]int{d[0].X, d[0].Y}] = append(cleanData[[2]int{d[0].X, d[0].Y}], validData...)
+			for date := range validData {
+				key := [2]int{d[date].X, d[date].Y}
+				if _, ok := cleanData[key]; !ok {
+					cleanData[key] = make(map[time.Time]PixelData)
+				}
+				cleanData[key][date] = validData[date]
+			}
 			progressBar.Add(1)
 			mu.Unlock()
 		})

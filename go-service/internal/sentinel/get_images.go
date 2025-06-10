@@ -186,9 +186,9 @@ func (bands Bands) Valid() PixelStatus {
 		Condition   bool
 		PixelStatus PixelStatus
 	}{
-		{bands.CLD > 0, PixelStatusTreatable},
+		{bands.CLD > 0, PixelStatusInvalid},
 		{bands.SCL == 2 || bands.SCL == 3 || bands.SCL == 10, PixelStatusInvalid},
-		{bands.SCL == 8 || bands.SCL == 9, PixelStatusTreatable},
+		{bands.SCL == 8 || bands.SCL == 9, PixelStatusInvalid},
 		{(bands.B04+bands.B02)/2 > 0.9, PixelStatusInvalid},
 		{bands.PSRI == 0 && bands.NDVI == 0 && bands.NDMI == 0 && bands.NDRE == 0, PixelStatusInvalid},
 	}
@@ -309,7 +309,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			for x := 0; x < width; x++ {
 				bands := GetBands(indexes, x, y)
 				pixelStatus := bands.Valid()
-				if pixelStatus == PixelStatusValid || pixelStatus == PixelStatusTreatable {
+				if pixelStatus == PixelStatusInvalid {
 					count++
 				}
 			}

@@ -25,15 +25,14 @@ type Indexes struct {
 }
 
 type PixelData struct {
-	Date      time.Time `csv:"date"`
-	X         int       `csv:"x"`
-	Y         int       `csv:"y"`
-	Latitude  float64   `csv:"latitude"`
-	Longitude float64   `csv:"longitude"`
-	NDRE      float64   `csv:"ndre"`
-	NDMI      float64   `csv:"ndmi"`
-	PSRI      float64   `csv:"psri"`
-	NDVI      float64   `csv:"ndvi"`
+	X         int     `csv:"x"`
+	Y         int     `csv:"y"`
+	Latitude  float64 `csv:"latitude"`
+	Longitude float64 `csv:"longitude"`
+	NDRE      float64 `csv:"ndre"`
+	NDMI      float64 `csv:"ndmi"`
+	PSRI      float64 `csv:"psri"`
+	NDVI      float64 `csv:"ndvi"`
 	Status    sentinel.PixelStatus
 	Color     *color.RGBA
 }
@@ -64,7 +63,7 @@ func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
 	return ys[0], xs[0], nil
 }
 
-func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int][]PixelData, error) {
+func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
 	var width, height, totalPixels int
 
 	for _, imageData := range images {
@@ -74,16 +73,14 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 		break
 	}
 
-	historicalPixelDataset := make(map[[2]int][]PixelData)
-	sortedImageDates := getSortedKeys(images)
+	historicalPixelDataset := make(map[[2]int]map[time.Time]PixelData)
+	sortedImageDates := getSortedKeys(images, false)
 	target := len(sortedImageDates) * width * height
 	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 
 	var errGlobal error
-	for _, date := range sortedImageDates {
-		pixelDataset := make(map[[2]int]PixelData)
+	for date, image := range images {
 		treatablePixelsCount, invalidPixelsCount, validPixelsCount := 0, 0, 0
-		image := images[date]
 		for y := range height {
 			for x := range width {
 				result, err := getData(image, totalPixels, width, height, x, y, date)
@@ -98,7 +95,12 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 						errGlobal = err
 						break
 					}
-					pixelDataset[[2]int{x, y}] = *result
+
+					key := [2]int{x, y}
+					if _, ok := historicalPixelDataset[key]; !ok {
+						historicalPixelDataset[key] = make(map[time.Time]PixelData)
+					}
+					historicalPixelDataset[key][date] = *result
 
 					switch result.Status {
 					case sentinel.PixelStatusTreatable:
@@ -127,9 +129,6 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 			continue
 		}
 
-		for k, pixelData := range pixelDataset {
-			historicalPixelDataset[k] = append(historicalPixelDataset[k], pixelData)
-		}
 	}
 
 	progressBar.Finish()
@@ -160,7 +159,6 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 
 	pixelStatus := bands.Valid()
 	return &PixelData{
-		Date:   date,
 		X:      x,
 		Y:      y,
 		NDRE:   bands.NDRE,
@@ -172,13 +170,16 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 
 }
 
-func getSortedKeys(m map[time.Time]*godal.Dataset) []time.Time {
+func getSortedKeys[T any](m map[time.Time]T, asc bool) []time.Time {
 	keys := make([]time.Time, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
 	}
 	sort.Slice(keys, func(i, j int) bool {
-		return keys[i].Before(keys[j])
+		if asc {
+			return keys[i].Before(keys[j])
+		}
+		return keys[i].After(keys[j])
 	})
 	return keys
 }

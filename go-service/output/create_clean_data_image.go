@@ -93,21 +93,18 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 		for _, pixel := range result {
 			if pixel.X >= 0 && pixel.X < width && pixel.Y >= 0 && pixel.Y < height {
 				if pixel.Color == nil {
-					// index := getPixelIndex(index, pixel)
-					// norm := normalize(index, 0, 1)
-					// clr := valueToColor(norm)
-					pixel.Color = &color.RGBA{
-						R: 255, G: 0, B: 0, A: 255, // Default color if not set
-					}
-				} else {
-					pixel.Color = &color.RGBA{
-						R: 0, G: 0, B: 255, A: 255, // Default color if not set
-					}
+					index := getPixelIndex(index, pixel)
+					norm := normalize(index, 0, 1)
+					clr := valueToColor(norm)
+					pixel.Color = &clr
+					//pixel.Color = &color.RGBA{
+					//	R: 255, G: 0, B: 0, A: 255, // Default color if not set
+					//}
 				}
+
 				newImage.Set(pixel.X, pixel.Y, *pixel.Color)
 			}
 		}
-
 		outputFile, err := os.Create(outputImagePathCpy)
 		if err != nil {
 			fmt.Printf("Error creating JPEG file: %v\n", err)

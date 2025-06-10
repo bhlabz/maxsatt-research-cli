@@ -19,11 +19,11 @@ type Sample struct {
 
 type FinalData struct {
 	weather.WeatherMetrics
-	delta.DeltaData
+	delta.Data
 	CreatedAt time.Time `csv:"created_at"`
 }
 
-func createFinalDataset(samples []delta.DeltaData, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
+func createFinalDataset(samples []delta.Data, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
 	var mergedData []FinalData
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -31,7 +31,7 @@ func createFinalDataset(samples []delta.DeltaData, weatherData weather.Historica
 
 	for _, sample := range samples {
 		wg.Add(1)
-		go func(sample delta.DeltaData) {
+		go func(sample delta.Data) {
 			defer wg.Done()
 
 			weatherRow := weather.WeatherMetrics{}
@@ -54,7 +54,7 @@ func createFinalDataset(samples []delta.DeltaData, weatherData weather.Historica
 
 			mergedRow := FinalData{
 				WeatherMetrics: weatherRow,
-				DeltaData:      sample,
+				Data:           sample,
 				CreatedAt:      time.Now(),
 			}
 

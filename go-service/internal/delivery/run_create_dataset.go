@@ -34,7 +34,7 @@ func getSamplesAmountFromSeverity(severity string, datasetLength int) int {
 	return datasetLength / 2
 }
 
-func getBestSamplesFromDeltaDataset(deltaDataset []delta.DeltaData, samplesAmount int, label string) []delta.DeltaData {
+func getBestSamplesFromDeltaDataset(deltaDataset []delta.Data, samplesAmount int, label string) []delta.Data {
 	// Sort the deltaDataset based on the specified derivatives
 	sort.Slice(deltaDataset, func(i, j int) bool {
 		if deltaDataset[i].NDREDerivative != deltaDataset[j].NDREDerivative {
