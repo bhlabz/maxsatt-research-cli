@@ -429,33 +429,35 @@ func (p InTreatmentPixel) FindMostRecentValidPixel(datePixel map[time.Time]InTre
 //}
 
 func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
-	pixelDataset, err := CreatePixelDataset(farm, plot, images)
+	result, err := CreatePixelDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}
-	if len(pixelDataset) == 0 {
+	if len(result) == 0 {
 		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
 	}
-	treatedPixelDataSet := estimatePixels(pixelDataset)
 
-	cleanDataset, err := cleanDataset(treatedPixelDataSet)
-	if err != nil {
-		return nil, err
-	}
-
-	//loop over treatedImages to verify treatable pixels count. only at the last depth
-	//treatablePixelsCount := 0
-	//for _, sortedPixels := range cleanDataset {
+	//newResult := make(map[[2]int]map[time.Time]PixelData)
+	//for _, sortedPixels := range result {
 	//	for date, pixel := range sortedPixels {
-	//		if pixel.Status == sentinel.PixelStatusTreatable && date == time.Date(2025, 3, 30, 0, 0, 0, 0, time.UTC) {
-	//			treatablePixelsCount++
-	//			fmt.Printf("Pixel at (%d, %d) has color: R=%d, G=%d, B=%d, A=%d\n", pixel.X, pixel.Y, pixel.Color.R, pixel.Color.G, pixel.Color.B, pixel.Color.A)
+	//		if pixel.Status == sentinel.PixelStatusValid {
+	//			if _, exists := newResult[[2]int{pixel.X, pixel.Y}]; !exists {
+	//				newResult[[2]int{pixel.X, pixel.Y}] = make(map[time.Time]PixelData)
+	//			}
+	//			newResult[[2]int{pixel.X, pixel.Y}][date] = pixel
 	//		}
 	//	}
 	//}
+	//result = newResult
 
-	//fmt.Printf("AFTER CLEAN Got %d \n", treatablePixelsCount)
-	return cleanDataset, nil
+	result = estimatePixels(result)
+
+	result, err = cleanDataset(result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaMin, deltaMax int) ([]Data, error) {

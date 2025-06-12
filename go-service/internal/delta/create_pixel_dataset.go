@@ -77,6 +77,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	sortedImageDates := getSortedKeys(images, false)
 	target := len(sortedImageDates) * width * height
 	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
+	validImagesCount := 0
 
 	var errGlobal error
 	for date, image := range images {
@@ -128,7 +129,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 		if validPixelsCount == 0 {
 			continue
 		}
-
+		validImagesCount++
 	}
 
 	progressBar.Finish()
@@ -140,6 +141,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	if len(historicalPixelDataset) == 0 {
 		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images from dates %v", farm, plot, len(images), sortedImageDates)
 	}
+	fmt.Printf("Got %d valid images\n", validImagesCount)
 	return historicalPixelDataset, nil
 }
 
@@ -170,16 +172,21 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 
 }
 
+func sortDates(dates []time.Time, asc bool) []time.Time {
+	sort.Slice(dates, func(i, j int) bool {
+		if asc {
+			return dates[i].Before(dates[j])
+		}
+		return dates[i].After(dates[j])
+	})
+	return dates
+}
+
 func getSortedKeys[T any](m map[time.Time]T, asc bool) []time.Time {
 	keys := make([]time.Time, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
 	}
-	sort.Slice(keys, func(i, j int) bool {
-		if asc {
-			return keys[i].Before(keys[j])
-		}
-		return keys[i].After(keys[j])
-	})
-	return keys
+
+	return sortDates(keys, asc)
 }

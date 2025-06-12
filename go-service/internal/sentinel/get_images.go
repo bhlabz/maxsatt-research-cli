@@ -327,7 +327,6 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 		images[currentDate] = ds
 		progressbar.Add(1)
 	}
-
 	return images, nil
 }
 

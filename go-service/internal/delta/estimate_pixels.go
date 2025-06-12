@@ -3,6 +3,7 @@ package delta
 import (
 	"fmt"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
+	"slices"
 	"time"
 )
 
@@ -28,11 +29,11 @@ func createTreatmentImages(images map[[2]int]map[time.Time]PixelData) map[[2]int
 	return treatmentImages
 }
 
-func countPixels(images map[[2]int]map[time.Time]InTreatmentPixel, date time.Time) (int, int, int) {
-	treatablePixelsCount := 0
-	invalidPixelsCount := 0
-	validPixelsCount := 0
-
+func groupPixelsByStatus(images map[[2]int]map[time.Time]InTreatmentPixel, date time.Time) (
+	treatable []InTreatmentPixel,
+	invalid []InTreatmentPixel,
+	valid []InTreatmentPixel,
+) {
 	for _, datePixel := range images {
 		pixel, exists := datePixel[date]
 		if !exists {
@@ -40,15 +41,14 @@ func countPixels(images map[[2]int]map[time.Time]InTreatmentPixel, date time.Tim
 		}
 		switch pixel.Status {
 		case sentinel.PixelStatusTreatable:
-			treatablePixelsCount++
+			treatable = append(treatable, pixel)
 		case sentinel.PixelStatusInvalid:
-			invalidPixelsCount++
+			invalid = append(invalid, pixel)
 		case sentinel.PixelStatusValid:
-			validPixelsCount++
+			valid = append(valid, pixel)
 		}
 	}
-
-	return treatablePixelsCount, invalidPixelsCount, validPixelsCount
+	return
 }
 
 func parseInTreatmentToPixelData(treatmentImages map[[2]int]map[time.Time]InTreatmentPixel) map[[2]int]map[time.Time]PixelData {
@@ -103,7 +103,7 @@ func estimatePixelIndexes(pixel InTreatmentPixel, deltas []delta) InTreatmentPix
 func getPixelDeltas(treatmentImages map[[2]int]map[time.Time]InTreatmentPixel, pixel InTreatmentPixel, date time.Time) []delta {
 	/*
 		- if its treatable, its value is the value of the most recent valid pixel
-		- I need to get the valid pixel neigmors and calculate the delta from its past values it they are valid
+		- I need to get the valid pixel neighbors and calculate the delta from its past values it they are valid
 
 	*/
 
@@ -129,18 +129,32 @@ func getPixelDeltas(treatmentImages map[[2]int]map[time.Time]InTreatmentPixel, p
 		}
 	}
 	if len(deltas) == 0 {
-		panic(fmt.Sprintf("No valid pixels found for current pixel matching most recent valid pixel (%d,%d) - Pixel date %v", pixel.X, pixel.Y, date))
+		return nil
 	}
 	return deltas
 }
 
 func estimatePixels(images map[[2]int]map[time.Time]PixelData) map[[2]int]map[time.Time]PixelData {
 	treatmentImages := createTreatmentImages(images)
+	var includedDates []time.Time
+	for _, datePixel := range treatmentImages {
+		for date := range datePixel {
+			if !slices.Contains(includedDates, date) {
+				includedDates = append(includedDates, date)
+			}
+		}
+	}
+
+	ascDates := sortDates(includedDates, true)
+	ascDates = ascDates[1:]
 
 	for key, datePixel := range treatmentImages {
-		ascDates := getSortedKeys(datePixel, true)
 		for _, date := range ascDates {
-			pixel := datePixel[date]
+			pixel, ok := datePixel[date]
+			if !ok {
+				continue
+			}
+
 			if pixel.Status == sentinel.PixelStatusValid {
 				continue
 			}
@@ -155,9 +169,9 @@ func estimatePixels(images map[[2]int]map[time.Time]PixelData) map[[2]int]map[ti
 				}
 				// at least one valid or treatable neighbor must match a current valid or treatable pixel neighbor
 				currentValidNeighbors := pixel.ListNeighborsByStatus(treatmentImages, date, sentinel.PixelStatusValid)
-				for _, mostRecentNeighbor := range mostRecentValidPixelValidOrTreatableNeighbors {
+				for _, currentNeighbor := range currentValidNeighbors {
 					found := false
-					for _, currentNeighbor := range currentValidNeighbors {
+					for _, mostRecentNeighbor := range mostRecentValidPixelValidOrTreatableNeighbors {
 						if mostRecentNeighbor.X == currentNeighbor.X && mostRecentNeighbor.Y == currentNeighbor.Y {
 							mostRecentValidPixel.Status = sentinel.PixelStatusTreatable
 							mostRecentValidPixel.mostRecentValidPixelDate = mostRecentValidPixelDate
@@ -175,24 +189,28 @@ func estimatePixels(images map[[2]int]map[time.Time]PixelData) map[[2]int]map[ti
 		}
 	}
 
-	for k, datePixel := range treatmentImages {
-		ascDates := getSortedKeys(datePixel, true)
-		for _, date := range ascDates {
-			treatablePixelsCount, invalidPixelsCount, validPixelsCount := countPixels(treatmentImages, date)
-			round := 0
-			for treatablePixelsCount > 0 {
-				round++
-				fmt.Printf("%d - Treatable pixels count: %d, Invalid pixels count: %d, Valid pixels count: %d\n", round, treatablePixelsCount, invalidPixelsCount, validPixelsCount)
-				pixel := datePixel[date]
+	for _, date := range ascDates {
+		round := 0
+		for {
+			treatablePixels, invalidPixels, validPixels := groupPixelsByStatus(treatmentImages, date)
+			fmt.Printf("%d - Treatable: %d, Invalid: %d, Valid: %d\n", round, len(treatablePixels), len(invalidPixels), len(validPixels))
+			if len(treatablePixels) == 0 {
+				break
+			}
+
+			for _, pixel := range treatablePixels {
 				if pixel.Status != sentinel.PixelStatusTreatable {
 					continue
 				}
 
+				round++
+
 				deltas := getPixelDeltas(treatmentImages, pixel, date)
+				if deltas == nil {
+					continue
+				}
 
-				treatmentImages[k][date] = estimatePixelIndexes(pixel, deltas)
-
-				treatablePixelsCount, invalidPixelsCount, validPixelsCount = countPixels(treatmentImages, date)
+				treatmentImages[[2]int{pixel.X, pixel.Y}][date] = estimatePixelIndexes(pixel, deltas)
 			}
 		}
 	}

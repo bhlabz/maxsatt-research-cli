@@ -634,6 +634,6 @@ func main() {
 	// 	}
 	// }
 
-	createVideo("Fazendas_Manulife_Gema", "GMA-025", 10, time.Date(2025, 5, 20, 0, 0, 0, 0, time.UTC))
+	createVideo("Fazendas_Manulife_Gema", "GMA-025", 20, time.Date(2025, 5, 20, 0, 0, 0, 0, time.UTC))
 
 }

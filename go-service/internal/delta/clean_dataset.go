@@ -75,13 +75,10 @@ func cleanDataset(pixelDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]m
 			for _, date := range ascDates {
 				pixel := d[date]
 				if pixel.Status == sentinel.PixelStatusInvalid {
-					//if val.Status == sentinel.PixelStatusTreatable {
-					//	//panic("treatable pixel found")
-					//}
-					continue
+					panic("invalid pixel found during cleaning")
 				}
 				if pixel.Status == sentinel.PixelStatusTreatable {
-					//fmt.Println("treatable pixel found during cleaning at position:", pixel.X, pixel.Y)
+					panic("treatable pixel found during cleaning")
 				}
 				ndre = append(ndre, pixel.NDRE)
 				ndmi = append(ndmi, pixel.NDMI)
