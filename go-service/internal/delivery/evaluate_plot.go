@@ -11,7 +11,7 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
-func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
+func EvaluatePlotCleanData(estimate bool, farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
 	startDate := endDate.AddDate(0, 0, -50)
 
 	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
@@ -24,7 +24,7 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 		return nil, err
 	}
 
-	cleanDataset, err := delta.CreateCleanDataset(farm, plot, images)
+	cleanDataset, err := delta.CreateCleanDataset(estimate, farm, plot, images)
 	if err != nil {
 		return nil, err
 	}

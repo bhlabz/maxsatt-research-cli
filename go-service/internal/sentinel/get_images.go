@@ -21,6 +21,7 @@ type PixelStatus string
 var (
 	PixelStatusValid     PixelStatus = "valid"
 	PixelStatusInvalid   PixelStatus = "invalid"
+	PixelStatusUnknown   PixelStatus = "unknown"
 	PixelStatusTreatable PixelStatus = "treatable"
 )
 
@@ -96,70 +97,6 @@ func reprojectAutoUTM(inputPath, outputPath string) error {
 	return nil
 }
 
-func getIndexesFromImage(ds *godal.Dataset) (map[string][][]float64, error) {
-	bands := ds.Bands()
-	bandsMap := make(map[string][][]float64)
-	bandNames := []string{"B05", "B08", "B11", "B02", "B04", "B06", "CLD", "SCL"}
-	for i, name := range bandNames {
-		band := bands[i]
-		width := ds.Structure().SizeX
-		height := ds.Structure().SizeY
-		data := make([][]float64, height)
-		for y := 0; y < height; y++ {
-			data[y] = make([]float64, width)
-			err := band.Read(0, y, data[y], width, 1)
-			if err != nil {
-				return nil, fmt.Errorf("failed to read data for band %s: %w", name, err)
-			}
-		}
-		bandsMap[name] = data
-	}
-
-	// Helper function for safe division
-	safeDivide := func(a, b float64) float64 {
-		if b == 0 {
-			return 0
-		}
-		return a / b
-	}
-
-	// Calculate indexes
-	height := len(bandsMap["B05"])
-	width := len(bandsMap["B05"][0])
-	indexes := map[string][][]float64{
-		"ndre":  make([][]float64, height),
-		"ndmi":  make([][]float64, height),
-		"psri":  make([][]float64, height),
-		"ndvi":  make([][]float64, height),
-		"b02":   bandsMap["B02"],
-		"b04":   bandsMap["B04"],
-		"cloud": bandsMap["CLD"],
-		"scl":   bandsMap["SCL"],
-	}
-
-	for y := 0; y < height; y++ {
-		indexes["ndre"][y] = make([]float64, width)
-		indexes["ndmi"][y] = make([]float64, width)
-		indexes["psri"][y] = make([]float64, width)
-		indexes["ndvi"][y] = make([]float64, width)
-		for x := 0; x < width; x++ {
-			b05 := bandsMap["B05"][y][x]
-			b08 := bandsMap["B08"][y][x]
-			b11 := bandsMap["B11"][y][x]
-			b02 := bandsMap["B02"][y][x]
-			b04 := bandsMap["B04"][y][x]
-			b06 := bandsMap["B06"][y][x]
-
-			indexes["ndre"][y][x] = safeDivide(b08-b05, b08+b05)
-			indexes["ndmi"][y][x] = safeDivide(b08-b11, b08+b11)
-			indexes["psri"][y][x] = safeDivide(b04-b02, b06)
-			indexes["ndvi"][y][x] = safeDivide(b08-b04, b08+b04)
-		}
-	}
-
-	return indexes, nil
-}
-
 func GetBands(indexes map[string][][]float64, x, y int) Bands {
 	ndmiValue := indexes["ndmi"][y][x]
 	cldValue := indexes["cloud"][y][x]
@@ -186,9 +123,9 @@ func (bands Bands) Valid() PixelStatus {
 		Condition   bool
 		PixelStatus PixelStatus
 	}{
-		{bands.CLD > 0, PixelStatusInvalid},
-		{bands.SCL == 2 || bands.SCL == 3 || bands.SCL == 10, PixelStatusInvalid},
-		{bands.SCL == 8 || bands.SCL == 9, PixelStatusInvalid},
+		{bands.CLD > 0, PixelStatusUnknown},
+		{bands.SCL == 2 || bands.SCL == 3 || bands.SCL == 10, PixelStatusUnknown},
+		{bands.SCL == 8 || bands.SCL == 9, PixelStatusUnknown},
 		{(bands.B04+bands.B02)/2 > 0.9, PixelStatusInvalid},
 		{bands.PSRI == 0 && bands.NDVI == 0 && bands.NDMI == 0 && bands.NDRE == 0, PixelStatusInvalid},
 	}
@@ -296,7 +233,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			return nil, err
 		}
 
-		indexes, err := getIndexesFromImage(ds)
+		indexes, err := GetIndexesFromImage(ds)
 		if err != nil {
 			return nil, err
 		}
