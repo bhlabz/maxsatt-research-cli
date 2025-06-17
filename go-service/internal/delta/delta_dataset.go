@@ -178,16 +178,7 @@ func (p InTreatmentPixel) GetNextValidPixel(datePixel map[time.Time]InTreatmentP
 	return nextValidPixel
 }
 
-func CreateCleanDataset(estimate bool, farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
-	result, err := CreatePixelDataset(farm, plot, images)
-	if err != nil {
-		return nil, err
-	}
-	if len(result) == 0 {
-		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
-	}
-
-	// Collect all unique dates
+func getUniqueDates(result map[[2]int]map[time.Time]PixelData) map[time.Time]struct{} {
 	allDates := make(map[time.Time]struct{})
 	for _, pixels := range result {
 		for date := range pixels {
@@ -195,7 +186,12 @@ func CreateCleanDataset(estimate bool, farm, plot string, images map[time.Time]*
 		}
 	}
 
-	// For each date, check if all pixels are Invalid
+	return allDates
+}
+
+func removeInvalidDates(result map[[2]int]map[time.Time]PixelData) map[[2]int]map[time.Time]PixelData {
+	allDates := getUniqueDates(result)
+
 	for date := range allDates {
 		allInvalid := true
 		for _, pixels := range result {
@@ -215,24 +211,21 @@ func CreateCleanDataset(estimate bool, farm, plot string, images map[time.Time]*
 		}
 	}
 
-	if estimate {
-		fmt.Println("ESTIMATE")
-		result = estimatePixels(result)
-	} else {
-		fmt.Println("Dont ESTIMATE")
-		newResult := make(map[[2]int]map[time.Time]PixelData)
-		for _, sortedPixels := range result {
-			for date, pixel := range sortedPixels {
-				if pixel.Status == sentinel.PixelStatusValid {
-					if _, exists := newResult[[2]int{pixel.X, pixel.Y}]; !exists {
-						newResult[[2]int{pixel.X, pixel.Y}] = make(map[time.Time]PixelData)
-					}
-					newResult[[2]int{pixel.X, pixel.Y}][date] = pixel
-				}
-			}
-		}
-		result = newResult
+	return result
+}
+
+func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
+	result, err := CreatePixelDataset(farm, plot, images)
+	if err != nil {
+		return nil, err
 	}
+	if len(result) == 0 {
+		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
+	}
+
+	result = removeInvalidDates(result)
+
+	result = estimatePixels(result)
 
 	result, err = cleanDataset(result)
 	if err != nil {
@@ -243,7 +236,7 @@ func CreateCleanDataset(estimate bool, farm, plot string, images map[time.Time]*
 }
 
 func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaMin, deltaMax int) ([]Data, error) {
-	cleanDataset, err := CreateCleanDataset(true, farm, plot, images)
+	cleanDataset, err := CreateCleanDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}

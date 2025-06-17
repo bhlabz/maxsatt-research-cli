@@ -11,7 +11,7 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
-func EvaluatePlotCleanData(estimate bool, farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
+func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
 	startDate := endDate.AddDate(0, 0, -50)
 
 	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
@@ -24,7 +24,7 @@ func EvaluatePlotCleanData(estimate bool, farm, plot string, endDate time.Time) 
 		return nil, err
 	}
 
-	cleanDataset, err := delta.CreateCleanDataset(estimate, farm, plot, images)
+	cleanDataset, err := delta.CreateCleanDataset(farm, plot, images)
 	if err != nil {
 		return nil, err
 	}
@@ -46,20 +46,6 @@ func EvaluatePlotCleanData(estimate bool, farm, plot string, endDate time.Time) 
 		}
 	}
 
-	//fmt.Printf("Image Date: %v\n", mostRecentDate)
-	//for pixel := range groupedData[mostRecentDate] {
-	//	// NO TREATABLE PIXELS HERE
-	//	//print color RGB values for each pixel if they are != from 0
-	//	if groupedData[mostRecentDate][pixel].Status == sentinel.PixelStatusTreatable {
-	//		fmt.Println("TREATABLE")
-	//		if groupedData[mostRecentDate][pixel].Color != nil && (groupedData[mostRecentDate][pixel].Color.R != 0 || groupedData[mostRecentDate][pixel].Color.G != 0 || groupedData[mostRecentDate][pixel].Color.B != 0) {
-	//			fmt.Printf("Pixel Position: (%d, %d)\n", groupedData[mostRecentDate][pixel].X, groupedData[mostRecentDate][pixel].Y)
-	//			fmt.Printf("Pixel Color RGB: (%d, %d, %d)\n", groupedData[mostRecentDate][pixel].Color.R, groupedData[mostRecentDate][pixel].Color.G, groupedData[mostRecentDate][pixel].Color.B)
-	//		} else {
-	//			fmt.Printf("Pixel Position: (%d, %d) has no color - %s\n", groupedData[mostRecentDate][pixel].X, groupedData[mostRecentDate][pixel].Y, groupedData[mostRecentDate][pixel].Status)
-	//		}
-	//	}
-	//}
 	return groupedData[mostRecentDate], nil
 }
 

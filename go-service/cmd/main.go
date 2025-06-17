@@ -375,7 +375,7 @@ func initCLI() {
 				fmt.Printf("\n\033[31mInvalid number of days: %s. Please enter a positive integer.\033[0m\n", daysInput)
 				continue
 			}
-			createVideo(true, forest, plot, days, endDate)
+			createVideo(forest, plot, days, endDate)
 
 		case 4:
 			fmt.Println("\033[33m\nWarning:\033[0m")
@@ -488,7 +488,7 @@ func initCLI() {
 	}
 }
 
-func createVideo(estimate bool, forest, plot string, days int, endDate time.Time) {
+func createVideo(forest, plot string, days int, endDate time.Time) {
 
 	var endDates []time.Time
 	for i := range days {
@@ -498,14 +498,8 @@ func createVideo(estimate bool, forest, plot string, days int, endDate time.Time
 	sort.Slice(endDates, func(i, j int) bool {
 		return endDates[i].Before(endDates[j])
 	})
-	finalPath := ""
-	if estimate {
-		finalPath = "index_estimate_2"
-	} else {
-		finalPath = "index"
-	}
 
-	resultPath := fmt.Sprintf("%s/data/result/%s/%s/%s", properties.RootPath(), forest, plot, finalPath)
+	resultPath := fmt.Sprintf("%s/data/result/%s/%s/index", properties.RootPath(), forest, plot)
 
 	err := os.MkdirAll(resultPath, os.ModePerm)
 	if err != nil {
@@ -555,7 +549,7 @@ func createVideo(estimate bool, forest, plot string, days int, endDate time.Time
 			continue
 		}
 
-		result, err := delivery.EvaluatePlotCleanData(estimate, forest, plot, endDate)
+		result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
 		if err != nil {
 			fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
 			if !strings.Contains(err.Error(), "empty csv file given") {
@@ -630,16 +624,6 @@ func main() {
 	}
 
 	properties.GrpcPort = port
-	// initCLI()
-
-	// _, err = delivery.EvaluatePlotFinalData("166_2025-05-07_5_20.csv", "Fazendas_Manulife_Gema", "GMA-025", time.Now())
-	// if err != nil {
-	// 	fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
-	// 	if !strings.Contains(err.Error(), "empty csv file given") {
-	// 		// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
-	// 	}
-	// }
-
-	createVideo(true, "Fazendas_Manulife_Gema", "GMA-025", 50, time.Date(2025, 5, 20, 0, 0, 0, 0, time.UTC))
+	initCLI()
 
 }
