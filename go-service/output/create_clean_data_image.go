@@ -86,16 +86,18 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 		}
 
 		width, height := int(ds.Structure().SizeX), int(ds.Structure().SizeY)
-		// Create a new RGBA image
 		newImage := image.NewRGBA(image.Rect(0, 0, width, height))
 
-		// Map the PixelResult to the new image
 		for _, pixel := range result {
 			if pixel.X >= 0 && pixel.X < width && pixel.Y >= 0 && pixel.Y < height {
-				index := getPixelIndex(index, pixel)
-				norm := normalize(index, 0, 1)
-				clr := valueToColor(norm)
-				newImage.Set(pixel.X, pixel.Y, clr)
+				if pixel.Color == nil {
+					index := getPixelIndex(index, pixel)
+					norm := normalize(index, 0, 1)
+					clr := valueToColor(norm)
+					pixel.Color = &clr
+				}
+
+				newImage.Set(pixel.X, pixel.Y, *pixel.Color)
 			}
 		}
 

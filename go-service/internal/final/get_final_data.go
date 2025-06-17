@@ -67,8 +67,8 @@ func SaveFinalData(finalData []FinalData, date time.Time) error {
 	return nil
 }
 
-func GetFinalData(deltaDataset []delta.DeltaData, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string) ([]FinalData, error) {
-	filteredDataset := make([]delta.DeltaData, 0, len(deltaDataset))
+func GetFinalData(deltaDataset []delta.Data, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string) ([]FinalData, error) {
+	filteredDataset := make([]delta.Data, 0, len(deltaDataset))
 	for _, record := range deltaDataset {
 		if isBetweenDates(record.StartDate, startDate, endDate) || isBetweenDates(record.EndDate, startDate, endDate) {
 			filteredDataset = append(filteredDataset, record)

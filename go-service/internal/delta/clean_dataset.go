@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/gammazero/workerpool"
 	"github.com/schollz/progressbar/v3"
 	"google.golang.org/grpc"
@@ -48,18 +50,11 @@ func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) (map[str
 	// Return the smoothed data
 	return convertFromProtobufList(resp.SmoothedData), nil
 }
-func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
-	groupedData := make(map[[2]int][]PixelData)
-
-	for _, data := range pixelDataset {
-		key := [2]int{data.X, data.Y}
-		groupedData[key] = append(groupedData[key], data)
-	}
-
+func cleanDataset(pixelDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]PixelData, error) {
 	var (
 		mu          sync.Mutex
-		newArray    []PixelData
-		progressBar = progressbar.Default(int64(len(groupedData)), "Cleaning dataset")
+		cleanData   = make(map[[2]int]map[time.Time]PixelData)
+		progressBar = progressbar.Default(int64(len(pixelDataset)), "Cleaning dataset")
 	)
 
 	wp := workerpool.New(100)
@@ -72,17 +67,27 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 	errChan := make(chan error, 1)
 	var stopProcessing sync.Once
 
-	for _, data := range groupedData {
+	for _, data := range pixelDataset {
 		d := data // capture range variable
 		wp.Submit(func() {
 			var ndre, ndmi, psri, ndvi []float64
-			for _, val := range d {
-				ndre = append(ndre, val.NDRE)
-				ndmi = append(ndmi, val.NDMI)
-				psri = append(psri, val.PSRI)
-				ndvi = append(ndvi, val.NDVI)
+			ascDates := getSortedKeys(d, true)
+			for _, date := range ascDates {
+				pixel := d[date]
+				if pixel.Status == sentinel.PixelStatusInvalid {
+					panic("invalid pixel found during cleaning")
+				}
+				if pixel.Status == sentinel.PixelStatusTreatable {
+					panic("treatable pixel found during cleaning")
+				}
+				ndre = append(ndre, pixel.NDRE)
+				ndmi = append(ndmi, pixel.NDMI)
+				psri = append(psri, pixel.PSRI)
+				ndvi = append(ndvi, pixel.NDVI)
 			}
-
+			if len(ndre) != len(d) {
+				return
+			}
 			values := map[string][]float64{
 				"ndre": ndre, "ndmi": ndmi, "psri": psri, "ndvi": ndvi,
 			}
@@ -93,20 +98,28 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 				return
 			}
 
-			validData := []PixelData{}
-			for i := range d {
+			var validData = make(map[time.Time]PixelData)
+			for i, date := range ascDates {
+				pixel := d[date]
 				if smoothed["ndmi"][i] == 0 || smoothed["psri"][i] == 0 || smoothed["ndre"][i] == 0 || smoothed["ndvi"][i] == 0 {
 					continue
 				}
-				d[i].NDMI = smoothed["ndmi"][i]
-				d[i].PSRI = smoothed["psri"][i]
-				d[i].NDRE = smoothed["ndre"][i]
-				d[i].NDVI = smoothed["ndvi"][i]
-				validData = append(validData, d[i])
+				pixel.NDMI = smoothed["ndmi"][i]
+				pixel.PSRI = smoothed["psri"][i]
+				pixel.NDRE = smoothed["ndre"][i]
+				pixel.NDVI = smoothed["ndvi"][i]
+
+				validData[date] = pixel
 			}
 
 			mu.Lock()
-			newArray = append(newArray, validData...)
+			for date := range validData {
+				key := [2]int{d[date].X, d[date].Y}
+				if _, ok := cleanData[key]; !ok {
+					cleanData[key] = make(map[time.Time]PixelData)
+				}
+				cleanData[key][date] = validData[date]
+			}
 			progressBar.Add(1)
 			mu.Unlock()
 		})
@@ -123,8 +136,8 @@ func cleanDataset(pixelDataset []PixelData) ([]PixelData, error) {
 		return nil, fmt.Errorf("error during dataset cleaning: %v", err)
 	}
 
-	if len(newArray) == 0 {
+	if len(cleanData) == 0 {
 		return nil, fmt.Errorf("no valid data found after cleaning")
 	}
-	return newArray, nil
+	return cleanData, nil
 }

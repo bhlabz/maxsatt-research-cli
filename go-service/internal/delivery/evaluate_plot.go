@@ -12,7 +12,7 @@ import (
 )
 
 func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
-	startDate := endDate.AddDate(0, 0, -20)
+	startDate := endDate.AddDate(0, 0, -50)
 
 	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 	if err != nil {
@@ -30,8 +30,13 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 	}
 
 	groupedData := make(map[time.Time][]delta.PixelData)
-	for _, pixel := range cleanDataset {
-		groupedData[pixel.Date] = append(groupedData[pixel.Date], pixel)
+	for _, sortedPixels := range cleanDataset {
+		for date, pixel := range sortedPixels {
+			//if pixel.Status == sentinel.PixelStatusTreatable {
+			//	fmt.Println("TREATABLE FOUND")
+			//}
+			groupedData[date] = append(groupedData[date], pixel)
+		}
 	}
 
 	var mostRecentDate time.Time
@@ -40,11 +45,11 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 			mostRecentDate = date
 		}
 	}
-	fmt.Printf("Image Date: %v\n", mostRecentDate)
+
 	return groupedData[mostRecentDate], nil
 }
 
-func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) ([]delta.DeltaData, error) {
+func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) ([]delta.Data, error) {
 
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
