@@ -23,7 +23,7 @@ type FinalData struct {
 	CreatedAt time.Time `csv:"created_at"`
 }
 
-func createFinalDataset(samples []delta.Data, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
+func createFinalDataset(samples map[[2]int]delta.Data, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
 	var mergedData []FinalData
 	var mu sync.Mutex
 	var wg sync.WaitGroup

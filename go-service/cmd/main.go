@@ -499,7 +499,7 @@ func createVideo(forest, plot string, days int, endDate time.Time) {
 		return endDates[i].Before(endDates[j])
 	})
 
-	resultPath := fmt.Sprintf("%s/data/result/%s/%s/index", properties.RootPath(), forest, plot)
+	resultPath := fmt.Sprintf("%s/data/result/%s/%s/clean", properties.RootPath(), forest, plot)
 
 	err := os.MkdirAll(resultPath, os.ModePerm)
 	if err != nil {
@@ -563,10 +563,7 @@ func createVideo(forest, plot string, days int, endDate time.Time) {
 			// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
 			continue
 		}
-		firstFileName := files[0].Name()
-		firstFilePath := fmt.Sprintf("%s%s", imageFolderPath, firstFileName)
-		outputFilePath := fmt.Sprintf("%s/%s_%s_%s", resultImagePath, forest, plot, endDate.Format("2006-01-02"))
-		outputImageFilePath, err := output.CreateCleanDataImage(result, firstFilePath, outputFilePath)
+		outputImageFilePath, err := output.CreateCleanDataImage(result, forest, plot, endDate)
 		if err != nil {
 			fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
 			// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", err.Error()))
@@ -626,4 +623,50 @@ func main() {
 	properties.GrpcPort = port
 	initCLI()
 
+	// forest := "Boi Preto VI"
+	// plot := "101"
+
+	// endDate, _ := time.Parse("2006-01-02", "2025-05-20")
+	// startDate := endDate.AddDate(0, 0, -20)
+
+	// geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// cleanData, err := delta.CreateCleanDataset(forest, plot, images)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// groupedCleanData := make(map[time.Time][]delta.PixelData)
+	// for _, sortedPixels := range cleanData {
+	// 	for date, pixel := range sortedPixels {
+	// 		groupedCleanData[date] = append(groupedCleanData[date], pixel)
+	// 	}
+	// }
+
+	// for date, pixels := range groupedCleanData {
+	// 	output.CreateCleanDataImage(pixels, forest, plot, date)
+	// }
+
+	// deltaData, err := delta.CreateDeltaDataset(forest, plot, 1, 20, cleanData)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// spreadResult, err := spread.PestSpread(deltaData)
+	// if err != nil {
+	// 	fmt.Printf("\n\033[31mError spreading pest: %s\033[0m\n", err.Error())
+	// 	return
+	// }
+
+	// for date, pixels := range spreadResult {
+	// 	output.CreatePestSpreadImage(pixels, forest, plot, date)
+	// }
 }

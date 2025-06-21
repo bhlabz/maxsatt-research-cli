@@ -12,6 +12,7 @@ import run_model_pb2_grpc
 from clear_and_smooth import clear_and_smooth
 from dotenv import load_dotenv
 from run_model import run_model
+from pest_clustering_server import serve_pest_clustering
 
 
 class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServicer):
@@ -105,6 +106,7 @@ def serve(port):
     ])
     clear_and_smooth_pb2_grpc.add_ClearAndSmoothServiceServicer_to_server(ClearAndSmoothService(), server)
     run_model_pb2_grpc.add_RunModelServiceServicer_to_server(RunModelServiceServicer(), server)
+    serve_pest_clustering(server)  # Add pest clustering service
     server.add_insecure_port(f'[::]:{port}')
     server.start()
     # print("gRPC server is running on port 50051...")

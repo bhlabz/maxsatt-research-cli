@@ -24,7 +24,12 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 		return nil, err
 	}
 
-	cleanDataset, err := delta.CreateCleanDataset(farm, plot, images)
+	data, err := delta.CreatePixelDataset(farm, plot, images)
+	if err != nil {
+		return nil, err
+	}
+
+	cleanDataset, err := delta.CreateCleanDataset(farm, plot, data)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +54,7 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelD
 	return groupedData[mostRecentDate], nil
 }
 
-func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) ([]delta.Data, error) {
+func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) (map[[2]int]map[time.Time]delta.Data, error) {
 
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
@@ -64,7 +69,17 @@ func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string,
 		return nil, err
 	}
 
-	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysThreshold)
+	data, err := delta.CreatePixelDataset(farm, plot, images)
+	if err != nil {
+		return nil, err
+	}
+
+	cleanData, err := delta.CreateCleanDataset(farm, plot, data)
+	if err != nil {
+		return nil, err
+	}
+
+	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, deltaDays, deltaDaysThreshold, cleanData)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +115,17 @@ func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.Pi
 	fmt.Printf("GetImages took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaDays, deltaDaysThreshold)
+	data, err := delta.CreatePixelDataset(farm, plot, images)
+	if err != nil {
+		return nil, err
+	}
+
+	cleanData, err := delta.CreateCleanDataset(farm, plot, data)
+	if err != nil {
+		return nil, err
+	}
+
+	deltaDataset, err := delta.CreateDeltaDataset(farm, plot, deltaDays, deltaDaysThreshold, cleanData)
 	if err != nil {
 		return nil, err
 	}

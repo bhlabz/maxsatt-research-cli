@@ -6,8 +6,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -27,9 +27,9 @@ type Data struct {
 	Label          *string   `csv:"label"`
 }
 
-func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int]map[time.Time]PixelData) ([]Data, error) {
+func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]Data, error) {
 
-	var deltaDataset []Data
+	var deltaDataset = make(map[[2]int]map[time.Time]Data)
 	found := 0
 	notFound := 0
 	target := len(cleanDataset)
@@ -43,7 +43,7 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2
 			continue
 		}
 
-		ascSortedDates := getSortedKeys(data, true)
+		ascSortedDates := utils.GetSortedKeys(data, true)
 
 		for _, startDate := range ascSortedDates {
 			minTargetDate := startDate.AddDate(0, 0, deltaMin)
@@ -73,7 +73,7 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2
 				psriDerivative := (psriValue - psriStart) / float64(timeDiff)
 				ndviDerivative := (ndviValue - ndviStart) / float64(timeDiff)
 
-				deltaDataset = append(deltaDataset, Data{
+				data := Data{
 					Farm:           farm,
 					Plot:           plot,
 					DeltaMin:       deltaMin,
@@ -86,7 +86,13 @@ func deltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2
 					NDMIDerivative: ndmiDerivative,
 					PSRIDerivative: psriDerivative,
 					NDVIDerivative: ndviDerivative,
-				})
+				}
+
+				if _, exists := deltaDataset[[2]int{data.X, data.Y}]; !exists {
+					deltaDataset[[2]int{data.X, data.Y}] = make(map[time.Time]Data)
+				}
+				deltaDataset[[2]int{data.X, data.Y}][endDate] = data
+
 				found++
 
 				break
@@ -140,7 +146,7 @@ func (p InTreatmentPixel) ListNeighborsByStatus(images map[[2]int]map[time.Time]
 }
 
 func (p InTreatmentPixel) FindMostRecentPixelsByStatus(datePixel map[time.Time]InTreatmentPixel, currentDate time.Time, statuses ...sentinel.PixelStatus) (*InTreatmentPixel, *time.Time) {
-	ascSortedDates := getSortedKeys(datePixel, true)
+	ascSortedDates := utils.GetSortedKeys(datePixel, true)
 
 	for _, date := range ascSortedDates {
 		if date.After(currentDate) || date.Equal(currentDate) {
@@ -160,7 +166,7 @@ func (p InTreatmentPixel) FindMostRecentPixelsByStatus(datePixel map[time.Time]I
 }
 func (p InTreatmentPixel) GetNextValidPixel(datePixel map[time.Time]InTreatmentPixel, curretDate time.Time) *InTreatmentPixel {
 	var nextValidPixel *InTreatmentPixel
-	descSortedDates := getSortedKeys(datePixel, false)
+	descSortedDates := utils.GetSortedKeys(datePixel, false)
 	for _, date := range descSortedDates {
 		if date.Before(curretDate) || date.Equal(curretDate) {
 			continue
@@ -214,37 +220,15 @@ func removeInvalidDates(result map[[2]int]map[time.Time]PixelData) map[[2]int]ma
 	return result
 }
 
-func CreateCleanDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
-	result, err := CreatePixelDataset(farm, plot, images)
-	if err != nil {
-		return nil, err
-	}
-	if len(result) == 0 {
-		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
-	}
-
-	result = removeInvalidDates(result)
+func CreateCleanDataset(farm, plot string, data map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]PixelData, error) {
+	result := removeInvalidDates(data)
 
 	result = estimatePixels(result)
 
-	result, err = cleanDataset(result)
+	result, err := cleanDataset(result)
 	if err != nil {
 		return nil, err
 	}
 
 	return result, nil
-}
-
-func CreateDeltaDataset(farm, plot string, images map[time.Time]*godal.Dataset, deltaMin, deltaMax int) ([]Data, error) {
-	cleanDataset, err := CreateCleanDataset(farm, plot, images)
-	if err != nil {
-		return nil, err
-	}
-
-	deltaDataset, err := deltaDataset(farm, plot, deltaMin, deltaMax, cleanDataset)
-	if err != nil {
-		return nil, err
-	}
-
-	return deltaDataset, nil
 }

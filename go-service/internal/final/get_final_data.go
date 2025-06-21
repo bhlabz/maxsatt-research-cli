@@ -3,10 +3,12 @@ package final
 import (
 	"fmt"
 	"os"
+	"slices"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 	"github.com/gocarina/gocsv"
 )
@@ -67,24 +69,28 @@ func SaveFinalData(finalData []FinalData, date time.Time) error {
 	return nil
 }
 
-func GetFinalData(deltaDataset []delta.Data, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string) ([]FinalData, error) {
-	filteredDataset := make([]delta.Data, 0, len(deltaDataset))
-	for _, record := range deltaDataset {
-		if isBetweenDates(record.StartDate, startDate, endDate) || isBetweenDates(record.EndDate, startDate, endDate) {
-			filteredDataset = append(filteredDataset, record)
+func GetFinalData(deltaDataset map[[2]int]map[time.Time]delta.Data, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string) ([]FinalData, error) {
+	dates := make([]time.Time, 0)
+	for date := range deltaDataset {
+		for date := range deltaDataset[date] {
+			if isBetweenDates(date, startDate, endDate) && !slices.Contains(dates, date) {
+				dates = append(dates, date)
+			}
 		}
 	}
 
-	// Get dates from filtered dataset
-	dates := []time.Time{}
-	for _, record := range filteredDataset {
-		endDateRecord := record.EndDate // Access the EndDate field directly
-		// Truncate to year, month, and day
-		truncatedDate := time.Date(endDateRecord.Year(), endDateRecord.Month(), endDateRecord.Day(), 0, 0, 0, 0, endDateRecord.Location())
-		dates = append(dates, truncatedDate)
-	}
+	lastDate := utils.SortDates(dates, false)[0]
 
-	// Call external functions (placeholders for now)
 	climateDataset := weather.CalculateHistoricalWeatherMetricsByDates(dates, historicalWeather)
-	return createFinalDataset(filteredDataset, climateDataset)
+
+	samples := make(map[[2]int]delta.Data)
+	for key, data := range deltaDataset {
+		for date, sample := range data {
+			if date.Equal(lastDate) {
+				samples[key] = sample
+			}
+		}
+
+	}
+	return createFinalDataset(samples, climateDataset)
 }

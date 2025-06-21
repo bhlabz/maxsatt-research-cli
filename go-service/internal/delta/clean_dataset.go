@@ -9,6 +9,7 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
 	"github.com/gammazero/workerpool"
 	"github.com/schollz/progressbar/v3"
 	"google.golang.org/grpc"
@@ -71,7 +72,7 @@ func cleanDataset(pixelDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]m
 		d := data // capture range variable
 		wp.Submit(func() {
 			var ndre, ndmi, psri, ndvi []float64
-			ascDates := getSortedKeys(d, true)
+			ascDates := utils.GetSortedKeys(d, true)
 			for _, date := range ascDates {
 				pixel := d[date]
 				if pixel.Status == sentinel.PixelStatusInvalid {
