@@ -1,11 +1,13 @@
 import logging
-import grpc
-from concurrent import futures
 import time
+from concurrent import futures
+
+import grpc
 import numpy as np
-from sklearn.cluster import DBSCAN
 import pest_clustering_pb2
 import pest_clustering_pb2_grpc
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +66,7 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
                 delta_data.ndre_derivative,
                 delta_data.ndmi_derivative,
                 delta_data.psri_derivative,
-                delta_data.ndvi_derivative
+                delta_data.ndvi_derivative,
                 delta_data.x,
                 delta_data.y,
             ]
@@ -73,10 +75,16 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         features = np.array(features)
         logger.info(f"Extracted features shape: {features.shape}")
         
-        # Perform DBSCAN clustering
+        # Normalize features to handle different scales
+        scaler = StandardScaler()
+        features_normalized = scaler.fit_transform(features)
+        logger.info(f"Feature ranges after normalization: min={features_normalized.min(axis=0)}, max={features_normalized.max(axis=0)}")
+        
+        # Perform DBSCAN clustering with more reasonable parameters
         # eps: maximum distance between two samples for one to be considered as in the neighborhood of the other
         # min_samples: minimum number of samples in a neighborhood for a point to be considered as a core point
-        clustering = DBSCAN(eps=0.5, min_samples=2).fit(features)
+        # Using eps=2.0 and min_samples=3 for fewer, more meaningful clusters (targeting ~5 clusters max)
+        clustering = DBSCAN(eps=0.4, min_samples=100).fit(features_normalized)
         
         cluster_labels = clustering.labels_
         n_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)
@@ -84,6 +92,16 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         
         logger.info(f"Clustering results: {n_clusters} clusters found, {n_noise} noise points")
         logger.info(f"Cluster labels: {cluster_labels}")
+        
+        # If too many clusters or all points are noise, try with more lenient parameters
+        # if (n_clusters > 10 or n_clusters == 0) and len(delta_data_list) > 1:
+        #     logger.info(f"Too many clusters ({n_clusters}) or all noise. Trying with more lenient parameters...")
+        #     clustering = DBSCAN(eps=3.0, min_samples=2).fit(features_normalized)
+        #     cluster_labels = clustering.labels_
+        #     n_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)
+        #     n_noise = list(cluster_labels).count(-1)
+        #     logger.info(f"Retry clustering results: {n_clusters} clusters found, {n_noise} noise points")
+        #     logger.info(f"Retry cluster labels: {cluster_labels}")
         
         # Create PestSpreadSample objects
         pest_spread_samples = []

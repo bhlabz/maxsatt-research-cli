@@ -12,7 +12,7 @@ import (
 )
 
 func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]delta.PixelData, error) {
-	startDate := endDate.AddDate(0, 0, -50)
+	startDate := endDate.AddDate(0, 0, -40)
 
 	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 	if err != nil {
