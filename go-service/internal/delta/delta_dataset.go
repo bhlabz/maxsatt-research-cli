@@ -140,9 +140,9 @@ func (p InTreatmentPixel) ListNeighborsByStatus(images map[[2]int]map[time.Time]
 }
 
 func (p InTreatmentPixel) FindMostRecentPixelsByStatus(datePixel map[time.Time]InTreatmentPixel, currentDate time.Time, statuses ...sentinel.PixelStatus) (*InTreatmentPixel, *time.Time) {
-	ascSortedDates := getSortedKeys(datePixel, true)
+	descSortedDates := getSortedKeys(datePixel, false)
 
-	for _, date := range ascSortedDates {
+	for _, date := range descSortedDates {
 		if date.After(currentDate) || date.Equal(currentDate) {
 			continue
 		}
@@ -160,8 +160,8 @@ func (p InTreatmentPixel) FindMostRecentPixelsByStatus(datePixel map[time.Time]I
 }
 func (p InTreatmentPixel) GetNextValidPixel(datePixel map[time.Time]InTreatmentPixel, curretDate time.Time) *InTreatmentPixel {
 	var nextValidPixel *InTreatmentPixel
-	descSortedDates := getSortedKeys(datePixel, false)
-	for _, date := range descSortedDates {
+	ascSortedDates := getSortedKeys(datePixel, true)
+	for _, date := range ascSortedDates {
 		if date.Before(curretDate) || date.Equal(curretDate) {
 			continue
 		}
