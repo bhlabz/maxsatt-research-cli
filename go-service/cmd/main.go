@@ -628,60 +628,61 @@ func main() {
 
 	forest := "Boi Preto VI"
 	plot := "101"
-	var dateRange []string
-	startDate, _ := time.Parse("2006-01-02", "2024-03-01")
-	endDate, _ := time.Parse("2006-01-02", "2024-04-05")
+	// var dateRange []string
+	// startDate, _ := time.Parse("2006-01-02", "2024-03-01")
+	// endDate, _ := time.Parse("2006-01-02", "2024-04-05")
 
-	for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
-		dateRange = append(dateRange, d.Format("2006-01-02"))
+	// for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
+	// 	dateRange = append(dateRange, d.Format("2006-01-02"))
+	// }
+
+	// fmt.Print("\033[34mEnter the end date (YYYY-MM-DD): \033[0m")
+	// for _, dateStr := range dateRange {
+	dateStr := "2024-05-30"
+	fmt.Println("\n\033[34mAnalyzing pest spread for forest:", forest, "plot:", plot, "on date:", dateStr, "\033[0m")
+	endDate, _ := time.Parse("2006-01-02", dateStr)
+	startDate := endDate.AddDate(0, 0, -200)
+
+	geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
+	if err != nil {
+		panic(err)
 	}
 
-	fmt.Print("\033[34mEnter the end date (YYYY-MM-DD): \033[0m")
-	for _, dateStr := range dateRange {
-		fmt.Println("\n\033[34mAnalyzing pest spread for forest:", forest, "plot:", plot, "on date:", dateStr, "\033[0m")
-		endDate, _ := time.Parse("2006-01-02", dateStr)
-		startDate := endDate.AddDate(0, 0, -40)
+	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
+	if err != nil {
+		panic(err)
+	}
 
-		geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
-		if err != nil {
-			panic(err)
-		}
+	data, err := delta.CreatePixelDataset(forest, plot, images)
+	if err != nil {
+		panic(err)
+	}
 
-		images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
-		if err != nil {
-			panic(err)
-		}
+	cleanData, err := delta.CreateCleanDataset(forest, plot, data)
+	if err != nil {
+		panic(err)
+	}
 
-		data, err := delta.CreatePixelDataset(forest, plot, images)
-		if err != nil {
-			panic(err)
-		}
-
-		cleanData, err := delta.CreateCleanDataset(forest, plot, data)
-		if err != nil {
-			panic(err)
-		}
-
-		groupedCleanData := make(map[time.Time][]delta.PixelData)
-		for _, sortedPixels := range cleanData {
-			for date, pixel := range sortedPixels {
-				groupedCleanData[date] = append(groupedCleanData[date], pixel)
-			}
-		}
-
-		deltaData, err := delta.CreateDeltaDataset(forest, plot, 1, 20, cleanData)
-		if err != nil {
-			panic(err)
-		}
-
-		spreadResult, err := spread.PestSpread(deltaData)
-		if err != nil {
-			fmt.Printf("\n\033[31mError spreading pest: %s\033[0m\n", err.Error())
-			return
-		}
-
-		for date, pixels := range spreadResult {
-			output.CreatePestSpreadImage(pixels, forest, plot, date)
+	groupedCleanData := make(map[time.Time][]delta.PixelData)
+	for _, sortedPixels := range cleanData {
+		for date, pixel := range sortedPixels {
+			groupedCleanData[date] = append(groupedCleanData[date], pixel)
 		}
 	}
+
+	deltaData, err := delta.CreateDeltaDataset(forest, plot, 1, 20, cleanData)
+	if err != nil {
+		panic(err)
+	}
+
+	spreadResult, err := spread.PestSpread(deltaData)
+	if err != nil {
+		fmt.Printf("\n\033[31mError spreading pest: %s\033[0m\n", err.Error())
+		return
+	}
+
+	for date, pixels := range spreadResult {
+		output.CreatePestSpreadImage(pixels, forest, plot, date)
+	}
+	// }
 }

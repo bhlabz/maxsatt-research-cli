@@ -67,8 +67,8 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
                 delta_data.ndmi_derivative,
                 delta_data.psri_derivative,
                 delta_data.ndvi_derivative,
-                delta_data.x,
-                delta_data.y,
+                # delta_data.x,
+                # delta_data.y,
             ]
             features.append(feature_vector)
         
@@ -84,7 +84,7 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         # eps: maximum distance between two samples for one to be considered as in the neighborhood of the other
         # min_samples: minimum number of samples in a neighborhood for a point to be considered as a core point
         # Using eps=2.0 and min_samples=3 for fewer, more meaningful clusters (targeting ~5 clusters max)
-        clustering = DBSCAN(eps=0.4, min_samples=100).fit(features_normalized)
+        clustering = DBSCAN(eps=0.5, min_samples=100).fit(features_normalized)
         
         cluster_labels = clustering.labels_
         n_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)
@@ -92,16 +92,6 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         
         logger.info(f"Clustering results: {n_clusters} clusters found, {n_noise} noise points")
         logger.info(f"Cluster labels: {cluster_labels}")
-        
-        # If too many clusters or all points are noise, try with more lenient parameters
-        # if (n_clusters > 10 or n_clusters == 0) and len(delta_data_list) > 1:
-        #     logger.info(f"Too many clusters ({n_clusters}) or all noise. Trying with more lenient parameters...")
-        #     clustering = DBSCAN(eps=3.0, min_samples=2).fit(features_normalized)
-        #     cluster_labels = clustering.labels_
-        #     n_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)
-        #     n_noise = list(cluster_labels).count(-1)
-        #     logger.info(f"Retry clustering results: {n_clusters} clusters found, {n_noise} noise points")
-        #     logger.info(f"Retry cluster labels: {cluster_labels}")
         
         # Create PestSpreadSample objects
         pest_spread_samples = []
