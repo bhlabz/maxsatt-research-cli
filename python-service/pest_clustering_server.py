@@ -84,7 +84,7 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         # eps: maximum distance between two samples for one to be considered as in the neighborhood of the other
         # min_samples: minimum number of samples in a neighborhood for a point to be considered as a core point
         # Using eps=2.0 and min_samples=3 for fewer, more meaningful clusters (targeting ~5 clusters max)
-        clustering = DBSCAN(eps=0.5, min_samples=100).fit(features_normalized)
+        clustering = DBSCAN(eps=0.5, min_samples=5).fit(features_normalized)
         
         cluster_labels = clustering.labels_
         n_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)

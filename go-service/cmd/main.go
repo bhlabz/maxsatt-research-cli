@@ -8,7 +8,6 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -73,6 +72,7 @@ func initCLI() {
 		fmt.Println("\033[34m5. View the list of available forests\033[0m")
 		fmt.Println("\033[34m6. View the list of available forest plots\033[0m")
 		fmt.Println("\033[34m7. Exit the application\033[0m")
+		fmt.Println("\033[34m8. Analyze forest plot image deforestation spread over time\033[0m")
 		fmt.Println("\033[34mPlease enter your choice:\033[0m")
 
 		var choice int
@@ -378,7 +378,49 @@ func initCLI() {
 				fmt.Printf("\n\033[31mInvalid number of days: %s. Please enter a positive integer.\033[0m\n", daysInput)
 				continue
 			}
-			createVideo(forest, plot, days, endDate)
+			startDate := endDate.AddDate(0, 0, -days)
+
+			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
+			if err != nil {
+				panic(err)
+			}
+
+			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
+			if err != nil {
+				panic(err)
+			}
+
+			data, err := delta.CreatePixelDataset(forest, plot, images)
+			if err != nil {
+				panic(err)
+			}
+
+			cleanData, err := delta.CreateCleanDataset(forest, plot, data)
+			if err != nil {
+				panic(err)
+			}
+
+			groupedCleanData := make(map[time.Time][]delta.PixelData)
+			for _, sortedPixels := range cleanData {
+				for date, pixel := range sortedPixels {
+					groupedCleanData[date] = append(groupedCleanData[date], pixel)
+				}
+			}
+
+			for date, pixels := range groupedCleanData {
+				output.CreateCleanDataImage(pixels, forest, plot, date)
+			}
+
+			imagesPath := fmt.Sprintf("%s/data/result/%s/%s/clean", properties.RootPath(), forest, plot)
+
+			err = output.CreateVideoFromDirectory(imagesPath+"/images/NDVI", fmt.Sprintf("%s/videos/NDVI-%s-%s", imagesPath, startDate.Format("2006_01_02"), endDate.Format("2006_01_02")))
+			if err != nil {
+				panic(err)
+			}
+			err = output.CreateVideoFromDirectory(imagesPath+"/images/NDRE", fmt.Sprintf("%s/videos/NDRE-%s-%s", imagesPath, startDate.Format("2006_01_02"), endDate.Format("2006_01_02")))
+			if err != nil {
+				panic(err)
+			}
 
 		case 4:
 			fmt.Println("\033[33m\nWarning:\033[0m")
@@ -485,103 +527,91 @@ func initCLI() {
 		case 7:
 			println("Exiting...")
 			return
+		case 8:
+			fmt.Println("\033[33m\nWarning:\033[0m")
+			fmt.Println("\033[33m- A '.geojson' file with the farm name should be present in data/geojsons folder.\033[0m")
+			fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
+			reader := bufio.NewReader(os.Stdin)
+
+			fmt.Print("\033[34mEnter the forest name: \033[0m")
+			forest, _ := reader.ReadString('\n')
+			forest = strings.TrimSpace(forest)
+
+			fmt.Print("\033[34mEnter the plot id: \033[0m")
+			plot, _ := reader.ReadString('\n')
+			plot = strings.TrimSpace(plot)
+
+			fmt.Print("\033[34mEnter the end date (YYYY-MM-DD): \033[0m")
+			endDateInput, _ := reader.ReadString('\n')
+			endDateInput = strings.TrimSpace(endDateInput)
+			endDate, err := time.Parse("2006-01-02", endDateInput)
+			if err != nil {
+				fmt.Printf("\n\033[31mInvalid date format: %s. Please use YYYY-MM-DD.\033[0m\n", endDateInput)
+				continue
+			}
+
+			fmt.Print("\033[34mEnter number of days: \033[0m")
+			daysInput, _ := reader.ReadString('\n')
+			daysInput = strings.TrimSpace(daysInput)
+			days, err := strconv.Atoi(daysInput)
+			if err != nil || days <= 0 {
+				fmt.Printf("\n\033[31mInvalid number of days: %s. Please enter a positive integer.\033[0m\n", daysInput)
+				continue
+			}
+			startDate := endDate.AddDate(0, 0, -days)
+
+			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
+			if err != nil {
+				panic(err)
+			}
+
+			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
+			if err != nil {
+				panic(err)
+			}
+
+			data, err := delta.CreatePixelDataset(forest, plot, images)
+			if err != nil {
+				panic(err)
+			}
+
+			cleanData, err := delta.CreateCleanDataset(forest, plot, data)
+			if err != nil {
+				panic(err)
+			}
+
+			groupedCleanData := make(map[time.Time][]delta.PixelData)
+			for _, sortedPixels := range cleanData {
+				for date, pixel := range sortedPixels {
+					groupedCleanData[date] = append(groupedCleanData[date], pixel)
+				}
+			}
+
+			deltaData, err := delta.CreateDeltaDataset(forest, plot, 1, 20, cleanData)
+			if err != nil {
+				panic(err)
+			}
+
+			spreadResult, err := spread.PestSpread(deltaData)
+			if err != nil {
+				fmt.Printf("\n\033[31mError spreading pest: %s\033[0m\n", err.Error())
+				return
+			}
+
+			for date, pixels := range spreadResult {
+				output.CreatePestSpreadImage(pixels, forest, plot, date)
+			}
+
+			imagesPath := fmt.Sprintf("%s/data/result/%s/%s/spread", properties.RootPath(), forest, plot)
+
+			err = output.CreateVideoFromDirectory(imagesPath+"/images", imagesPath+"/videos/result")
+			if err != nil {
+				panic(err)
+			}
+
 		default:
 			println("Invalid choice. Please try again.")
 		}
-	}
-}
-
-func createVideo(forest, plot string, days int, endDate time.Time) {
-
-	var endDates []time.Time
-	for i := range days {
-		endDates = append(endDates, endDate.AddDate(0, 0, -i))
-	}
-
-	sort.Slice(endDates, func(i, j int) bool {
-		return endDates[i].Before(endDates[j])
-	})
-
-	resultPath := fmt.Sprintf("%s/data/result/%s/%s/clean", properties.RootPath(), forest, plot)
-
-	err := os.MkdirAll(resultPath, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Failed to create result folder: %v", err)
-	}
-
-	resultImagePath := fmt.Sprintf("%s/images", resultPath)
-	err = os.MkdirAll(resultImagePath, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Failed to create result folder: %v", err)
-	}
-
-	resultVideoPath := fmt.Sprintf("%s/videos", resultPath)
-	err = os.MkdirAll(resultVideoPath, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Failed to create result folder: %v", err)
-	}
-
-	var outputImageFilePaths []string
-
-	for _, endDate := range endDates {
-		imageFolderPath := fmt.Sprintf("%s/data/images/%s_%s/", properties.RootPath(), forest, plot)
-		if _, err := os.Stat(imageFolderPath); os.IsNotExist(err) {
-			err := os.MkdirAll(imageFolderPath, os.ModePerm)
-			if err != nil {
-				fmt.Printf("\n\033[31mError creating image folder: %s\033[0m\n", err.Error())
-				continue
-			}
-		}
-
-		files, err := os.ReadDir(imageFolderPath)
-		if err != nil {
-			fmt.Printf("\n\033[31mError reading image folder: %s\033[0m\n", err.Error())
-			// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError reading images folder: %s", err.Error()))
-			continue
-		}
-		exists := true
-		for _, index := range []string{"NDMI", "NDVI", "PSRI", "NDRE"} {
-			imageFilePath := fmt.Sprintf("%s/%s_%s_%s_%s.jpeg", resultImagePath, forest, plot, endDate.Format("2006-01-02"), index)
-			if _, err := os.Stat(imageFilePath); err == nil {
-				outputImageFilePaths = append(outputImageFilePaths, imageFilePath)
-			}
-			exists = false
-		}
-		if exists {
-			fmt.Printf("\n\033[31mResultant image already exists: %s\033[0m\n", files[0].Name())
-			continue
-		}
-
-		result, err := delivery.EvaluatePlotCleanData(forest, plot, endDate)
-		if err != nil {
-			fmt.Printf("\n\033[31mError evaluating plot: %s\033[0m\n", err.Error())
-			if !strings.Contains(err.Error(), "empty csv file given") {
-				// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError evaluating plot: %s", err.Error()))
-			}
-			continue
-		}
-
-		if len(files) == 0 {
-			fmt.Printf("\n\033[31mNo tiff images found to create resultant image\033[0m\n")
-			// notification.SendDiscordErrorNotification("Maxsatt CLI\n\nNo tiff images found to create resultant image")
-			continue
-		}
-		outputImageFilePath, err := output.CreateCleanDataImage(result, forest, plot, endDate)
-		if err != nil {
-			fmt.Printf("\n\033[31mError creating resultant image: %s\033[0m\n", err.Error())
-			// notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError creating resultant image: %s", err.Error()))
-			continue
-		}
-
-		fmt.Printf("\n\033[32mSuccessful analysis!\n Resultant image located at: %s\033[0m\n", outputImageFilePath)
-		outputImageFilePaths = append(outputImageFilePaths, outputImageFilePath...)
-	}
-
-	if len(outputImageFilePaths) > 1 {
-		outputVideoPath := fmt.Sprintf("%s/%s_%s_%s_%s_%d", resultVideoPath, forest, plot, endDates[0].Format("2006-01-02"), endDates[len(endDates)-1].Format("2006-01-02"), days)
-		output.CreateVideoFromImages(outputImageFilePaths, outputVideoPath)
-		fmt.Printf("\n\033[32mResultant video located at: %s\033[0m\n", outputVideoPath)
-
 	}
 }
 
@@ -624,65 +654,6 @@ func main() {
 	}
 
 	properties.GrpcPort = port
-	// initCLI()
+	initCLI()
 
-	forest := "Boi Preto VI"
-	plot := "101"
-	// var dateRange []string
-	// startDate, _ := time.Parse("2006-01-02", "2024-03-01")
-	// endDate, _ := time.Parse("2006-01-02", "2024-04-05")
-
-	// for d := startDate; !d.After(endDate); d = d.AddDate(0, 0, 1) {
-	// 	dateRange = append(dateRange, d.Format("2006-01-02"))
-	// }
-
-	// fmt.Print("\033[34mEnter the end date (YYYY-MM-DD): \033[0m")
-	// for _, dateStr := range dateRange {
-	dateStr := "2024-05-30"
-	fmt.Println("\n\033[34mAnalyzing pest spread for forest:", forest, "plot:", plot, "on date:", dateStr, "\033[0m")
-	endDate, _ := time.Parse("2006-01-02", dateStr)
-	startDate := endDate.AddDate(0, 0, -200)
-
-	geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
-	if err != nil {
-		panic(err)
-	}
-
-	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
-	if err != nil {
-		panic(err)
-	}
-
-	data, err := delta.CreatePixelDataset(forest, plot, images)
-	if err != nil {
-		panic(err)
-	}
-
-	cleanData, err := delta.CreateCleanDataset(forest, plot, data)
-	if err != nil {
-		panic(err)
-	}
-
-	groupedCleanData := make(map[time.Time][]delta.PixelData)
-	for _, sortedPixels := range cleanData {
-		for date, pixel := range sortedPixels {
-			groupedCleanData[date] = append(groupedCleanData[date], pixel)
-		}
-	}
-
-	deltaData, err := delta.CreateDeltaDataset(forest, plot, 1, 20, cleanData)
-	if err != nil {
-		panic(err)
-	}
-
-	spreadResult, err := spread.PestSpread(deltaData)
-	if err != nil {
-		fmt.Printf("\n\033[31mError spreading pest: %s\033[0m\n", err.Error())
-		return
-	}
-
-	for date, pixels := range spreadResult {
-		output.CreatePestSpreadImage(pixels, forest, plot, date)
-	}
-	// }
 }

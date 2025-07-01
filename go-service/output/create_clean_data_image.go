@@ -7,7 +7,6 @@ import (
 	"image/jpeg"
 	"log"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
@@ -70,19 +69,15 @@ func CreateCleanDataImage(result []delta.PixelData, forest, plot string, date ti
 		log.Fatalf("Failed to create result folder: %v", err)
 	}
 
-	resultImagePath := fmt.Sprintf("%s/images", resultPath)
-	err = os.MkdirAll(resultImagePath, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Failed to create result folder: %v", err)
-	}
-	outputPath := fmt.Sprintf("%s/%s_%s_%s.jpg", resultImagePath, forest, plot, date.Format("2006_01_02"))
-
 	imagePaths := []string{}
 	for _, index := range []string{"NDRE", "NDMI", "PSRI", "NDVI"} {
-		outputImagePathCpy := outputPath + "_" + index
-		if !strings.Contains(outputImagePathCpy, ".jpeg") {
-			outputImagePathCpy += ".jpeg"
+		resultImagePath := fmt.Sprintf("%s/images/%s", resultPath, index)
+		err = os.MkdirAll(resultImagePath, os.ModePerm)
+		if err != nil {
+			log.Fatalf("Failed to create result folder: %v", err)
 		}
+
+		outputPath := fmt.Sprintf("%s/%s_%s_%s.jpeg", resultImagePath, forest, plot, date.Format("2006_01_02"))
 
 		minX, maxX := result[0].X, result[0].X
 		minY, maxY := result[0].Y, result[0].Y
@@ -120,7 +115,7 @@ func CreateCleanDataImage(result []delta.PixelData, forest, plot string, date ti
 			}
 		}
 
-		outputFile, err := os.Create(outputImagePathCpy)
+		outputFile, err := os.Create(outputPath)
 		if err != nil {
 			fmt.Printf("Error creating JPEG file: %v\n", err)
 			return nil, nil
@@ -135,8 +130,8 @@ func CreateCleanDataImage(result []delta.PixelData, forest, plot string, date ti
 			return nil, err
 		}
 
-		fmt.Println("JPEG image created successfully as", outputImagePathCpy)
-		imagePaths = append(imagePaths, outputImagePathCpy)
+		fmt.Println("JPEG image created successfully as", outputPath)
+		imagePaths = append(imagePaths, outputPath)
 	}
 
 	return imagePaths, nil

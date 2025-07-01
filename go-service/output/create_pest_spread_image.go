@@ -6,7 +6,6 @@ import (
 	"image/color"
 	"image/jpeg"
 	"log"
-	"math/rand"
 	"os"
 	"sort"
 	"time"
@@ -108,55 +107,38 @@ func CreatePestSpreadImage(samples []spread.PestSpreadSample, forest, plot strin
 	return nil
 }
 
-// generateClusterColors creates a color palette for each unique cluster
+// generateClusterColors creates a color palette for each unique cluster based on severity
 func generateClusterColors(samples []spread.PestSpreadSample) map[int]color.RGBA {
-	// Get unique clusters
-	clusters := make(map[int]bool)
+	// Get unique clusters and their severities
+	clusterSeverities := make(map[int]int)
 	for _, sample := range samples {
-		clusters[sample.Cluster] = true
+		clusterSeverities[sample.Cluster] = sample.Severity
 	}
 
-	// Create a sorted list of cluster IDs
-	var clusterIDs []int
-	for cluster := range clusters {
-		clusterIDs = append(clusterIDs, cluster)
+	// Find the maximum severity to normalize the color scale
+	maxSeverity := 1
+	for _, severity := range clusterSeverities {
+		if severity > maxSeverity {
+			maxSeverity = severity
+		}
 	}
-	sort.Ints(clusterIDs)
 
-	// Generate distinct colors for each cluster
+	// Generate colors based on severity
 	clusterColors := make(map[int]color.RGBA)
+	for cluster, severity := range clusterSeverities {
+		// Normalize severity to 0-1 range (1 = red, maxSeverity = green)
+		normalizedSeverity := float64(severity-1) / float64(maxSeverity-1)
 
-	// Predefined colors for better visualization
-	predefinedColors := []color.RGBA{
-		{R: 255, G: 0, B: 0, A: 255},     // Red
-		{R: 0, G: 255, B: 0, A: 255},     // Green
-		{R: 0, G: 0, B: 255, A: 255},     // Blue
-		{R: 255, G: 255, B: 0, A: 255},   // Yellow
-		{R: 255, G: 0, B: 255, A: 255},   // Magenta
-		{R: 0, G: 255, B: 255, A: 255},   // Cyan
-		{R: 255, G: 128, B: 0, A: 255},   // Orange
-		{R: 128, G: 0, B: 255, A: 255},   // Purple
-		{R: 0, G: 128, B: 0, A: 255},     // Dark Green
-		{R: 128, G: 128, B: 0, A: 255},   // Olive
-		{R: 255, G: 128, B: 128, A: 255}, // Light Red
-		{R: 128, G: 255, B: 128, A: 255}, // Light Green
-		{R: 128, G: 128, B: 255, A: 255}, // Light Blue
-		{R: 255, G: 255, B: 128, A: 255}, // Light Yellow
-		{R: 255, G: 128, B: 255, A: 255}, // Light Magenta
-	}
+		// Create gradient from red (severity 1) to green (max severity)
+		red := uint8(255 * (1 - normalizedSeverity)) // Red decreases as severity increases
+		green := uint8(255 * normalizedSeverity)     // Green increases as severity increases
+		blue := uint8(0)                             // No blue component
 
-	// Assign colors to clusters
-	for i, clusterID := range clusterIDs {
-		if i < len(predefinedColors) {
-			clusterColors[clusterID] = predefinedColors[i]
-		} else {
-			// Generate random colors for additional clusters
-			clusterColors[clusterID] = color.RGBA{
-				R: uint8(rand.Intn(256)),
-				G: uint8(rand.Intn(256)),
-				B: uint8(rand.Intn(256)),
-				A: 255,
-			}
+		clusterColors[cluster] = color.RGBA{
+			R: red,
+			G: green,
+			B: blue,
+			A: 255,
 		}
 	}
 
@@ -233,16 +215,41 @@ func CreatePestSpreadImageWithLegend(samples []spread.PestSpreadSample, outputPa
 	legendX := 10
 	legendSpacing := 20
 
-	// Get sorted cluster IDs
+	// Get sorted cluster IDs by severity (lowest severity first)
 	var clusterIDs []int
 	for cluster := range clusterColors {
 		clusterIDs = append(clusterIDs, cluster)
 	}
-	sort.Ints(clusterIDs)
+	sort.Slice(clusterIDs, func(i, j int) bool {
+		// Find severity for each cluster
+		var severityI, severityJ int
+		for _, sample := range samples {
+			if sample.Cluster == clusterIDs[i] {
+				severityI = sample.Severity
+				break
+			}
+		}
+		for _, sample := range samples {
+			if sample.Cluster == clusterIDs[j] {
+				severityJ = sample.Severity
+				break
+			}
+		}
+		return severityI < severityJ
+	})
 
 	// Draw legend items
 	for i, clusterID := range clusterIDs {
 		y := legendY + i*legendSpacing
+
+		// Find severity for this cluster
+		var severity int
+		for _, sample := range samples {
+			if sample.Cluster == clusterID {
+				severity = sample.Severity
+				break
+			}
+		}
 
 		// Draw color box
 		color := clusterColors[clusterID]
@@ -256,9 +263,9 @@ func CreatePestSpreadImageWithLegend(samples []spread.PestSpreadSample, outputPa
 		dc.SetLineWidth(1)
 		dc.Stroke()
 
-		// Draw text
+		// Draw text with severity information
 		dc.SetRGB(0, 0, 0)
-		dc.DrawStringAnchored(fmt.Sprintf("Cluster %d", clusterID), float64(legendX+20), float64(y+7), 0, 0.5)
+		dc.DrawStringAnchored(fmt.Sprintf("Cluster %d (Severity %d)", clusterID, severity), float64(legendX+20), float64(y+7), 0, 0.5)
 	}
 
 	// Save the image as JPEG
