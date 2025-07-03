@@ -421,6 +421,10 @@ func initCLI() {
 			if err != nil {
 				panic(err)
 			}
+			err = output.CreateVideoFromDirectory(imagesPath+"/images/NDMI", fmt.Sprintf("%s/videos/NDMI-%s-%s", imagesPath, startDate.Format("2006_01_02"), endDate.Format("2006_01_02")))
+			if err != nil {
+				panic(err)
+			}
 
 		case 4:
 			fmt.Println("\033[33m\nWarning:\033[0m")
@@ -592,7 +596,16 @@ func initCLI() {
 				panic(err)
 			}
 
-			spreadResult, err := spread.PestSpread(deltaData)
+			fmt.Print("\033[34mEnter number of days to cluster: \033[0m")
+			daysToClusterInput, _ := reader.ReadString('\n')
+			daysToClusterInput = strings.TrimSpace(daysToClusterInput)
+			daysToCluster, err := strconv.Atoi(daysToClusterInput)
+			if err != nil || daysToCluster <= 0 {
+				fmt.Printf("\n\033[31mInvalid number of days to cluster: %s. Please enter a positive integer.\033[0m\n", daysToClusterInput)
+				continue
+			}
+
+			spreadResult, err := spread.PestSpread(deltaData, daysToCluster)
 			if err != nil {
 				fmt.Printf("\n\033[31mError spreading pest: %s\033[0m\n", err.Error())
 				return

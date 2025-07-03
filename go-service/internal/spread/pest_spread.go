@@ -14,7 +14,7 @@ type PestSpreadSample struct {
 	Severity int
 }
 
-func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data) (map[time.Time][]PestSpreadSample, error) {
+func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data, daysToCluster int) (map[time.Time][]PestSpreadSample, error) {
 	groupedData := make(map[time.Time][]delta.Data)
 	for _, datePixel := range deltaData {
 		for date, pixel := range datePixel {
@@ -34,18 +34,43 @@ func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data) (map[time.Time][]
 
 	var allPestSpreadSamples = make(map[time.Time][]PestSpreadSample)
 
-	for date, pixels := range groupedData {
-		fmt.Println("Processing pixels for date:", pixels[0].StartDate, "to", pixels[0].EndDate)
-		fmt.Printf("Sending %d pixels to clustering service\n", len(pixels))
+	// Get dates and sort them
+	dates := make([]time.Time, 0, len(groupedData))
+	for d := range groupedData {
+		dates = append(dates, d)
+	}
+	sort.Slice(dates, func(i, j int) bool {
+		return dates[i].Before(dates[j])
+	})
 
-		// Call the clustering function for each group of pixels
-		pestSpreadSamples, err := client.ClusterizeSpread(pixels)
-		if err != nil {
-			fmt.Printf("Error clustering pixels for date %s: %v\n", date, err)
+	// Process in batches
+	for i := 0; i < len(dates); i += daysToCluster {
+		end := i + daysToCluster
+		if end > len(dates) {
+			end = len(dates)
+		}
+		batchDates := dates[i:end]
+
+		var batchPixels []delta.Data
+		for _, date := range batchDates {
+			batchPixels = append(batchPixels, groupedData[date]...)
+		}
+
+		if len(batchPixels) == 0 {
 			continue
 		}
 
-		fmt.Printf("Received %d clustered samples for date %s\n", len(pestSpreadSamples), date)
+		fmt.Println("Processing pixels for dates:", batchDates[0].Format("2006-01-02"), "to", batchDates[len(batchDates)-1].Format("2006-01-02"))
+		fmt.Printf("Sending %d pixels to clustering service", len(batchPixels))
+
+		// Call the clustering function for each group of pixels
+		pestSpreadSamples, err := client.ClusterizeSpread(batchPixels)
+		if err != nil {
+			fmt.Printf("Error clustering pixels for dates %v: %v", batchDates, err)
+			continue
+		}
+
+		fmt.Printf("Received %d clustered samples for dates %v", len(pestSpreadSamples), batchDates)
 
 		// Log cluster information
 		clusterCounts := make(map[int]int)
@@ -53,19 +78,22 @@ func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data) (map[time.Time][]
 			clusterCounts[sample.Cluster]++
 		}
 
-		fmt.Printf("Cluster distribution for date %s:\n", date)
+		fmt.Printf("Cluster distribution for dates %v:", batchDates)
 		for cluster, count := range clusterCounts {
-			fmt.Printf("  Cluster %d: %d samples\n", cluster, count)
+			fmt.Printf("  Cluster %d: %d samples", cluster, count)
 		}
 
-		if allPestSpreadSamples[date] == nil {
-			allPestSpreadSamples[date] = []PestSpreadSample{}
+		// Regroup clustered samples by date
+		for _, sample := range pestSpreadSamples {
+			dateKey := sample.Data.EndDate
+			if _, exists := allPestSpreadSamples[dateKey]; !exists {
+				allPestSpreadSamples[dateKey] = []PestSpreadSample{}
+			}
+			allPestSpreadSamples[dateKey] = append(allPestSpreadSamples[dateKey], sample)
 		}
-
-		allPestSpreadSamples[date] = append(allPestSpreadSamples[date], pestSpreadSamples...)
 	}
 
-	fmt.Printf("Total pest spread samples processed: %d\n", len(allPestSpreadSamples))
+	fmt.Printf("Total pest spread samples processed: %d", len(allPestSpreadSamples))
 
 	for date, data := range allPestSpreadSamples {
 		severityTable := findClusterSeverityDescSeveritySortingTable(data)

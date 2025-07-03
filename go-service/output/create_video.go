@@ -16,6 +16,34 @@ import (
 	"github.com/icza/mjpeg"
 )
 
+const videoFPS = 2
+
+func getDateFromPath(path string) (time.Time, error) {
+	base := filepath.Base(path)
+	name := strings.TrimSuffix(base, filepath.Ext(base))
+	parts := strings.Split(name, "_")
+
+	// Try parsing format YYYY-MM-DD from the last part of the name
+	if len(parts) > 0 {
+		lastPart := parts[len(parts)-1]
+		t, err := time.Parse("2006-01-02", lastPart)
+		if err == nil {
+			return t, nil
+		}
+	}
+
+	// Try parsing format YYYY_MM_DD from the last 3 parts of the name
+	if len(parts) >= 3 {
+		dateStr := strings.Join(parts[len(parts)-3:], "_")
+		t, err := time.Parse("2006_01_02", dateStr)
+		if err == nil {
+			return t, nil
+		}
+	}
+
+	return time.Time{}, fmt.Errorf("could not parse date from filename: %s", name)
+}
+
 // CreateVideoFromDirectory creates a video from all images in a directory, sorted by filename
 func CreateVideoFromDirectory(dirPath string, outputPath string) error {
 	// Find all image files in the directory
@@ -39,27 +67,15 @@ func CreateVideoFromDirectory(dirPath string, outputPath string) error {
 		return fmt.Errorf("no image files found in directory: %s", dirPath)
 	}
 
-	// Sort image paths by date at the end of the filename (format: ..._YYYY_MM_DD)
+	// Sort image paths by date
 	sort.Slice(imagePaths, func(i, j int) bool {
-		getDate := func(path string) time.Time {
-			base := filepath.Base(path)
-			dot := strings.LastIndex(base, ".")
-			if dot == -1 {
-				return time.Time{}
-			}
-			name := base[:dot]
-			parts := strings.Split(name, "_")
-			if len(parts) < 3 {
-				return time.Time{}
-			}
-			dateStr := strings.Join(parts[len(parts)-3:], "_")
-			t, err := time.Parse("2006_01_02", dateStr)
-			if err != nil {
-				return time.Time{}
-			}
-			return t
+		dateI, errI := getDateFromPath(imagePaths[i])
+		dateJ, errJ := getDateFromPath(imagePaths[j])
+		if errI != nil || errJ != nil {
+			// Fallback to string comparison if date parsing fails
+			return imagePaths[i] < imagePaths[j]
 		}
-		return getDate(imagePaths[i]).Before(getDate(imagePaths[j]))
+		return dateI.Before(dateJ)
 	})
 
 	// Determine the maximum width and height from all images
@@ -96,14 +112,15 @@ func CreateVideoFromDirectory(dirPath string, outputPath string) error {
 	if err := os.MkdirAll(outputDir, os.ModePerm); err != nil {
 		return err
 	}
-	writer, err := mjpeg.New(outputPath, width, height, 2)
+	writer, err := mjpeg.New(outputPath, width, height, videoFPS)
 	if err != nil {
 		return err
 	}
 	defer writer.Close()
 
+	fmt.Println("Video frame to date mapping:")
 	// Encode and add each image
-	for _, path := range imagePaths {
+	for i, path := range imagePaths {
 		f, err := os.Open(path)
 		if err != nil {
 			return err
@@ -123,6 +140,14 @@ func CreateVideoFromDirectory(dirPath string, outputPath string) error {
 		err = writer.AddFrame(buf.Bytes())
 		if err != nil {
 			return err
+		}
+
+		date, err := getDateFromPath(path)
+		if err == nil {
+			frameTime := float64(i) / float64(videoFPS)
+			fmt.Printf("  - %.2f seconds: %s (%s)\n", frameTime, date.Format("2006-01-02"), filepath.Base(path))
+		} else {
+			fmt.Printf("  - Could not extract date from: %s\n", filepath.Base(path))
 		}
 	}
 

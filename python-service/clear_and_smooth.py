@@ -14,7 +14,7 @@ def gam_smoothing(values, lam):
     
     return y_pred.tolist()
     
-def detect_outliers(data, window_size=10, threshold=0.05):
+def detect_outliers(data, window_size=10, threshold=0.02):
     """
     Detects and replaces outliers in a dataset using a sliding window approach.
     Parameters:
@@ -43,5 +43,5 @@ def detect_outliers(data, window_size=10, threshold=0.05):
     return cleaned_data
 
 def clear_and_smooth(data):
-    smoothed_data = gam_smoothing(detect_outliers(data), 0.08)
+    smoothed_data = gam_smoothing(detect_outliers(data), 0.1)
     return smoothed_data

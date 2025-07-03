@@ -3,6 +3,7 @@ package spread
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 
 	"google.golang.org/grpc"
@@ -20,7 +21,9 @@ type PestClusteringClient struct {
 
 // NewPestClusteringClient creates a new client connection to the pest clustering service
 func NewPestClusteringClient(serverAddr string) (*PestClusteringClient, error) {
-	conn, err := grpc.Dial(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(serverAddr,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to pest clustering service: %w", err)
 	}
@@ -39,7 +42,7 @@ func (c *PestClusteringClient) Close() error {
 
 // ClusterizeSpread sends delta data to the Python server for clustering
 func (c *PestClusteringClient) ClusterizeSpread(deltaData []delta.Data) ([]PestSpreadSample, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	// Convert delta.Data to protobuf DeltaData
@@ -78,7 +81,7 @@ func (c *PestClusteringClient) ClusterizeSpread(deltaData []delta.Data) ([]PestS
 	}
 
 	// Call the gRPC service
-	response, err := c.client.ClusterizeSpread(ctx, request)
+	response, err := c.client.ClusterizeSpread(ctx, request, grpc.MaxCallRecvMsgSize(math.MaxInt32), grpc.MaxCallSendMsgSize(math.MaxInt32))
 	if err != nil {
 		return nil, fmt.Errorf("failed to call ClusterizeSpread: %w", err)
 	}

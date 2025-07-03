@@ -3,6 +3,7 @@ package ml
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
@@ -28,10 +29,6 @@ type PixelResult struct {
 func RunModel(model string, finalData []final.FinalData) ([]PixelResult, error) {
 	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", properties.GrpcPort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultCallOptions(
-			grpc.MaxCallRecvMsgSize(10*1024*1024),
-			grpc.MaxCallSendMsgSize(10*1024*1024),
-		),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to gRPC server: %v", err)
@@ -48,7 +45,7 @@ func RunModel(model string, finalData []final.FinalData) ([]PixelResult, error) 
 		Model: model,
 	}
 
-	resp, err := client.RunModel(ctx, req)
+	resp, err := client.RunModel(ctx, req, grpc.MaxCallRecvMsgSize(math.MaxInt32), grpc.MaxCallSendMsgSize(math.MaxInt32))
 	if err != nil {
 		return nil, fmt.Errorf("error calling RunModel: %v", err)
 	}

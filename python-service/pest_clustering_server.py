@@ -59,10 +59,10 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         for delta_data in delta_data_list:
             # Use spectral indices and their derivatives as features
             feature_vector = [
-                delta_data.ndre,
-                delta_data.ndmi,
-                delta_data.psri,
-                delta_data.ndvi,
+                # delta_data.ndre,
+                # delta_data.ndmi,
+                # delta_data.psri,
+                # delta_data.ndvi,
                 delta_data.ndre_derivative,
                 delta_data.ndmi_derivative,
                 delta_data.psri_derivative,
@@ -84,7 +84,7 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         # eps: maximum distance between two samples for one to be considered as in the neighborhood of the other
         # min_samples: minimum number of samples in a neighborhood for a point to be considered as a core point
         # Using eps=2.0 and min_samples=3 for fewer, more meaningful clusters (targeting ~5 clusters max)
-        clustering = DBSCAN(eps=0.5, min_samples=5).fit(features_normalized)
+        clustering = DBSCAN(eps=0.08, min_samples=5).fit(features_normalized)
         
         cluster_labels = clustering.labels_
         n_clusters = len(set(cluster_labels)) - (1 if -1 in cluster_labels else 0)
