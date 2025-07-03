@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package ml;
+
+option go_package = "github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs";
+
+message Pixel {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message PlotPixelsRequest {
+    map<string, double> NDVI = 1;
+    map<string, double> NDRE = 2;
+    map<string, double> NDMI = 3;
+    repeated Pixel pixels = 4;
+    string forest_name = 5;
+    string plot_id = 6;
+}
+
+message PlotPixelsResponse {
+    string message = 1;
+}
+
+service PlotPixelsService {
+    rpc PlotPixels(PlotPixelsRequest) returns (PlotPixelsResponse);
+}

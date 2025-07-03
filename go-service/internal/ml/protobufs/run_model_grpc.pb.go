@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: run_model.proto
+// source: internal/ml/run_model.proto
 
 package protobufs
 
@@ -117,5 +117,5 @@ var RunModelService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "run_model.proto",
+	Metadata: "internal/ml/run_model.proto",
 }

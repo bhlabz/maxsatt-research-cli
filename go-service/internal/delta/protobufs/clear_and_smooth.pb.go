@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: clear_and_smooth.proto
+// source: go-service/internal/delta/clear_and_smooth.proto
 
 package protobufs
 
@@ -30,7 +30,7 @@ type ClearAndSmoothRequest struct {
 
 func (x *ClearAndSmoothRequest) Reset() {
 	*x = ClearAndSmoothRequest{}
-	mi := &file_clear_and_smooth_proto_msgTypes[0]
+	mi := &file_go_service_internal_delta_clear_and_smooth_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +42,7 @@ func (x *ClearAndSmoothRequest) String() string {
 func (*ClearAndSmoothRequest) ProtoMessage() {}
 
 func (x *ClearAndSmoothRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_clear_and_smooth_proto_msgTypes[0]
+	mi := &file_go_service_internal_delta_clear_and_smooth_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +55,7 @@ func (x *ClearAndSmoothRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClearAndSmoothRequest.ProtoReflect.Descriptor instead.
 func (*ClearAndSmoothRequest) Descriptor() ([]byte, []int) {
-	return file_clear_and_smooth_proto_rawDescGZIP(), []int{0}
+	return file_go_service_internal_delta_clear_and_smooth_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ClearAndSmoothRequest) GetData() map[string]*DoubleList {
@@ -74,7 +74,7 @@ type ClearAndSmoothResponse struct {
 
 func (x *ClearAndSmoothResponse) Reset() {
 	*x = ClearAndSmoothResponse{}
-	mi := &file_clear_and_smooth_proto_msgTypes[1]
+	mi := &file_go_service_internal_delta_clear_and_smooth_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +86,7 @@ func (x *ClearAndSmoothResponse) String() string {
 func (*ClearAndSmoothResponse) ProtoMessage() {}
 
 func (x *ClearAndSmoothResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_clear_and_smooth_proto_msgTypes[1]
+	mi := &file_go_service_internal_delta_clear_and_smooth_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +99,7 @@ func (x *ClearAndSmoothResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClearAndSmoothResponse.ProtoReflect.Descriptor instead.
 func (*ClearAndSmoothResponse) Descriptor() ([]byte, []int) {
-	return file_clear_and_smooth_proto_rawDescGZIP(), []int{1}
+	return file_go_service_internal_delta_clear_and_smooth_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ClearAndSmoothResponse) GetSmoothedData() map[string]*DoubleList {
@@ -118,7 +118,7 @@ type DoubleList struct {
 
 func (x *DoubleList) Reset() {
 	*x = DoubleList{}
-	mi := &file_clear_and_smooth_proto_msgTypes[2]
+	mi := &file_go_service_internal_delta_clear_and_smooth_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -130,7 +130,7 @@ func (x *DoubleList) String() string {
 func (*DoubleList) ProtoMessage() {}
 
 func (x *DoubleList) ProtoReflect() protoreflect.Message {
-	mi := &file_clear_and_smooth_proto_msgTypes[2]
+	mi := &file_go_service_internal_delta_clear_and_smooth_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +143,7 @@ func (x *DoubleList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DoubleList.ProtoReflect.Descriptor instead.
 func (*DoubleList) Descriptor() ([]byte, []int) {
-	return file_clear_and_smooth_proto_rawDescGZIP(), []int{2}
+	return file_go_service_internal_delta_clear_and_smooth_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *DoubleList) GetValues() []float64 {
@@ -153,11 +153,11 @@ func (x *DoubleList) GetValues() []float64 {
 	return nil
 }
 
-var File_clear_and_smooth_proto protoreflect.FileDescriptor
+var File_go_service_internal_delta_clear_and_smooth_proto protoreflect.FileDescriptor
 
-const file_clear_and_smooth_proto_rawDesc = "" +
+const file_go_service_internal_delta_clear_and_smooth_proto_rawDesc = "" +
 	"\n" +
-	"\x16clear_and_smooth.proto\"\x93\x01\n" +
+	"0go-service/internal/delta/clear_and_smooth.proto\"\x93\x01\n" +
 	"\x15ClearAndSmoothRequest\x124\n" +
 	"\x04data\x18\x01 \x03(\v2 .ClearAndSmoothRequest.DataEntryR\x04data\x1aD\n" +
 	"\tDataEntry\x12\x10\n" +
@@ -172,30 +172,29 @@ const file_clear_and_smooth_proto_rawDesc = "" +
 	"DoubleList\x12\x16\n" +
 	"\x06values\x18\x01 \x03(\x01R\x06values2Z\n" +
 	"\x15ClearAndSmoothService\x12A\n" +
-	"\x0eClearAndSmooth\x12\x16.ClearAndSmoothRequest\x1a\x17.ClearAndSmoothResponseB\fZ\n" +
-	"/protobufsb\x06proto3"
+	"\x0eClearAndSmooth\x12\x16.ClearAndSmoothRequest\x1a\x17.ClearAndSmoothResponseBMZKgithub.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufsb\x06proto3"
 
 var (
-	file_clear_and_smooth_proto_rawDescOnce sync.Once
-	file_clear_and_smooth_proto_rawDescData []byte
+	file_go_service_internal_delta_clear_and_smooth_proto_rawDescOnce sync.Once
+	file_go_service_internal_delta_clear_and_smooth_proto_rawDescData []byte
 )
 
-func file_clear_and_smooth_proto_rawDescGZIP() []byte {
-	file_clear_and_smooth_proto_rawDescOnce.Do(func() {
-		file_clear_and_smooth_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_clear_and_smooth_proto_rawDesc), len(file_clear_and_smooth_proto_rawDesc)))
+func file_go_service_internal_delta_clear_and_smooth_proto_rawDescGZIP() []byte {
+	file_go_service_internal_delta_clear_and_smooth_proto_rawDescOnce.Do(func() {
+		file_go_service_internal_delta_clear_and_smooth_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_go_service_internal_delta_clear_and_smooth_proto_rawDesc), len(file_go_service_internal_delta_clear_and_smooth_proto_rawDesc)))
 	})
-	return file_clear_and_smooth_proto_rawDescData
+	return file_go_service_internal_delta_clear_and_smooth_proto_rawDescData
 }
 
-var file_clear_and_smooth_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_clear_and_smooth_proto_goTypes = []any{
+var file_go_service_internal_delta_clear_and_smooth_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_go_service_internal_delta_clear_and_smooth_proto_goTypes = []any{
 	(*ClearAndSmoothRequest)(nil),  // 0: ClearAndSmoothRequest
 	(*ClearAndSmoothResponse)(nil), // 1: ClearAndSmoothResponse
 	(*DoubleList)(nil),             // 2: DoubleList
 	nil,                            // 3: ClearAndSmoothRequest.DataEntry
 	nil,                            // 4: ClearAndSmoothResponse.SmoothedDataEntry
 }
-var file_clear_and_smooth_proto_depIdxs = []int32{
+var file_go_service_internal_delta_clear_and_smooth_proto_depIdxs = []int32{
 	3, // 0: ClearAndSmoothRequest.data:type_name -> ClearAndSmoothRequest.DataEntry
 	4, // 1: ClearAndSmoothResponse.smoothed_data:type_name -> ClearAndSmoothResponse.SmoothedDataEntry
 	2, // 2: ClearAndSmoothRequest.DataEntry.value:type_name -> DoubleList
@@ -209,26 +208,26 @@ var file_clear_and_smooth_proto_depIdxs = []int32{
 	0, // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_clear_and_smooth_proto_init() }
-func file_clear_and_smooth_proto_init() {
-	if File_clear_and_smooth_proto != nil {
+func init() { file_go_service_internal_delta_clear_and_smooth_proto_init() }
+func file_go_service_internal_delta_clear_and_smooth_proto_init() {
+	if File_go_service_internal_delta_clear_and_smooth_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_clear_and_smooth_proto_rawDesc), len(file_clear_and_smooth_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_go_service_internal_delta_clear_and_smooth_proto_rawDesc), len(file_go_service_internal_delta_clear_and_smooth_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_clear_and_smooth_proto_goTypes,
-		DependencyIndexes: file_clear_and_smooth_proto_depIdxs,
-		MessageInfos:      file_clear_and_smooth_proto_msgTypes,
+		GoTypes:           file_go_service_internal_delta_clear_and_smooth_proto_goTypes,
+		DependencyIndexes: file_go_service_internal_delta_clear_and_smooth_proto_depIdxs,
+		MessageInfos:      file_go_service_internal_delta_clear_and_smooth_proto_msgTypes,
 	}.Build()
-	File_clear_and_smooth_proto = out.File
-	file_clear_and_smooth_proto_goTypes = nil
-	file_clear_and_smooth_proto_depIdxs = nil
+	File_go_service_internal_delta_clear_and_smooth_proto = out.File
+	file_go_service_internal_delta_clear_and_smooth_proto_goTypes = nil
+	file_go_service_internal_delta_clear_and_smooth_proto_depIdxs = nil
 }

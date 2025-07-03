@@ -16,11 +16,14 @@ import (
 	bannercolor "github.com/fatih/color"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delivery"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/spread"
 	"github.com/forest-guardian/forest-guardian-api-poc/output"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
+	mlpb "github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs"
 	"github.com/joho/godotenv"
 )
 
@@ -72,8 +75,9 @@ func initCLI() {
 		fmt.Println("\033[34m5. View the list of available forests\033[0m")
 		fmt.Println("\033[34m6. View the list of available forest plots\033[0m")
 		fmt.Println("\033[34m7. Exit the application\033[0m")
-		fmt.Println("\033[34m8. Analyze forest plot image deforestation spread over time\033[0m")
-		fmt.Println("\033[34mPlease enter your choice:\033[0m")
+				fmt.Println("\033[34m8. Analyze forest plot image deforestation spread over time\033[0m")
+		fmt.Println("\033[34m9. Plot pixel values over time\033[0m")
+ 		fmt.Println("\033[34mPlease enter your choice:\033[0m")
 
 		var choice int
 		_, err := fmt.Scan(&choice)
@@ -382,22 +386,26 @@ func initCLI() {
 
 			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 			if err != nil {
-				panic(err)
+				fmt.Printf("\n\033[31mError retrieving geometry from GeoJSON: %s\033[0m\n", err.Error())
+				continue
 			}
 
 			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 			if err != nil {
-				panic(err)
+				fmt.Printf("\n\033[31mError retrieving images: %s\033[0m\n", err.Error())
+				continue
 			}
 
 			data, err := delta.CreatePixelDataset(forest, plot, images)
 			if err != nil {
-				panic(err)
+				fmt.Printf("\n\033[31mError creating pixel dataset: %s\033[0m\n", err.Error())
+				continue
 			}
 
 			cleanData, err := delta.CreateCleanDataset(forest, plot, data)
 			if err != nil {
-				panic(err)
+				fmt.Printf("\n\033[31mError creating clean dataset: %s\033[0m\n", err.Error())
+				continue
 			}
 
 			groupedCleanData := make(map[time.Time][]delta.PixelData)
@@ -621,6 +629,103 @@ func initCLI() {
 			if err != nil {
 				panic(err)
 			}
+
+		case 9:
+			fmt.Println("\033[33m\nWarning:\033[0m")
+			fmt.Println("\033[33m- A '.geojson' file with the farm name should be present in data/geojsons folder.\033[0m")
+			fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
+			reader := bufio.NewReader(os.Stdin)
+
+			fmt.Print("\033[34mEnter the forest name: \033[0m")
+			forest, _ := reader.ReadString('\n')
+			forest = strings.TrimSpace(forest)
+
+			fmt.Print("\033[34mEnter the plot id: \033[0m")
+			plot, _ := reader.ReadString('\n')
+			plot = strings.TrimSpace(plot)
+
+			fmt.Print("\033[34mEnter the end date (YYYY-MM-DD): \033[0m")
+			endDateInput, _ := reader.ReadString('\n')
+			endDateInput = strings.TrimSpace(endDateInput)
+			endDate, err := time.Parse("2006-01-02", endDateInput)
+			if err != nil {
+				fmt.Printf("\n\033[31mInvalid date format: %s. Please use YYYY-MM-DD.\033[0m\n", endDateInput)
+				continue
+			}
+
+			fmt.Print("\033[34mEnter number of days: \033[0m")
+			daysInput, _ := reader.ReadString('\n')
+			daysInput = strings.TrimSpace(daysInput)
+			days, err := strconv.Atoi(daysInput)
+			if err != nil || days <= 0 {
+				fmt.Printf("\n\033[31mInvalid number of days: %s. Please enter a positive integer.\033[0m\n", daysInput)
+				continue
+			}
+			startDate := endDate.AddDate(0, 0, -days)
+
+			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
+			if err != nil {
+				fmt.Printf("\n\033[31mError retrieving geometry from GeoJSON: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
+			if err != nil {
+				fmt.Printf("\n\033[31mError retrieving images: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			data, err := delta.CreatePixelDataset(forest, plot, images)
+			if err != nil {
+				fmt.Printf("\n\033[31mError creating pixel dataset: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			cleanData, err := delta.CreateCleanDataset(forest, plot, data)
+			if err != nil {
+				fmt.Printf("\n\033[31mError creating clean dataset: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			ndvi := make(map[string]float64)
+			ndre := make(map[string]float64)
+			ndmi := make(map[string]float64)
+
+			for _, pixelData := range cleanData {
+				for date, pixel := range pixelData {
+					ndvi[date.Format("2006-01-02")] = pixel.NDVI
+					ndre[date.Format("2006-01-02")] = pixel.NDRE
+					ndmi[date.Format("2006-01-02")] = pixel.NDMI
+				}
+			}
+
+			var pixels []*mlpb.Pixel
+			for {
+				fmt.Print("\033[34mEnter pixel coordinates (x,y) or 'done' to finish: \033[0m")
+				var input string
+				fmt.Scanln(&input)
+				if strings.ToLower(input) == "done" {
+					break
+				}
+				parts := strings.Split(input, ",")
+				if len(parts) != 2 {
+					fmt.Println("\033[31mInvalid format. Please use x,y\033[0m")
+					continue
+				}
+				x, err := strconv.Atoi(parts[0])
+				if err != nil {
+					fmt.Println("\033[31mInvalid x coordinate\033[0m")
+					continue
+				}
+				y, err := strconv.Atoi(parts[1])
+				if err != nil {
+					fmt.Println("\033[31mInvalid y coordinate\033[0m")
+					continue
+				}
+				pixels = append(pixels, &mlpb.Pixel{X: int32(x), Y: int32(y)})
+			}
+
+			ml.PlotPixels(forest, plot, ndvi, ndre, ndmi, pixels)
 
 		default:
 			println("Invalid choice. Please try again.")

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
+	pb "github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
@@ -16,17 +16,17 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func convertToProtobufList(data map[string][]float64) map[string]*protobufs.DoubleList {
-	result := make(map[string]*protobufs.DoubleList)
+func convertToProtobufList(data map[string][]float64) map[string]*pb.DoubleList {
+	result := make(map[string]*pb.DoubleList)
 	for key, values := range data {
-		result[key] = &protobufs.DoubleList{
+		result[key] = &pb.DoubleList{
 			Values: values,
 		}
 	}
 	return result
 }
 
-func convertFromProtobufList(data map[string]*protobufs.DoubleList) map[string][]float64 {
+func convertFromProtobufList(data map[string]*pb.DoubleList) map[string][]float64 {
 	result := make(map[string][]float64)
 	for key, doubleList := range data {
 		result[key] = doubleList.Values
@@ -36,10 +36,10 @@ func convertFromProtobufList(data map[string]*protobufs.DoubleList) map[string][
 
 func clearAndSmooth(conn *grpc.ClientConn, values map[string][]float64) (map[string][]float64, error) {
 
-	client := protobufs.NewClearAndSmoothServiceClient(conn)
+		client := pb.NewClearAndSmoothServiceClient(conn)
 
 	// Create the request
-	req := &protobufs.ClearAndSmoothRequest{
+				req := &pb.ClearAndSmoothRequest{
 		Data: convertToProtobufList(values),
 	}
 

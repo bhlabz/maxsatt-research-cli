@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	delta "github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
+	ml "github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
