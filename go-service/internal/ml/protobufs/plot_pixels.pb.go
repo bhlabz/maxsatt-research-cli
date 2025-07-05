@@ -201,19 +201,155 @@ func (x *PlotPixelsResponse) GetMessage() string {
 	return ""
 }
 
+type PlotDeltaPixelsRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	NDREDerivative map[string]float64     `protobuf:"bytes,1,rep,name=NDREDerivative,proto3" json:"NDREDerivative,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
+	NDMIDerivative map[string]float64     `protobuf:"bytes,2,rep,name=NDMIDerivative,proto3" json:"NDMIDerivative,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
+	PSRIDerivative map[string]float64     `protobuf:"bytes,3,rep,name=PSRIDerivative,proto3" json:"PSRIDerivative,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
+	NDVIDerivative map[string]float64     `protobuf:"bytes,4,rep,name=NDVIDerivative,proto3" json:"NDVIDerivative,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed64,2,opt,name=value"`
+	Pixels         []*Pixel               `protobuf:"bytes,5,rep,name=pixels,proto3" json:"pixels,omitempty"`
+	ForestName     string                 `protobuf:"bytes,6,opt,name=forest_name,json=forestName,proto3" json:"forest_name,omitempty"`
+	PlotId         string                 `protobuf:"bytes,7,opt,name=plot_id,json=plotId,proto3" json:"plot_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *PlotDeltaPixelsRequest) Reset() {
+	*x = PlotDeltaPixelsRequest{}
+	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlotDeltaPixelsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlotDeltaPixelsRequest) ProtoMessage() {}
+
+func (x *PlotDeltaPixelsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlotDeltaPixelsRequest.ProtoReflect.Descriptor instead.
+func (*PlotDeltaPixelsRequest) Descriptor() ([]byte, []int) {
+	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PlotDeltaPixelsRequest) GetNDREDerivative() map[string]float64 {
+	if x != nil {
+		return x.NDREDerivative
+	}
+	return nil
+}
+
+func (x *PlotDeltaPixelsRequest) GetNDMIDerivative() map[string]float64 {
+	if x != nil {
+		return x.NDMIDerivative
+	}
+	return nil
+}
+
+func (x *PlotDeltaPixelsRequest) GetPSRIDerivative() map[string]float64 {
+	if x != nil {
+		return x.PSRIDerivative
+	}
+	return nil
+}
+
+func (x *PlotDeltaPixelsRequest) GetNDVIDerivative() map[string]float64 {
+	if x != nil {
+		return x.NDVIDerivative
+	}
+	return nil
+}
+
+func (x *PlotDeltaPixelsRequest) GetPixels() []*Pixel {
+	if x != nil {
+		return x.Pixels
+	}
+	return nil
+}
+
+func (x *PlotDeltaPixelsRequest) GetForestName() string {
+	if x != nil {
+		return x.ForestName
+	}
+	return ""
+}
+
+func (x *PlotDeltaPixelsRequest) GetPlotId() string {
+	if x != nil {
+		return x.PlotId
+	}
+	return ""
+}
+
+type PlotDeltaPixelsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlotDeltaPixelsResponse) Reset() {
+	*x = PlotDeltaPixelsResponse{}
+	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlotDeltaPixelsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlotDeltaPixelsResponse) ProtoMessage() {}
+
+func (x *PlotDeltaPixelsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlotDeltaPixelsResponse.ProtoReflect.Descriptor instead.
+func (*PlotDeltaPixelsResponse) Descriptor() ([]byte, []int) {
+	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PlotDeltaPixelsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_internal_ml_protobufs_plot_pixels_proto protoreflect.FileDescriptor
 
 const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
 	"\n" +
-	"'internal/ml/protobufs/plot_pixels.proto\x12\x02ml\"#\n" +
+	"'internal/ml/protobufs/plot_pixels.proto\"#\n" +
 	"\x05Pixel\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x05R\x01x\x12\f\n" +
-	"\x01y\x18\x02 \x01(\x05R\x01y\"\xba\x03\n" +
-	"\x11PlotPixelsRequest\x123\n" +
-	"\x04NDVI\x18\x01 \x03(\v2\x1f.ml.PlotPixelsRequest.NDVIEntryR\x04NDVI\x123\n" +
-	"\x04NDRE\x18\x02 \x03(\v2\x1f.ml.PlotPixelsRequest.NDREEntryR\x04NDRE\x123\n" +
-	"\x04NDMI\x18\x03 \x03(\v2\x1f.ml.PlotPixelsRequest.NDMIEntryR\x04NDMI\x12!\n" +
-	"\x06pixels\x18\x04 \x03(\v2\t.ml.PixelR\x06pixels\x12\x1f\n" +
+	"\x01y\x18\x02 \x01(\x05R\x01y\"\xae\x03\n" +
+	"\x11PlotPixelsRequest\x120\n" +
+	"\x04NDVI\x18\x01 \x03(\v2\x1c.PlotPixelsRequest.NDVIEntryR\x04NDVI\x120\n" +
+	"\x04NDRE\x18\x02 \x03(\v2\x1c.PlotPixelsRequest.NDREEntryR\x04NDRE\x120\n" +
+	"\x04NDMI\x18\x03 \x03(\v2\x1c.PlotPixelsRequest.NDMIEntryR\x04NDMI\x12\x1e\n" +
+	"\x06pixels\x18\x04 \x03(\v2\x06.PixelR\x06pixels\x12\x1f\n" +
 	"\vforest_name\x18\x05 \x01(\tR\n" +
 	"forestName\x12\x17\n" +
 	"\aplot_id\x18\x06 \x01(\tR\x06plotId\x1a7\n" +
@@ -227,10 +363,34 @@ const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\".\n" +
 	"\x12PlotPixelsResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2P\n" +
-	"\x11PlotPixelsService\x12;\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xd2\x05\n" +
+	"\x16PlotDeltaPixelsRequest\x12S\n" +
+	"\x0eNDREDerivative\x18\x01 \x03(\v2+.PlotDeltaPixelsRequest.NDREDerivativeEntryR\x0eNDREDerivative\x12S\n" +
+	"\x0eNDMIDerivative\x18\x02 \x03(\v2+.PlotDeltaPixelsRequest.NDMIDerivativeEntryR\x0eNDMIDerivative\x12S\n" +
+	"\x0ePSRIDerivative\x18\x03 \x03(\v2+.PlotDeltaPixelsRequest.PSRIDerivativeEntryR\x0ePSRIDerivative\x12S\n" +
+	"\x0eNDVIDerivative\x18\x04 \x03(\v2+.PlotDeltaPixelsRequest.NDVIDerivativeEntryR\x0eNDVIDerivative\x12\x1e\n" +
+	"\x06pixels\x18\x05 \x03(\v2\x06.PixelR\x06pixels\x12\x1f\n" +
+	"\vforest_name\x18\x06 \x01(\tR\n" +
+	"forestName\x12\x17\n" +
+	"\aplot_id\x18\a \x01(\tR\x06plotId\x1aA\n" +
+	"\x13NDREDerivativeEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\x1aA\n" +
+	"\x13NDMIDerivativeEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\x1aA\n" +
+	"\x13PSRIDerivativeEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\x1aA\n" +
+	"\x13NDVIDerivativeEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\"3\n" +
+	"\x17PlotDeltaPixelsResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\x90\x01\n" +
+	"\x11PlotPixelsService\x125\n" +
 	"\n" +
-	"PlotPixels\x12\x15.ml.PlotPixelsRequest\x1a\x16.ml.PlotPixelsResponseBTZRgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs;protobufsb\x06proto3"
+	"PlotPixels\x12\x12.PlotPixelsRequest\x1a\x13.PlotPixelsResponse\x12D\n" +
+	"\x0fPlotDeltaPixels\x12\x17.PlotDeltaPixelsRequest\x1a\x18.PlotDeltaPixelsResponseBJZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufsb\x06proto3"
 
 var (
 	file_internal_ml_protobufs_plot_pixels_proto_rawDescOnce sync.Once
@@ -244,27 +404,40 @@ func file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP() []byte {
 	return file_internal_ml_protobufs_plot_pixels_proto_rawDescData
 }
 
-var file_internal_ml_protobufs_plot_pixels_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_internal_ml_protobufs_plot_pixels_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_internal_ml_protobufs_plot_pixels_proto_goTypes = []any{
-	(*Pixel)(nil),              // 0: ml.Pixel
-	(*PlotPixelsRequest)(nil),  // 1: ml.PlotPixelsRequest
-	(*PlotPixelsResponse)(nil), // 2: ml.PlotPixelsResponse
-	nil,                        // 3: ml.PlotPixelsRequest.NDVIEntry
-	nil,                        // 4: ml.PlotPixelsRequest.NDREEntry
-	nil,                        // 5: ml.PlotPixelsRequest.NDMIEntry
+	(*Pixel)(nil),                   // 0: Pixel
+	(*PlotPixelsRequest)(nil),       // 1: PlotPixelsRequest
+	(*PlotPixelsResponse)(nil),      // 2: PlotPixelsResponse
+	(*PlotDeltaPixelsRequest)(nil),  // 3: PlotDeltaPixelsRequest
+	(*PlotDeltaPixelsResponse)(nil), // 4: PlotDeltaPixelsResponse
+	nil,                             // 5: PlotPixelsRequest.NDVIEntry
+	nil,                             // 6: PlotPixelsRequest.NDREEntry
+	nil,                             // 7: PlotPixelsRequest.NDMIEntry
+	nil,                             // 8: PlotDeltaPixelsRequest.NDREDerivativeEntry
+	nil,                             // 9: PlotDeltaPixelsRequest.NDMIDerivativeEntry
+	nil,                             // 10: PlotDeltaPixelsRequest.PSRIDerivativeEntry
+	nil,                             // 11: PlotDeltaPixelsRequest.NDVIDerivativeEntry
 }
 var file_internal_ml_protobufs_plot_pixels_proto_depIdxs = []int32{
-	3, // 0: ml.PlotPixelsRequest.NDVI:type_name -> ml.PlotPixelsRequest.NDVIEntry
-	4, // 1: ml.PlotPixelsRequest.NDRE:type_name -> ml.PlotPixelsRequest.NDREEntry
-	5, // 2: ml.PlotPixelsRequest.NDMI:type_name -> ml.PlotPixelsRequest.NDMIEntry
-	0, // 3: ml.PlotPixelsRequest.pixels:type_name -> ml.Pixel
-	1, // 4: ml.PlotPixelsService.PlotPixels:input_type -> ml.PlotPixelsRequest
-	2, // 5: ml.PlotPixelsService.PlotPixels:output_type -> ml.PlotPixelsResponse
-	5, // [5:6] is the sub-list for method output_type
-	4, // [4:5] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	5,  // 0: PlotPixelsRequest.NDVI:type_name -> PlotPixelsRequest.NDVIEntry
+	6,  // 1: PlotPixelsRequest.NDRE:type_name -> PlotPixelsRequest.NDREEntry
+	7,  // 2: PlotPixelsRequest.NDMI:type_name -> PlotPixelsRequest.NDMIEntry
+	0,  // 3: PlotPixelsRequest.pixels:type_name -> Pixel
+	8,  // 4: PlotDeltaPixelsRequest.NDREDerivative:type_name -> PlotDeltaPixelsRequest.NDREDerivativeEntry
+	9,  // 5: PlotDeltaPixelsRequest.NDMIDerivative:type_name -> PlotDeltaPixelsRequest.NDMIDerivativeEntry
+	10, // 6: PlotDeltaPixelsRequest.PSRIDerivative:type_name -> PlotDeltaPixelsRequest.PSRIDerivativeEntry
+	11, // 7: PlotDeltaPixelsRequest.NDVIDerivative:type_name -> PlotDeltaPixelsRequest.NDVIDerivativeEntry
+	0,  // 8: PlotDeltaPixelsRequest.pixels:type_name -> Pixel
+	1,  // 9: PlotPixelsService.PlotPixels:input_type -> PlotPixelsRequest
+	3,  // 10: PlotPixelsService.PlotDeltaPixels:input_type -> PlotDeltaPixelsRequest
+	2,  // 11: PlotPixelsService.PlotPixels:output_type -> PlotPixelsResponse
+	4,  // 12: PlotPixelsService.PlotDeltaPixels:output_type -> PlotDeltaPixelsResponse
+	11, // [11:13] is the sub-list for method output_type
+	9,  // [9:11] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_internal_ml_protobufs_plot_pixels_proto_init() }
@@ -278,7 +451,7 @@ func file_internal_ml_protobufs_plot_pixels_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_plot_pixels_proto_rawDesc), len(file_internal_ml_protobufs_plot_pixels_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

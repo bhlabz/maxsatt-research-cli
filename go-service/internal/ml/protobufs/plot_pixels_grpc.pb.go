@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PlotPixelsService_PlotPixels_FullMethodName = "/ml.PlotPixelsService/PlotPixels"
+	PlotPixelsService_PlotPixels_FullMethodName      = "/PlotPixelsService/PlotPixels"
+	PlotPixelsService_PlotDeltaPixels_FullMethodName = "/PlotPixelsService/PlotDeltaPixels"
 )
 
 // PlotPixelsServiceClient is the client API for PlotPixelsService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PlotPixelsServiceClient interface {
 	PlotPixels(ctx context.Context, in *PlotPixelsRequest, opts ...grpc.CallOption) (*PlotPixelsResponse, error)
+	PlotDeltaPixels(ctx context.Context, in *PlotDeltaPixelsRequest, opts ...grpc.CallOption) (*PlotDeltaPixelsResponse, error)
 }
 
 type plotPixelsServiceClient struct {
@@ -47,11 +49,22 @@ func (c *plotPixelsServiceClient) PlotPixels(ctx context.Context, in *PlotPixels
 	return out, nil
 }
 
+func (c *plotPixelsServiceClient) PlotDeltaPixels(ctx context.Context, in *PlotDeltaPixelsRequest, opts ...grpc.CallOption) (*PlotDeltaPixelsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PlotDeltaPixelsResponse)
+	err := c.cc.Invoke(ctx, PlotPixelsService_PlotDeltaPixels_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlotPixelsServiceServer is the server API for PlotPixelsService service.
 // All implementations must embed UnimplementedPlotPixelsServiceServer
 // for forward compatibility.
 type PlotPixelsServiceServer interface {
 	PlotPixels(context.Context, *PlotPixelsRequest) (*PlotPixelsResponse, error)
+	PlotDeltaPixels(context.Context, *PlotDeltaPixelsRequest) (*PlotDeltaPixelsResponse, error)
 	mustEmbedUnimplementedPlotPixelsServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedPlotPixelsServiceServer struct{}
 
 func (UnimplementedPlotPixelsServiceServer) PlotPixels(context.Context, *PlotPixelsRequest) (*PlotPixelsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PlotPixels not implemented")
+}
+func (UnimplementedPlotPixelsServiceServer) PlotDeltaPixels(context.Context, *PlotDeltaPixelsRequest) (*PlotDeltaPixelsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PlotDeltaPixels not implemented")
 }
 func (UnimplementedPlotPixelsServiceServer) mustEmbedUnimplementedPlotPixelsServiceServer() {}
 func (UnimplementedPlotPixelsServiceServer) testEmbeddedByValue()                           {}
@@ -104,16 +120,38 @@ func _PlotPixelsService_PlotPixels_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlotPixelsService_PlotDeltaPixels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlotDeltaPixelsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlotPixelsServiceServer).PlotDeltaPixels(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PlotPixelsService_PlotDeltaPixels_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlotPixelsServiceServer).PlotDeltaPixels(ctx, req.(*PlotDeltaPixelsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PlotPixelsService_ServiceDesc is the grpc.ServiceDesc for PlotPixelsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PlotPixelsService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ml.PlotPixelsService",
+	ServiceName: "PlotPixelsService",
 	HandlerType: (*PlotPixelsServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "PlotPixels",
 			Handler:    _PlotPixelsService_PlotPixels_Handler,
+		},
+		{
+			MethodName: "PlotDeltaPixels",
+			Handler:    _PlotPixelsService_PlotDeltaPixels_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

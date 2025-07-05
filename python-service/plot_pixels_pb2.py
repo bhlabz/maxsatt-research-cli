@@ -24,20 +24,28 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11plot_pixels.proto\x12\x02ml\"\x1d\n\x05Pixel\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\"\xe8\x02\n\x11PlotPixelsRequest\x12-\n\x04NDVI\x18\x01 \x03(\x0b\x32\x1f.ml.PlotPixelsRequest.NDVIEntry\x12-\n\x04NDRE\x18\x02 \x03(\x0b\x32\x1f.ml.PlotPixelsRequest.NDREEntry\x12-\n\x04NDMI\x18\x03 \x03(\x0b\x32\x1f.ml.PlotPixelsRequest.NDMIEntry\x12\x19\n\x06pixels\x18\x04 \x03(\x0b\x32\t.ml.Pixel\x12\x13\n\x0b\x66orest_name\x18\x05 \x01(\t\x12\x0f\n\x07plot_id\x18\x06 \x01(\t\x1a+\n\tNDVIEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a+\n\tNDREEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a+\n\tNDMIEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"%\n\x12PlotPixelsResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2P\n\x11PlotPixelsService\x12;\n\nPlotPixels\x12\x15.ml.PlotPixelsRequest\x1a\x16.ml.PlotPixelsResponseB\x0cZ\n/protobufsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11plot_pixels.proto\x12\x02ml\"\x1d\n\x05Pixel\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\"\xe8\x02\n\x11PlotPixelsRequest\x12-\n\x04NDVI\x18\x01 \x03(\x0b\x32\x1f.ml.PlotPixelsRequest.NDVIEntry\x12-\n\x04NDRE\x18\x02 \x03(\x0b\x32\x1f.ml.PlotPixelsRequest.NDREEntry\x12-\n\x04NDMI\x18\x03 \x03(\x0b\x32\x1f.ml.PlotPixelsRequest.NDMIEntry\x12\x19\n\x06pixels\x18\x04 \x03(\x0b\x32\t.ml.Pixel\x12\x13\n\x0b\x66orest_name\x18\x05 \x01(\t\x12\x0f\n\x07plot_id\x18\x06 \x01(\t\x1a+\n\tNDVIEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a+\n\tNDREEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a+\n\tNDMIEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"%\n\x12PlotPixelsResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\xd5\x04\n\x16PlotDeltaPixelsRequest\x12\x46\n\x0eNDREDerivative\x18\x01 \x03(\x0b\x32..ml.PlotDeltaPixelsRequest.NDREDerivativeEntry\x12\x46\n\x0eNDMIDerivative\x18\x02 \x03(\x0b\x32..ml.PlotDeltaPixelsRequest.NDMIDerivativeEntry\x12\x46\n\x0ePSRIDerivative\x18\x03 \x03(\x0b\x32..ml.PlotDeltaPixelsRequest.PSRIDerivativeEntry\x12\x46\n\x0eNDVIDerivative\x18\x04 \x03(\x0b\x32..ml.PlotDeltaPixelsRequest.NDVIDerivativeEntry\x12\x19\n\x06pixels\x18\x05 \x03(\x0b\x32\t.ml.Pixel\x12\x13\n\x0b\x66orest_name\x18\x06 \x01(\t\x12\x0f\n\x07plot_id\x18\x07 \x01(\t\x1a\x35\n\x13NDREDerivativeEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a\x35\n\x13NDMIDerivativeEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a\x35\n\x13PSRIDerivativeEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\x1a\x35\n\x13NDVIDerivativeEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"*\n\x17PlotDeltaPixelsResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2\x9c\x01\n\x11PlotPixelsService\x12;\n\nPlotPixels\x12\x15.ml.PlotPixelsRequest\x1a\x16.ml.PlotPixelsResponse\x12J\n\x0fPlotDeltaPixels\x12\x1a.ml.PlotDeltaPixelsRequest\x1a\x1b.ml.PlotDeltaPixelsResponseBJZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufsb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'plot_pixels_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z\n/protobufs'
+  _globals['DESCRIPTOR']._serialized_options = b'ZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs'
   _globals['_PLOTPIXELSREQUEST_NDVIENTRY']._loaded_options = None
   _globals['_PLOTPIXELSREQUEST_NDVIENTRY']._serialized_options = b'8\001'
   _globals['_PLOTPIXELSREQUEST_NDREENTRY']._loaded_options = None
   _globals['_PLOTPIXELSREQUEST_NDREENTRY']._serialized_options = b'8\001'
   _globals['_PLOTPIXELSREQUEST_NDMIENTRY']._loaded_options = None
   _globals['_PLOTPIXELSREQUEST_NDMIENTRY']._serialized_options = b'8\001'
+  _globals['_PLOTDELTAPIXELSREQUEST_NDREDERIVATIVEENTRY']._loaded_options = None
+  _globals['_PLOTDELTAPIXELSREQUEST_NDREDERIVATIVEENTRY']._serialized_options = b'8\001'
+  _globals['_PLOTDELTAPIXELSREQUEST_NDMIDERIVATIVEENTRY']._loaded_options = None
+  _globals['_PLOTDELTAPIXELSREQUEST_NDMIDERIVATIVEENTRY']._serialized_options = b'8\001'
+  _globals['_PLOTDELTAPIXELSREQUEST_PSRIDERIVATIVEENTRY']._loaded_options = None
+  _globals['_PLOTDELTAPIXELSREQUEST_PSRIDERIVATIVEENTRY']._serialized_options = b'8\001'
+  _globals['_PLOTDELTAPIXELSREQUEST_NDVIDERIVATIVEENTRY']._loaded_options = None
+  _globals['_PLOTDELTAPIXELSREQUEST_NDVIDERIVATIVEENTRY']._serialized_options = b'8\001'
   _globals['_PIXEL']._serialized_start=25
   _globals['_PIXEL']._serialized_end=54
   _globals['_PLOTPIXELSREQUEST']._serialized_start=57
@@ -50,6 +58,18 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_PLOTPIXELSREQUEST_NDMIENTRY']._serialized_end=417
   _globals['_PLOTPIXELSRESPONSE']._serialized_start=419
   _globals['_PLOTPIXELSRESPONSE']._serialized_end=456
-  _globals['_PLOTPIXELSSERVICE']._serialized_start=458
-  _globals['_PLOTPIXELSSERVICE']._serialized_end=538
+  _globals['_PLOTDELTAPIXELSREQUEST']._serialized_start=459
+  _globals['_PLOTDELTAPIXELSREQUEST']._serialized_end=1056
+  _globals['_PLOTDELTAPIXELSREQUEST_NDREDERIVATIVEENTRY']._serialized_start=838
+  _globals['_PLOTDELTAPIXELSREQUEST_NDREDERIVATIVEENTRY']._serialized_end=891
+  _globals['_PLOTDELTAPIXELSREQUEST_NDMIDERIVATIVEENTRY']._serialized_start=893
+  _globals['_PLOTDELTAPIXELSREQUEST_NDMIDERIVATIVEENTRY']._serialized_end=946
+  _globals['_PLOTDELTAPIXELSREQUEST_PSRIDERIVATIVEENTRY']._serialized_start=948
+  _globals['_PLOTDELTAPIXELSREQUEST_PSRIDERIVATIVEENTRY']._serialized_end=1001
+  _globals['_PLOTDELTAPIXELSREQUEST_NDVIDERIVATIVEENTRY']._serialized_start=1003
+  _globals['_PLOTDELTAPIXELSREQUEST_NDVIDERIVATIVEENTRY']._serialized_end=1056
+  _globals['_PLOTDELTAPIXELSRESPONSE']._serialized_start=1058
+  _globals['_PLOTDELTAPIXELSRESPONSE']._serialized_end=1100
+  _globals['_PLOTPIXELSSERVICE']._serialized_start=1103
+  _globals['_PLOTPIXELSSERVICE']._serialized_end=1259
 # @@protoc_insertion_point(module_scope)

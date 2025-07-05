@@ -39,12 +39,23 @@ class PlotPixelsServiceStub(object):
                 request_serializer=plot__pixels__pb2.PlotPixelsRequest.SerializeToString,
                 response_deserializer=plot__pixels__pb2.PlotPixelsResponse.FromString,
                 _registered_method=True)
+        self.PlotDeltaPixels = channel.unary_unary(
+                '/ml.PlotPixelsService/PlotDeltaPixels',
+                request_serializer=plot__pixels__pb2.PlotDeltaPixelsRequest.SerializeToString,
+                response_deserializer=plot__pixels__pb2.PlotDeltaPixelsResponse.FromString,
+                _registered_method=True)
 
 
 class PlotPixelsServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def PlotPixels(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PlotDeltaPixels(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -57,6 +68,11 @@ def add_PlotPixelsServiceServicer_to_server(servicer, server):
                     servicer.PlotPixels,
                     request_deserializer=plot__pixels__pb2.PlotPixelsRequest.FromString,
                     response_serializer=plot__pixels__pb2.PlotPixelsResponse.SerializeToString,
+            ),
+            'PlotDeltaPixels': grpc.unary_unary_rpc_method_handler(
+                    servicer.PlotDeltaPixels,
+                    request_deserializer=plot__pixels__pb2.PlotDeltaPixelsRequest.FromString,
+                    response_serializer=plot__pixels__pb2.PlotDeltaPixelsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -86,6 +102,33 @@ class PlotPixelsService(object):
             '/ml.PlotPixelsService/PlotPixels',
             plot__pixels__pb2.PlotPixelsRequest.SerializeToString,
             plot__pixels__pb2.PlotPixelsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PlotDeltaPixels(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ml.PlotPixelsService/PlotDeltaPixels',
+            plot__pixels__pb2.PlotDeltaPixelsRequest.SerializeToString,
+            plot__pixels__pb2.PlotDeltaPixelsResponse.FromString,
             options,
             channel_credentials,
             insecure,

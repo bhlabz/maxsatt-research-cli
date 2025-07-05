@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: internal/delta/clear_and_smooth.proto
+// source: python-service/clear_and_smooth.proto
 
 package protobufs
 
@@ -117,5 +117,5 @@ var ClearAndSmoothService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "internal/delta/clear_and_smooth.proto",
+	Metadata: "python-service/clear_and_smooth.proto",
 }

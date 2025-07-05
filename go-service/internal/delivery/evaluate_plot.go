@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	delta "github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
 	ml "github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"

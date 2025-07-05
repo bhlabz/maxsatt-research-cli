@@ -55,7 +55,7 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
             return []
         
         # Extract features for clustering
-        gain = 10
+        gain = 1
         features = []
         for delta_data in delta_data_list:
             # Use spectral indices and their derivatives as features

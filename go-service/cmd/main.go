@@ -727,6 +727,42 @@ func initCLI() {
 
 			ml.PlotPixels(forest, plot, ndvi, ndre, ndmi, pixels)
 
+			fmt.Print("\033[34mEnter the ideal delta days for the image analysis: \033[0m")
+			var deltaDays int
+			fmt.Scanln(&deltaDays)
+
+			fmt.Print("\033[34mEnter the delta days trash hold for the image analysis: \033[0m")
+			var deltaDaysThreshold int
+			fmt.Scanln(&deltaDaysThreshold)
+
+			deltaData, err := delta.CreateDeltaDataset(forest, plot, deltaDays, deltaDaysThreshold, cleanData)
+			if err != nil {
+				fmt.Printf("\n\033[31mError creating delta dataset: %s\033[0m\n", err.Error())
+				continue
+			}
+
+			// Convert deltaData to a format suitable for plotting (e.g., maps of string to float64)
+			// This part needs to be implemented based on the actual structure of delta.Data
+			// For now, I'll assume a similar structure to ndvi, ndre, ndmi
+			// You might need to adjust this based on how you want to plot delta values
+			// For example, if deltaData contains multiple metrics, you'll need multiple maps.
+			
+			ndreDerivative := make(map[string]float64)
+			ndmiDerivative := make(map[string]float64)
+			psriDerivative := make(map[string]float64)
+			ndviDerivative := make(map[string]float64)
+
+			for _, pixelData := range deltaData {
+				for date, pixel := range pixelData {
+					ndreDerivative[date.Format("2006-01-02")] = pixel.NDREDerivative
+					ndmiDerivative[date.Format("2006-01-02")] = pixel.NDMIDerivative
+					psriDerivative[date.Format("2006-01-02")] = pixel.PSRIDerivative
+					ndviDerivative[date.Format("2006-01-02")] = pixel.NDVIDerivative
+				}
+			}
+
+			ml.PlotDeltaPixels(forest, plot, ndreDerivative, ndmiDerivative, psriDerivative, ndviDerivative, pixels)
+
 		default:
 			println("Invalid choice. Please try again.")
 		}
