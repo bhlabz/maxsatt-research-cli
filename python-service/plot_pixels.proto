@@ -39,4 +39,4 @@ message PlotDeltaPixelsResponse {
 service PlotPixelsService {
     rpc PlotPixels(PlotPixelsRequest) returns (PlotPixelsResponse);
     rpc PlotDeltaPixels(PlotDeltaPixelsRequest) returns (PlotDeltaPixelsResponse);
-}
+} 

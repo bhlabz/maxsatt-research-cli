@@ -341,15 +341,15 @@ var File_internal_ml_protobufs_plot_pixels_proto protoreflect.FileDescriptor
 
 const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
 	"\n" +
-	"'internal/ml/protobufs/plot_pixels.proto\"#\n" +
+	"'internal/ml/protobufs/plot_pixels.proto\x12\x02ml\"#\n" +
 	"\x05Pixel\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x05R\x01x\x12\f\n" +
-	"\x01y\x18\x02 \x01(\x05R\x01y\"\xae\x03\n" +
-	"\x11PlotPixelsRequest\x120\n" +
-	"\x04NDVI\x18\x01 \x03(\v2\x1c.PlotPixelsRequest.NDVIEntryR\x04NDVI\x120\n" +
-	"\x04NDRE\x18\x02 \x03(\v2\x1c.PlotPixelsRequest.NDREEntryR\x04NDRE\x120\n" +
-	"\x04NDMI\x18\x03 \x03(\v2\x1c.PlotPixelsRequest.NDMIEntryR\x04NDMI\x12\x1e\n" +
-	"\x06pixels\x18\x04 \x03(\v2\x06.PixelR\x06pixels\x12\x1f\n" +
+	"\x01y\x18\x02 \x01(\x05R\x01y\"\xba\x03\n" +
+	"\x11PlotPixelsRequest\x123\n" +
+	"\x04NDVI\x18\x01 \x03(\v2\x1f.ml.PlotPixelsRequest.NDVIEntryR\x04NDVI\x123\n" +
+	"\x04NDRE\x18\x02 \x03(\v2\x1f.ml.PlotPixelsRequest.NDREEntryR\x04NDRE\x123\n" +
+	"\x04NDMI\x18\x03 \x03(\v2\x1f.ml.PlotPixelsRequest.NDMIEntryR\x04NDMI\x12!\n" +
+	"\x06pixels\x18\x04 \x03(\v2\t.ml.PixelR\x06pixels\x12\x1f\n" +
 	"\vforest_name\x18\x05 \x01(\tR\n" +
 	"forestName\x12\x17\n" +
 	"\aplot_id\x18\x06 \x01(\tR\x06plotId\x1a7\n" +
@@ -363,13 +363,13 @@ const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\".\n" +
 	"\x12PlotPixelsResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\xd2\x05\n" +
-	"\x16PlotDeltaPixelsRequest\x12S\n" +
-	"\x0eNDREDerivative\x18\x01 \x03(\v2+.PlotDeltaPixelsRequest.NDREDerivativeEntryR\x0eNDREDerivative\x12S\n" +
-	"\x0eNDMIDerivative\x18\x02 \x03(\v2+.PlotDeltaPixelsRequest.NDMIDerivativeEntryR\x0eNDMIDerivative\x12S\n" +
-	"\x0ePSRIDerivative\x18\x03 \x03(\v2+.PlotDeltaPixelsRequest.PSRIDerivativeEntryR\x0ePSRIDerivative\x12S\n" +
-	"\x0eNDVIDerivative\x18\x04 \x03(\v2+.PlotDeltaPixelsRequest.NDVIDerivativeEntryR\x0eNDVIDerivative\x12\x1e\n" +
-	"\x06pixels\x18\x05 \x03(\v2\x06.PixelR\x06pixels\x12\x1f\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xe1\x05\n" +
+	"\x16PlotDeltaPixelsRequest\x12V\n" +
+	"\x0eNDREDerivative\x18\x01 \x03(\v2..ml.PlotDeltaPixelsRequest.NDREDerivativeEntryR\x0eNDREDerivative\x12V\n" +
+	"\x0eNDMIDerivative\x18\x02 \x03(\v2..ml.PlotDeltaPixelsRequest.NDMIDerivativeEntryR\x0eNDMIDerivative\x12V\n" +
+	"\x0ePSRIDerivative\x18\x03 \x03(\v2..ml.PlotDeltaPixelsRequest.PSRIDerivativeEntryR\x0ePSRIDerivative\x12V\n" +
+	"\x0eNDVIDerivative\x18\x04 \x03(\v2..ml.PlotDeltaPixelsRequest.NDVIDerivativeEntryR\x0eNDVIDerivative\x12!\n" +
+	"\x06pixels\x18\x05 \x03(\v2\t.ml.PixelR\x06pixels\x12\x1f\n" +
 	"\vforest_name\x18\x06 \x01(\tR\n" +
 	"forestName\x12\x17\n" +
 	"\aplot_id\x18\a \x01(\tR\x06plotId\x1aA\n" +
@@ -386,11 +386,11 @@ const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\x01R\x05value:\x028\x01\"3\n" +
 	"\x17PlotDeltaPixelsResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2\x90\x01\n" +
-	"\x11PlotPixelsService\x125\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\x9c\x01\n" +
+	"\x11PlotPixelsService\x12;\n" +
 	"\n" +
-	"PlotPixels\x12\x12.PlotPixelsRequest\x1a\x13.PlotPixelsResponse\x12D\n" +
-	"\x0fPlotDeltaPixels\x12\x17.PlotDeltaPixelsRequest\x1a\x18.PlotDeltaPixelsResponseBJZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufsb\x06proto3"
+	"PlotPixels\x12\x15.ml.PlotPixelsRequest\x1a\x16.ml.PlotPixelsResponse\x12J\n" +
+	"\x0fPlotDeltaPixels\x12\x1a.ml.PlotDeltaPixelsRequest\x1a\x1b.ml.PlotDeltaPixelsResponseBJZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufsb\x06proto3"
 
 var (
 	file_internal_ml_protobufs_plot_pixels_proto_rawDescOnce sync.Once
@@ -406,33 +406,33 @@ func file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP() []byte {
 
 var file_internal_ml_protobufs_plot_pixels_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_internal_ml_protobufs_plot_pixels_proto_goTypes = []any{
-	(*Pixel)(nil),                   // 0: Pixel
-	(*PlotPixelsRequest)(nil),       // 1: PlotPixelsRequest
-	(*PlotPixelsResponse)(nil),      // 2: PlotPixelsResponse
-	(*PlotDeltaPixelsRequest)(nil),  // 3: PlotDeltaPixelsRequest
-	(*PlotDeltaPixelsResponse)(nil), // 4: PlotDeltaPixelsResponse
-	nil,                             // 5: PlotPixelsRequest.NDVIEntry
-	nil,                             // 6: PlotPixelsRequest.NDREEntry
-	nil,                             // 7: PlotPixelsRequest.NDMIEntry
-	nil,                             // 8: PlotDeltaPixelsRequest.NDREDerivativeEntry
-	nil,                             // 9: PlotDeltaPixelsRequest.NDMIDerivativeEntry
-	nil,                             // 10: PlotDeltaPixelsRequest.PSRIDerivativeEntry
-	nil,                             // 11: PlotDeltaPixelsRequest.NDVIDerivativeEntry
+	(*Pixel)(nil),                   // 0: ml.Pixel
+	(*PlotPixelsRequest)(nil),       // 1: ml.PlotPixelsRequest
+	(*PlotPixelsResponse)(nil),      // 2: ml.PlotPixelsResponse
+	(*PlotDeltaPixelsRequest)(nil),  // 3: ml.PlotDeltaPixelsRequest
+	(*PlotDeltaPixelsResponse)(nil), // 4: ml.PlotDeltaPixelsResponse
+	nil,                             // 5: ml.PlotPixelsRequest.NDVIEntry
+	nil,                             // 6: ml.PlotPixelsRequest.NDREEntry
+	nil,                             // 7: ml.PlotPixelsRequest.NDMIEntry
+	nil,                             // 8: ml.PlotDeltaPixelsRequest.NDREDerivativeEntry
+	nil,                             // 9: ml.PlotDeltaPixelsRequest.NDMIDerivativeEntry
+	nil,                             // 10: ml.PlotDeltaPixelsRequest.PSRIDerivativeEntry
+	nil,                             // 11: ml.PlotDeltaPixelsRequest.NDVIDerivativeEntry
 }
 var file_internal_ml_protobufs_plot_pixels_proto_depIdxs = []int32{
-	5,  // 0: PlotPixelsRequest.NDVI:type_name -> PlotPixelsRequest.NDVIEntry
-	6,  // 1: PlotPixelsRequest.NDRE:type_name -> PlotPixelsRequest.NDREEntry
-	7,  // 2: PlotPixelsRequest.NDMI:type_name -> PlotPixelsRequest.NDMIEntry
-	0,  // 3: PlotPixelsRequest.pixels:type_name -> Pixel
-	8,  // 4: PlotDeltaPixelsRequest.NDREDerivative:type_name -> PlotDeltaPixelsRequest.NDREDerivativeEntry
-	9,  // 5: PlotDeltaPixelsRequest.NDMIDerivative:type_name -> PlotDeltaPixelsRequest.NDMIDerivativeEntry
-	10, // 6: PlotDeltaPixelsRequest.PSRIDerivative:type_name -> PlotDeltaPixelsRequest.PSRIDerivativeEntry
-	11, // 7: PlotDeltaPixelsRequest.NDVIDerivative:type_name -> PlotDeltaPixelsRequest.NDVIDerivativeEntry
-	0,  // 8: PlotDeltaPixelsRequest.pixels:type_name -> Pixel
-	1,  // 9: PlotPixelsService.PlotPixels:input_type -> PlotPixelsRequest
-	3,  // 10: PlotPixelsService.PlotDeltaPixels:input_type -> PlotDeltaPixelsRequest
-	2,  // 11: PlotPixelsService.PlotPixels:output_type -> PlotPixelsResponse
-	4,  // 12: PlotPixelsService.PlotDeltaPixels:output_type -> PlotDeltaPixelsResponse
+	5,  // 0: ml.PlotPixelsRequest.NDVI:type_name -> ml.PlotPixelsRequest.NDVIEntry
+	6,  // 1: ml.PlotPixelsRequest.NDRE:type_name -> ml.PlotPixelsRequest.NDREEntry
+	7,  // 2: ml.PlotPixelsRequest.NDMI:type_name -> ml.PlotPixelsRequest.NDMIEntry
+	0,  // 3: ml.PlotPixelsRequest.pixels:type_name -> ml.Pixel
+	8,  // 4: ml.PlotDeltaPixelsRequest.NDREDerivative:type_name -> ml.PlotDeltaPixelsRequest.NDREDerivativeEntry
+	9,  // 5: ml.PlotDeltaPixelsRequest.NDMIDerivative:type_name -> ml.PlotDeltaPixelsRequest.NDMIDerivativeEntry
+	10, // 6: ml.PlotDeltaPixelsRequest.PSRIDerivative:type_name -> ml.PlotDeltaPixelsRequest.PSRIDerivativeEntry
+	11, // 7: ml.PlotDeltaPixelsRequest.NDVIDerivative:type_name -> ml.PlotDeltaPixelsRequest.NDVIDerivativeEntry
+	0,  // 8: ml.PlotDeltaPixelsRequest.pixels:type_name -> ml.Pixel
+	1,  // 9: ml.PlotPixelsService.PlotPixels:input_type -> ml.PlotPixelsRequest
+	3,  // 10: ml.PlotPixelsService.PlotDeltaPixels:input_type -> ml.PlotDeltaPixelsRequest
+	2,  // 11: ml.PlotPixelsService.PlotPixels:output_type -> ml.PlotPixelsResponse
+	4,  // 12: ml.PlotPixelsService.PlotDeltaPixels:output_type -> ml.PlotDeltaPixelsResponse
 	11, // [11:13] is the sub-list for method output_type
 	9,  // [9:11] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name

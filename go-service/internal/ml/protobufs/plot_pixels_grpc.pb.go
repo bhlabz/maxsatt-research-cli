@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PlotPixelsService_PlotPixels_FullMethodName      = "/PlotPixelsService/PlotPixels"
-	PlotPixelsService_PlotDeltaPixels_FullMethodName = "/PlotPixelsService/PlotDeltaPixels"
+	PlotPixelsService_PlotPixels_FullMethodName      = "/ml.PlotPixelsService/PlotPixels"
+	PlotPixelsService_PlotDeltaPixels_FullMethodName = "/ml.PlotPixelsService/PlotDeltaPixels"
 )
 
 // PlotPixelsServiceClient is the client API for PlotPixelsService service.
@@ -142,7 +142,7 @@ func _PlotPixelsService_PlotDeltaPixels_Handler(srv interface{}, ctx context.Con
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var PlotPixelsService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "PlotPixelsService",
+	ServiceName: "ml.PlotPixelsService",
 	HandlerType: (*PlotPixelsServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
