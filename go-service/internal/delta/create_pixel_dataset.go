@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"image/color"
-	"sort"
 	"time"
 
 	"github.com/airbusgeo/godal"
@@ -74,7 +73,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	}
 
 	historicalPixelDataset := make(map[[2]int]map[time.Time]PixelData)
-	sortedImageDates := getSortedKeys(images, false)
+	sortedImageDates := utils.GetSortedKeys(images, false)
 	target := len(sortedImageDates) * width * height
 	progressBar := progressbar.Default(int64(target), "Creating pixel dataset")
 	validImagesCount := 0
@@ -170,23 +169,4 @@ func getData(image *godal.Dataset, totalPixels, width, height, x, y int, date ti
 		Status: pixelStatus,
 	}, nil
 
-}
-
-func sortDates(dates []time.Time, asc bool) []time.Time {
-	sort.Slice(dates, func(i, j int) bool {
-		if asc {
-			return dates[i].Before(dates[j])
-		}
-		return dates[i].After(dates[j])
-	})
-	return dates
-}
-
-func getSortedKeys[T any](m map[time.Time]T, asc bool) []time.Time {
-	keys := make([]time.Time, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-
-	return sortDates(keys, asc)
 }

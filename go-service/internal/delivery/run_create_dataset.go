@@ -34,31 +34,48 @@ func getSamplesAmountFromSeverity(severity string, datasetLength int) int {
 	return datasetLength / 2
 }
 
-func getBestSamplesFromDeltaDataset(deltaDataset []delta.Data, samplesAmount int, label string) []delta.Data {
+func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]delta.Data, samplesAmount int, label string) map[[2]int]map[time.Time]delta.Data {
 	// Sort the deltaDataset based on the specified derivatives
-	sort.Slice(deltaDataset, func(i, j int) bool {
-		if deltaDataset[i].NDREDerivative != deltaDataset[j].NDREDerivative {
-			return deltaDataset[i].NDREDerivative < deltaDataset[j].NDREDerivative
+	deltaDatasetSlice := []delta.Data{}
+	for _, data := range deltaDataset {
+		for _, sample := range data {
+			deltaDatasetSlice = append(deltaDatasetSlice, sample)
 		}
-		if deltaDataset[i].NDMIDerivative != deltaDataset[j].NDMIDerivative {
-			return deltaDataset[i].NDMIDerivative < deltaDataset[j].NDMIDerivative
+	}
+
+	sort.Slice(deltaDatasetSlice, func(i, j int) bool {
+		if deltaDatasetSlice[i].NDREDerivative != deltaDatasetSlice[j].NDREDerivative {
+			return deltaDatasetSlice[i].NDREDerivative < deltaDatasetSlice[j].NDREDerivative
 		}
-		if deltaDataset[i].NDVIDerivative != deltaDataset[j].NDVIDerivative {
-			return deltaDataset[i].NDVIDerivative < deltaDataset[j].NDVIDerivative
+		if deltaDatasetSlice[i].NDMIDerivative != deltaDatasetSlice[j].NDMIDerivative {
+			return deltaDatasetSlice[i].NDMIDerivative < deltaDatasetSlice[j].NDMIDerivative
 		}
-		return deltaDataset[i].PSRIDerivative > deltaDataset[j].PSRIDerivative
+		if deltaDatasetSlice[i].NDVIDerivative != deltaDatasetSlice[j].NDVIDerivative {
+			return deltaDatasetSlice[i].NDVIDerivative < deltaDatasetSlice[j].NDVIDerivative
+		}
+		return deltaDatasetSlice[i].PSRIDerivative > deltaDatasetSlice[j].PSRIDerivative
 	})
 
 	// Add name and pest (label) to each sample
-	for i := range deltaDataset {
-		deltaDataset[i].Label = &label
+	for i := range deltaDatasetSlice {
+		deltaDatasetSlice[i].Label = &label
 	}
 
 	// Select the top samplesAmount rows
-	if samplesAmount > len(deltaDataset) {
-		samplesAmount = len(deltaDataset)
+	if samplesAmount > len(deltaDatasetSlice) {
+		samplesAmount = len(deltaDatasetSlice)
 	}
-	return deltaDataset[:samplesAmount]
+	acceptedCut := deltaDatasetSlice[:samplesAmount]
+
+	newDeltaDataset := make(map[[2]int]map[time.Time]delta.Data)
+	for _, sample := range acceptedCut {
+		key := [2]int{sample.X, sample.Y}
+		if _, exists := newDeltaDataset[key]; !exists {
+			newDeltaDataset[key] = make(map[time.Time]delta.Data)
+		}
+		newDeltaDataset[key][sample.StartDate] = sample
+	}
+	return newDeltaDataset
 }
 
 func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, deltaDaysTrashHold int) error {
@@ -137,7 +154,23 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 				continue
 			}
 
-			deltaDataset, err := delta.CreateDeltaDataset(farm, plot, images, deltaMin, deltaMax)
+			data, err := delta.CreatePixelDataset(farm, plot, images)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				continue
+			}
+			if len(data) == 0 {
+				err = fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
+				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+			}
+
+			cleanData, err := delta.CreateCleanDataset(farm, plot, data)
+			if err != nil {
+				errors = append(errors, fmt.Sprintf("Error creating clean dataset: %v", err))
+				continue
+			}
+
+			deltaDataset, err := delta.CreateDeltaDataset(farm, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
 				continue

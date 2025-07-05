@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
 )
 
 func createTreatmentImages(images map[[2]int]map[time.Time]PixelData) map[[2]int]map[time.Time]InTreatmentPixel {
@@ -168,7 +169,7 @@ func estimatePixels(images map[[2]int]map[time.Time]PixelData) map[[2]int]map[ti
 		}
 	}
 
-	ascDates := sortDates(includedDates, true)
+	ascDates := utils.SortDates(includedDates, true)
 
 	for i, date := range ascDates {
 		rounds := 0

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "/protobufs";
+option go_package = "github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs";
 
 service RunModelService {
     rpc RunModel (RunModelRequest) returns (RunModelResponse);

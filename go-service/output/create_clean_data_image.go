@@ -5,11 +5,12 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
+	"log"
 	"os"
-	"strings"
+	"time"
 
-	"github.com/airbusgeo/godal"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 )
 
 func normalize(value, min, max float64) float64 {
@@ -59,33 +60,46 @@ func getPixelIndex(index string, pixel delta.PixelData) float64 {
 	}
 }
 
-func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePath string) ([]string, error) {
+func CreateCleanDataImage(result []delta.PixelData, forest, plot string, date time.Time) ([]string, error) {
+
+	resultPath := fmt.Sprintf("%s/data/result/%s/%s/clean", properties.RootPath(), forest, plot)
+
+	err := os.MkdirAll(resultPath, os.ModePerm)
+	if err != nil {
+		log.Fatalf("Failed to create result folder: %v", err)
+	}
+
 	imagePaths := []string{}
 	for _, index := range []string{"NDRE", "NDMI", "PSRI", "NDVI"} {
-		outputImagePathCpy := outputImagePath + "_" + index
-		if !strings.Contains(outputImagePathCpy, ".jpeg") {
-			outputImagePathCpy += ".jpeg"
-		}
-		// Open the TIFF image to get its dimensions
-		tiffFile, err := os.Open(tiffImagePath)
+		resultImagePath := fmt.Sprintf("%s/images/%s", resultPath, index)
+		err = os.MkdirAll(resultImagePath, os.ModePerm)
 		if err != nil {
-			fmt.Printf("Error opening TIFF file: %v\n", err)
-			return nil, err
+			log.Fatalf("Failed to create result folder: %v", err)
 		}
-		defer tiffFile.Close()
 
-		ds, err := godal.Open(tiffImagePath, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
-			if ec == godal.CE_Warning {
-				return nil
+		outputPath := fmt.Sprintf("%s/%s_%s_%s.jpeg", resultImagePath, forest, plot, date.Format("2006_01_02"))
+
+		minX, maxX := result[0].X, result[0].X
+		minY, maxY := result[0].Y, result[0].Y
+
+		for _, sample := range result {
+			if sample.X < minX {
+				minX = sample.X
 			}
-			return err
-		}))
-		if err != nil {
-			fmt.Println(err.Error())
-
+			if sample.X > maxX {
+				maxX = sample.X
+			}
+			if sample.Y < minY {
+				minY = sample.Y
+			}
+			if sample.Y > maxY {
+				maxY = sample.Y
+			}
 		}
 
-		width, height := int(ds.Structure().SizeX), int(ds.Structure().SizeY)
+		// Calculate image dimensions (add padding)
+		width := maxX - minX + 1
+		height := maxY - minY + 1
 		newImage := image.NewRGBA(image.Rect(0, 0, width, height))
 
 		for _, pixel := range result {
@@ -101,7 +115,7 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 			}
 		}
 
-		outputFile, err := os.Create(outputImagePathCpy)
+		outputFile, err := os.Create(outputPath)
 		if err != nil {
 			fmt.Printf("Error creating JPEG file: %v\n", err)
 			return nil, nil
@@ -116,8 +130,8 @@ func CreateCleanDataImage(result []delta.PixelData, tiffImagePath, outputImagePa
 			return nil, err
 		}
 
-		fmt.Println("JPEG image created successfully as", outputImagePathCpy)
-		imagePaths = append(imagePaths, outputImagePathCpy)
+		fmt.Println("JPEG image created successfully as", outputPath)
+		imagePaths = append(imagePaths, outputPath)
 	}
 
 	return imagePaths, nil

@@ -12,6 +12,8 @@ import run_model_pb2_grpc
 from clear_and_smooth import clear_and_smooth
 from dotenv import load_dotenv
 from run_model import run_model
+from pest_clustering_server import serve_pest_clustering
+from plot_pixels_server import serve_plot_pixels
 
 
 class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServicer):
@@ -100,11 +102,13 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
     
 def serve(port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=200),options=[
-        ('grpc.max_send_message_length', 10 * 1024 * 1024),  # 10 MB
-        ('grpc.max_receive_message_length', 10 * 1024 * 1024)
+        ('grpc.max_send_message_length', 20 * 1024 * 1024),  # 20 MB
+        ('grpc.max_receive_message_length', 20 * 1024 * 1024)
     ])
     clear_and_smooth_pb2_grpc.add_ClearAndSmoothServiceServicer_to_server(ClearAndSmoothService(), server)
     run_model_pb2_grpc.add_RunModelServiceServicer_to_server(RunModelServiceServicer(), server)
+    serve_pest_clustering(server)  # Add pest clustering service
+    serve_plot_pixels(server) # Add plot pixels service
     server.add_insecure_port(f'[::]:{port}')
     server.start()
     # print("gRPC server is running on port 50051...")
