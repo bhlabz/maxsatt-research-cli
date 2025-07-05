@@ -149,6 +149,7 @@ func (p InTreatmentPixel) FindMostRecentPixelsByStatus(datePixel map[time.Time]I
 	descSortedDates := utils.GetSortedKeys(datePixel, false)
 
 	for _, date := range descSortedDates {
+	for _, date := range descSortedDates {
 		if date.After(currentDate) || date.Equal(currentDate) {
 			continue
 		}
