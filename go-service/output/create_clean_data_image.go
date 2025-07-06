@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 )
 
@@ -45,7 +45,7 @@ func valueToColor(norm float64) color.RGBA {
 	return color.RGBA{R: r, G: g, B: b, A: 255}
 }
 
-func getPixelIndex(index string, pixel delta.PixelData) float64 {
+func getPixelIndex(index string, pixel dataset.PixelData) float64 {
 	switch index {
 	case "NDRE":
 		return pixel.NDRE
@@ -60,7 +60,7 @@ func getPixelIndex(index string, pixel delta.PixelData) float64 {
 	}
 }
 
-func CreateCleanDataImage(result []delta.PixelData, forest, plot string, date time.Time) ([]string, error) {
+func CreateCleanDataImage(result []dataset.PixelData, forest, plot string, date time.Time) ([]string, error) {
 
 	resultPath := fmt.Sprintf("%s/data/result/%s/%s/clean", properties.RootPath(), forest, plot)
 

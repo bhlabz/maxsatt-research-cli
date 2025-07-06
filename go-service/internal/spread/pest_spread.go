@@ -5,21 +5,21 @@ import (
 	"sort"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 )
 
 type PestSpreadSample struct {
-	delta.Data
+	dataset.DeltaData
 	Cluster  int
 	Severity int
 }
 
-func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data, daysToCluster int) (map[time.Time][]PestSpreadSample, error) {
-	groupedData := make(map[time.Time][]delta.Data)
+func PestSpread(deltaData map[[2]int]map[time.Time]dataset.DeltaData, daysToCluster int) (map[time.Time][]PestSpreadSample, error) {
+	groupedData := make(map[time.Time][]dataset.DeltaData)
 	for _, datePixel := range deltaData {
 		for date, pixel := range datePixel {
 			if _, exists := groupedData[date]; !exists {
-				groupedData[date] = []delta.Data{}
+				groupedData[date] = []dataset.DeltaData{}
 			}
 			groupedData[date] = append(groupedData[date], pixel)
 		}
@@ -51,7 +51,7 @@ func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data, daysToCluster int
 		}
 		batchDates := dates[i:end]
 
-		var batchPixels []delta.Data
+		var batchPixels []dataset.DeltaData
 		for _, date := range batchDates {
 			batchPixels = append(batchPixels, groupedData[date]...)
 		}
@@ -85,7 +85,7 @@ func PestSpread(deltaData map[[2]int]map[time.Time]delta.Data, daysToCluster int
 
 		// Regroup clustered samples by date
 		for _, sample := range pestSpreadSamples {
-			dateKey := sample.Data.EndDate
+			dateKey := sample.DeltaData.EndDate
 			if _, exists := allPestSpreadSamples[dateKey]; !exists {
 				allPestSpreadSamples[dateKey] = []PestSpreadSample{}
 			}

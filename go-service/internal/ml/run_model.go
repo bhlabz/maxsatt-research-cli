@@ -6,7 +6,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 
@@ -26,7 +26,7 @@ type PixelResult struct {
 	Result    []*LabelProbability
 }
 
-func RunModel(model string, finalData []final.FinalData) ([]PixelResult, error) {
+func RunModel(model string, finalData []dataset.FinalData) ([]PixelResult, error) {
 	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", properties.GrpcPort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
@@ -74,7 +74,7 @@ func convertToPixelResult(data []*protobufs.PixelResult) []PixelResult {
 	return pixelResults
 }
 
-func convertToProtoFinalData(data []final.FinalData) []*protobufs.FinalData {
+func convertToProtoFinalData(data []dataset.FinalData) []*protobufs.FinalData {
 	var protoData []*protobufs.FinalData
 	for _, d := range data {
 		label := ""

@@ -1,11 +1,10 @@
-package final
+package dataset
 
 import (
 	"fmt"
 	"sync"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
@@ -19,11 +18,11 @@ type Sample struct {
 
 type FinalData struct {
 	weather.WeatherMetrics
-	delta.Data
+	DeltaData
 	CreatedAt time.Time `csv:"created_at"`
 }
 
-func createFinalDataset(samples map[[2]int]delta.Data, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
+func createFinalDataset(samples map[[2]int]DeltaData, weatherData weather.HistoricalWeatherMetrics) ([]FinalData, error) {
 	var mergedData []FinalData
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -31,7 +30,7 @@ func createFinalDataset(samples map[[2]int]delta.Data, weatherData weather.Histo
 
 	for _, sample := range samples {
 		wg.Add(1)
-		go func(sample delta.Data) {
+		go func(sample DeltaData) {
 			defer wg.Done()
 
 			weatherRow := weather.WeatherMetrics{}
@@ -54,7 +53,7 @@ func createFinalDataset(samples map[[2]int]delta.Data, weatherData weather.Histo
 
 			mergedRow := FinalData{
 				WeatherMetrics: weatherRow,
-				Data:           sample,
+				DeltaData:      sample,
 				CreatedAt:      time.Now(),
 			}
 

@@ -1,4 +1,4 @@
-package final
+package dataset
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
@@ -69,7 +68,7 @@ func SaveFinalData(finalData []FinalData, date time.Time) error {
 	return nil
 }
 
-func GetFinalData(deltaDataset map[[2]int]map[time.Time]delta.Data, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string) ([]FinalData, error) {
+func GetFinalData(deltaDataset map[[2]int]map[time.Time]DeltaData, historicalWeather weather.HistoricalWeather, startDate, endDate time.Time, farm, plot string) ([]FinalData, error) {
 	dates := make([]time.Time, 0)
 	for date := range deltaDataset {
 		for date := range deltaDataset[date] {
@@ -83,7 +82,7 @@ func GetFinalData(deltaDataset map[[2]int]map[time.Time]delta.Data, historicalWe
 
 	climateDataset := weather.CalculateHistoricalWeatherMetricsByDates(dates, historicalWeather)
 
-	samples := make(map[[2]int]delta.Data)
+	samples := make(map[[2]int]DeltaData)
 	for key, data := range deltaDataset {
 		for date, sample := range data {
 			if date.Equal(lastDate) {

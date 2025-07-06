@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	pb "github.com/forest-guardian/forest-guardian-api-poc/internal/spread/protobufs"
 )
 
@@ -41,7 +41,7 @@ func (c *PestClusteringClient) Close() error {
 }
 
 // ClusterizeSpread sends delta data to the Python server for clustering
-func (c *PestClusteringClient) ClusterizeSpread(deltaData []delta.Data) ([]PestSpreadSample, error) {
+func (c *PestClusteringClient) ClusterizeSpread(deltaData []dataset.DeltaData) ([]PestSpreadSample, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
@@ -100,7 +100,7 @@ func (c *PestClusteringClient) ClusterizeSpread(deltaData []delta.Data) ([]PestS
 		}
 
 		// Convert protobuf DeltaData back to delta.Data
-		deltaData := delta.Data{
+		deltaData := dataset.DeltaData{
 			Farm:      pbSample.Data.Farm,
 			Plot:      pbSample.Data.Plot,
 			DeltaMin:  int(pbSample.Data.DeltaMin),
@@ -108,7 +108,7 @@ func (c *PestClusteringClient) ClusterizeSpread(deltaData []delta.Data) ([]PestS
 			Delta:     int(pbSample.Data.Delta),
 			StartDate: startDate,
 			EndDate:   endDate,
-			PixelData: delta.PixelData{
+			PixelData: dataset.PixelData{
 				X:         int(pbSample.Data.X),
 				Y:         int(pbSample.Data.Y),
 				NDRE:      pbSample.Data.Ndre,
@@ -129,8 +129,8 @@ func (c *PestClusteringClient) ClusterizeSpread(deltaData []delta.Data) ([]PestS
 		}
 
 		sample := PestSpreadSample{
-			Data:    deltaData,
-			Cluster: int(pbSample.Cluster),
+			DeltaData: deltaData,
+			Cluster:   int(pbSample.Cluster),
 		}
 		pestSpreadSamples = append(pestSpreadSamples, sample)
 	}

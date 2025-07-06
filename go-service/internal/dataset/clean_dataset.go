@@ -1,4 +1,4 @@
-package delta
+package dataset
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	pb "github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs"
+	pb "github.com/forest-guardian/forest-guardian-api-poc/internal/dataset/protobufs"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/utils"
