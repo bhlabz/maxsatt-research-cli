@@ -1,4 +1,4 @@
-package delta
+package dataset
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-type Data struct {
+type DeltaData struct {
 	PixelData
 	Farm           string    `csv:"farm"`
 	Plot           string    `csv:"plot"`
@@ -27,9 +27,9 @@ type Data struct {
 	Label          *string   `csv:"label"`
 }
 
-func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]Data, error) {
+func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]DeltaData, error) {
 
-	var deltaDataset = make(map[[2]int]map[time.Time]Data)
+	var deltaDataset = make(map[[2]int]map[time.Time]DeltaData)
 	found := 0
 	notFound := 0
 	target := len(cleanDataset)
@@ -73,7 +73,7 @@ func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset 
 				psriDerivative := (psriValue - psriStart) / float64(timeDiff)
 				ndviDerivative := (ndviValue - ndviStart) / float64(timeDiff)
 
-				data := Data{
+				data := DeltaData{
 					Farm:           farm,
 					Plot:           plot,
 					DeltaMin:       deltaMin,
@@ -89,7 +89,7 @@ func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset 
 				}
 
 				if _, exists := deltaDataset[[2]int{data.X, data.Y}]; !exists {
-					deltaDataset[[2]int{data.X, data.Y}] = make(map[time.Time]Data)
+					deltaDataset[[2]int{data.X, data.Y}] = make(map[time.Time]DeltaData)
 				}
 				deltaDataset[[2]int{data.X, data.Y}][endDate] = data
 

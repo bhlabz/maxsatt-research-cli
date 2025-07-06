@@ -1,4 +1,4 @@
-package delta
+package dataset
 
 import (
 	"fmt"

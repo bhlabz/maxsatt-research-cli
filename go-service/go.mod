@@ -19,7 +19,8 @@ require (
 )
 
 replace github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs => ./internal/ml/protobufs
-replace github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs => ./internal/delta/protobufs
+
+replace github.com/forest-guardian/forest-guardian-api-poc/internal/delta/protobufs => ./internal/dataset/protobufs
 
 require (
 	github.com/gammazero/deque v0.2.0 // indirect

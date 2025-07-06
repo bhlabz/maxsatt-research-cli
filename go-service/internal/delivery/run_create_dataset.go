@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/delta"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/final"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
+	delta1 "github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
@@ -26,17 +26,13 @@ type ValidationRow struct {
 	Plot     string `csv:"plot"`
 }
 
-func getDaysBeforeEvidenceToAnalyse(pest, severity string) int {
-	return 5
-}
-
 func getSamplesAmountFromSeverity(severity string, datasetLength int) int {
 	return datasetLength / 2
 }
 
-func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]delta.Data, samplesAmount int, label string) map[[2]int]map[time.Time]delta.Data {
+func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]dataset.DeltaData, samplesAmount int, label string) map[[2]int]map[time.Time]dataset.DeltaData {
 	// Sort the deltaDataset based on the specified derivatives
-	deltaDatasetSlice := []delta.Data{}
+	deltaDatasetSlice := []dataset.DeltaData{}
 	for _, data := range deltaDataset {
 		for _, sample := range data {
 			deltaDatasetSlice = append(deltaDatasetSlice, sample)
@@ -67,21 +63,20 @@ func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]delta.
 	}
 	acceptedCut := deltaDatasetSlice[:samplesAmount]
 
-	newDeltaDataset := make(map[[2]int]map[time.Time]delta.Data)
+	newDeltaDataset := make(map[[2]int]map[time.Time]dataset.DeltaData)
 	for _, sample := range acceptedCut {
 		key := [2]int{sample.X, sample.Y}
 		if _, exists := newDeltaDataset[key]; !exists {
-			newDeltaDataset[key] = make(map[time.Time]delta.Data)
+			newDeltaDataset[key] = make(map[time.Time]dataset.DeltaData)
 		}
 		newDeltaDataset[key][sample.StartDate] = sample
 	}
 	return newDeltaDataset
 }
 
-func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, deltaDaysTrashHold int) error {
+func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, deltaDaysTrashHold, daysBeforeEvidenceToAnalyze int) error {
 	fmt.Println("create dataset")
 	errors := []string{}
-	daysBeforeEvidenceToAnalyze := 5
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 	deltaMin, deltaMax := deltaDays, deltaDays+deltaDaysTrashHold
 
@@ -119,21 +114,20 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		farm := row.Farm
 		plot := strings.Split(row.Plot, "-")[1]
 
-		finalData, err := final.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
+		finalData, err := delta1.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
 		if err != nil {
 			fmt.Println("Error getting saved final dataset: " + err.Error())
 		}
 
 		if finalData == nil {
 
-			daysBeforeEvidenceToAnalyze = -getDaysBeforeEvidenceToAnalyse(pest, severity)
 			geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
 				continue
 			}
 
-			endDate := date.AddDate(0, 0, -(daysBeforeEvidenceToAnalyze - 5))
+			endDate := date.AddDate(0, 0, -daysBeforeEvidenceToAnalyze)
 			startDate := endDate.AddDate(0, 0, -daysToFetch)
 
 			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
@@ -154,7 +148,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 				continue
 			}
 
-			data, err := delta.CreatePixelDataset(farm, plot, images)
+			data, err := dataset.CreatePixelDataset(farm, plot, images)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
 				continue
@@ -164,13 +158,13 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
 			}
 
-			cleanData, err := delta.CreateCleanDataset(farm, plot, data)
+			cleanData, err := dataset.CreateCleanDataset(farm, plot, data)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating clean dataset: %v", err))
 				continue
 			}
 
-			deltaDataset, err := delta.CreateDeltaDataset(farm, plot, deltaMin, deltaMax, cleanData)
+			deltaDataset, err := dataset.CreateDeltaDataset(farm, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
 				continue
@@ -179,13 +173,13 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
 			bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
 
-			finalData, err := final.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
+			finalData, err := delta1.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 				continue
 			}
 
-			err = final.SaveFinalData(finalData, date)
+			err = delta1.SaveFinalData(finalData, date)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 				continue
