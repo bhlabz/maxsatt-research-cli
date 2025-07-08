@@ -2,6 +2,8 @@ package delivery
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
@@ -89,23 +91,36 @@ func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string,
 
 func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
 	start := time.Now()
-	var discard1, discard2 string
-	var deltaDays, deltaDaysThreshold, daysBeforeEvidenceToAnalyze int
-
-	// Try to parse the original model format first
-	_, err := fmt.Sscanf(model, "%s_%s_%d_%d_%d.csv",
-		&discard1, &discard2,
-		&deltaDays, &deltaDaysThreshold, &daysBeforeEvidenceToAnalyze)
-
-	// If that fails, try to parse the training model format
+	// Parse the model string according to the expected format
+	fmt.Println("Parsing model string:", model)
+	model = strings.TrimSuffix(model, ".csv")
+	parts := strings.Split(model, "_")
+	if len(parts) != 8 {
+		return nil, fmt.Errorf("model string has %d parts, expected 8: %v", len(parts), parts)
+	}
+	_, err := strconv.Atoi(parts[0]) // modelID, unused
 	if err != nil {
-		_, err = fmt.Sscanf(model, "%s_%s_%d_%d_%d_training_%s_%d.csv",
-			&discard1, &discard2,
-			&deltaDays, &deltaDaysThreshold, &daysBeforeEvidenceToAnalyze,
-			&discard1, &discard1) // Ignore the training date and ratio
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse model string: %w", err)
-		}
+		return nil, err
+	}
+	// modelDate := parts[1], unused
+	deltaDays, err := strconv.Atoi(parts[2])
+	if err != nil {
+		return nil, err
+	}
+	deltaDaysThreshold, err := strconv.Atoi(parts[3])
+	if err != nil {
+		return nil, err
+	}
+	daysBeforeEvidenceToAnalyze, err := strconv.Atoi(parts[4])
+	if err != nil {
+		return nil, err
+	}
+	if parts[5] != "training" {
+		return nil, fmt.Errorf("expected 'training' literal in model string, got '%s'", parts[5])
+	}
+	_, err = strconv.Atoi(parts[7]) // trainingRatio, unused
+	if err != nil {
+		return nil, err
 	}
 
 	daysBeforeEvidenceToFetch := deltaDays + deltaDaysThreshold + daysBeforeEvidenceToAnalyze
