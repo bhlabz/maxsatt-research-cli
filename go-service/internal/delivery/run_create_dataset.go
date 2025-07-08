@@ -198,19 +198,13 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			}
 		}
 
-		fmt.Println("TEST")
-
 		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
 		fileExists := false
-
-		fmt.Println("TEST")
 
 		// Check if the file already exists
 		if _, err := os.Stat(filePath); err == nil {
 			fileExists = true
 		}
-
-		fmt.Println("TEST")
 
 		file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
@@ -218,8 +212,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			fmt.Println(err.Error())
 			continue
 		}
-		fmt.Println("TEST")
-
 		defer file.Close()
 
 		if fileExists {
@@ -230,11 +222,9 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 				continue
 			}
 		}
-		fmt.Println("TEST")
 
 		writer := csv.NewWriter(file)
 		defer writer.Flush()
-		fmt.Println("TEST")
 
 		// Write the header only if the file does not already exist
 		if !fileExists {
@@ -245,9 +235,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			}
 			continue
 		}
-
-		fmt.Println("TEST")
-
 		// Write the data rows
 		if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
 			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
