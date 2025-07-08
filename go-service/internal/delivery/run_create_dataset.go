@@ -209,6 +209,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error opening dataset: %v", err))
+			fmt.Println(err.Error())
 			continue
 		}
 		defer file.Close()
