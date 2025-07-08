@@ -254,5 +254,103 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		notification.SendDiscordWarnNotification(fmt.Sprintf("Dataset creation completed with %d errors.\n Errors: %s", len(errors), strings.Join(errors, "/n")))
 	}
 	fmt.Println("Dataset created successfully")
+	// At the end of CreateDataset, after all processing and before return
+	filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
+	err = deduplicateCSVFile(filePath)
+	if err != nil {
+		fmt.Printf("[Deduplication] Error during deduplication: %v\n", err)
+	}
+	return nil
+}
+
+// deduplicateCSVFile removes duplicate rows from a CSV file based on selected columns and overwrites the file.
+func deduplicateCSVFile(filePath string) error {
+	fmt.Printf("[Deduplication] Starting deduplication for file: %s\n", filePath)
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to open file for deduplication: %w", err)
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	headers, err := reader.Read()
+	if err != nil {
+		return fmt.Errorf("failed to read CSV header: %w", err)
+	}
+
+	var records [][]string
+	for {
+		record, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("failed to read CSV row: %w", err)
+		}
+		records = append(records, record)
+	}
+
+	// Indices of columns to deduplicate on (based on header order)
+	colIdx := map[string]int{}
+	for i, h := range headers {
+		colIdx[h] = i
+	}
+	// List of columns to deduplicate on
+	dedupCols := []string{
+		"avg_temperature", "temp_std_dev", "avg_humidity", "humidity_std_dev", "total_precipitation", "dry_days_consecutive",
+		"ndre", "ndmi", "psri", "ndvi", "delta_min", "delta_max", "delta", "ndre_derivative", "ndmi_derivative", "psri_derivative", "ndvi_derivative", "label",
+	}
+
+	unique := make(map[string]struct{})
+	var deduped [][]string
+	for _, row := range records {
+		var keyParts []string
+		for _, col := range dedupCols {
+			idx, ok := colIdx[col]
+			if !ok || idx >= len(row) {
+				keyParts = append(keyParts, "")
+			} else {
+				keyParts = append(keyParts, row[idx])
+			}
+		}
+		key := strings.Join(keyParts, "||")
+		if _, exists := unique[key]; !exists {
+			unique[key] = struct{}{}
+			deduped = append(deduped, row)
+		}
+	}
+
+	if len(deduped) == len(records) {
+		fmt.Printf("[Deduplication] No duplicates found. Total rows: %d\n", len(deduped))
+		return nil
+	}
+
+	fmt.Printf("[Deduplication] Removed %d duplicate rows. Clean rows: %d\n", len(records)-len(deduped), len(deduped))
+
+	// Write back to the same file
+	tmpPath := filePath + ".tmp"
+	outFile, err := os.Create(tmpPath)
+	if err != nil {
+		return fmt.Errorf("failed to create temp file for deduplication: %w", err)
+	}
+	defer outFile.Close()
+
+	writer := csv.NewWriter(outFile)
+	if err := writer.Write(headers); err != nil {
+		return fmt.Errorf("failed to write header: %w", err)
+	}
+	if err := writer.WriteAll(deduped); err != nil {
+		return fmt.Errorf("failed to write deduplicated rows: %w", err)
+	}
+	writer.Flush()
+	if err := writer.Error(); err != nil {
+		return fmt.Errorf("error flushing CSV writer: %w", err)
+	}
+
+	// Replace original file
+	if err := os.Rename(tmpPath, filePath); err != nil {
+		return fmt.Errorf("failed to replace original file with deduplicated file: %w", err)
+	}
+	fmt.Printf("[Deduplication] Deduplication complete. File updated: %s\n", filePath)
 	return nil
 }
