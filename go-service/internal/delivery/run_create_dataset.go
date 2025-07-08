@@ -253,13 +253,13 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 	if len(errors) > 0 {
 		notification.SendDiscordWarnNotification(fmt.Sprintf("Dataset creation completed with %d errors.\n Errors: %s", len(errors), strings.Join(errors, "/n")))
 	}
-	fmt.Println("Dataset created successfully")
-	// At the end of CreateDataset, after all processing and before return
 	filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
 	err = deduplicateCSVFile(filePath)
 	if err != nil {
 		fmt.Printf("[Deduplication] Error during deduplication: %v\n", err)
 	}
+
+	fmt.Println("Dataset created successfully")
 	return nil
 }
 
