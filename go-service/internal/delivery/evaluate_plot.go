@@ -89,14 +89,23 @@ func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string,
 
 func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
 	start := time.Now()
-	var discard1, discard2, discard3, discard4 int
+	var discard1, discard2 string
 	var deltaDays, deltaDaysThreshold, daysBeforeEvidenceToAnalyze int
 
-	_, err := fmt.Sscanf(model, "%d_%d-%d-%d_%d_%d_%d.csv",
-		&discard1, &discard2, &discard3, &discard4,
+	// Try to parse the original model format first
+	_, err := fmt.Sscanf(model, "%s_%s_%d_%d_%d.csv",
+		&discard1, &discard2,
 		&deltaDays, &deltaDaysThreshold, &daysBeforeEvidenceToAnalyze)
+
+	// If that fails, try to parse the training model format
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse model string: %w", err)
+		_, err = fmt.Sscanf(model, "%s_%s_%d_%d_%d_training_%s_%d.csv",
+			&discard1, &discard2,
+			&deltaDays, &deltaDaysThreshold, &daysBeforeEvidenceToAnalyze,
+			&discard1, &discard1) // Ignore the training date and ratio
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse model string: %w", err)
+		}
 	}
 
 	daysBeforeEvidenceToFetch := deltaDays + deltaDaysThreshold + daysBeforeEvidenceToAnalyze

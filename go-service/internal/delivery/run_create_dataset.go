@@ -107,6 +107,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		date, err := time.Parse("02/01/06", row.Date)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error parsing date: %v", err))
+			fmt.Println(err.Error())
 			continue
 		}
 		pest := row.Pest
@@ -124,6 +125,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
@@ -133,40 +135,48 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting centroid latitude and longitude: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting weather: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			data, err := dataset.CreatePixelDataset(farm, plot, images)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 			if len(data) == 0 {
 				err = fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				fmt.Println(err.Error())
+				continue
 			}
 
 			cleanData, err := dataset.CreateCleanDataset(farm, plot, data)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating clean dataset: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			deltaDataset, err := dataset.CreateDeltaDataset(farm, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
@@ -176,15 +186,18 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			finalData, err := delta1.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			err = delta1.SaveFinalData(finalData, date)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 		}
+
 		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
 		fileExists := false
 
@@ -204,6 +217,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			_, err = file.Seek(0, io.SeekEnd)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error seeking to end of file: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 		}
@@ -215,6 +229,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		if !fileExists {
 			if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
 				errors = append(errors, fmt.Sprintf("Error writing header to CSV file: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 			continue
@@ -222,8 +237,11 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		// Write the data rows
 		if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
 			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
+			fmt.Println(err.Error())
 			continue
 		}
+
+		fmt.Printf("Processed row %d/%d: Farm=%s, Plot=%s, Pest=%s, Severity=%s\n", i+1, target, farm, plot, pest, severity)
 
 	}
 
