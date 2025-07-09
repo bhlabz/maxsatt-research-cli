@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
-	delta1 "github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
@@ -115,7 +114,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		farm := row.Farm
 		plot := strings.Split(row.Plot, "-")[1]
 
-		finalData, err := delta1.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
+		finalData, err := dataset.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
 		if err != nil {
 			fmt.Println("Error getting saved final dataset: " + err.Error())
 		}
@@ -183,19 +182,21 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
 			bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
 
-			finalData, err := delta1.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
+			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
 
-			err = delta1.SaveFinalData(finalData, date)
+			err = dataset.SaveFinalData(createdFinalData, date)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
+
+			finalData = createdFinalData
 		}
 
 		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
@@ -242,7 +243,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			continue
 		}
 
-		fmt.Printf("Processed row %d/%d: Farm=%s, Plot=%s, Pest=%s, Severity=%s\n", i+1, target, farm, plot, pest, severity)
+		fmt.Printf("Processed row %d/%d: Farm=%s, Plot=%s, Pest=%s, Severity=%s, rows=%d\n", i+1, target, farm, plot, pest, severity, len(finalData))
 
 	}
 

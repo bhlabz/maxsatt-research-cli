@@ -64,7 +64,7 @@ func SaveFinalData(finalData []FinalData, date time.Time) error {
 		return fmt.Errorf("failed to save final data to file: %w", err)
 	}
 
-	fmt.Printf("Final data successfully saved to %s.\n", filePath)
+	fmt.Printf("Final data with %d rows successfully saved to %s.\n", len(finalData), filePath)
 	return nil
 }
 
