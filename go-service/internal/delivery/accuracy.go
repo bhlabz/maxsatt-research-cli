@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/gocarina/gocsv"
 )
@@ -143,6 +144,7 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 		results, err := EvaluatePlotFinalData(trainingModelFileName, farm, plot, mostRecentDate)
 		if err != nil {
 			fmt.Printf("Warning: error evaluating %s-%s: %v\n", farm, plot, err)
+			notification.SendDiscordWarnNotification(fmt.Sprintf("Warning: error evaluating %s-%s: %v\n", farm, plot, err))
 			continue
 		}
 
