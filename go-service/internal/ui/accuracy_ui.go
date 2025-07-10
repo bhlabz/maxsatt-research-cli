@@ -68,11 +68,11 @@ func AccuracyTest() {
 	fmt.Printf("\033[32m- Accuracy: %.2f%%\033[0m\n", accuracyPercentage)
 	fmt.Printf("\033[32m- Training model created: %s\033[0m\n", trainingModelFileName)
 
-	// notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n- Source model: %s\n- Training ratio: %d%%\n- Total tests: %d\n- Correct predictions: %d\n- Accuracy: %.2f%%\n- Training model: %s",
-	// 	selectedModel,
-	// 	trainingRatio,
-	// 	totalTests,
-	// 	correctPredictions,
-	// 	accuracyPercentage,
-	// 	trainingModelFileName))
+	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n- Source model: %s\n- Training ratio: %d%%\n- Total tests: %d\n- Correct predictions: %d\n- Accuracy: %.2f%%\n- Training model: %s",
+		selectedModel,
+		trainingRatio,
+		totalTests,
+		correctPredictions,
+		accuracyPercentage,
+		trainingModelFileName))
 }
