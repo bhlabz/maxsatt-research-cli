@@ -7,6 +7,11 @@ from reflectance_model import reflectance_model
 
 def run_model(model, input, climate_group_clusters=2, reflectance_clusters=16):
     root = os.getenv('ROOT_PATH', '')
+    
+    # Ensure model has .csv extension
+    if not model.endswith('.csv'):
+        model = f"{model}.csv"
+    
     dataset = pd.read_csv(f'{root}/data/model/{model}')
     dataset_concat = pd.concat([dataset, input], ignore_index=True)
 
