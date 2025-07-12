@@ -46,7 +46,7 @@ func AccuracyTest() {
 	fmt.Printf("\033[32m- Training ratio: %d%%\033[0m\n", trainingRatio)
 	fmt.Printf("\033[32m- Training model will be: %s\033[0m\n", trainingModelFileName)
 
-	accuracy, totalTests, correctPredictions, err := delivery.RunAccuracyTest(
+	accuracy, totalTests, correctPredictions, trainingStats, validationStats, err := delivery.RunAccuracyTest(
 		selectedModel,
 		trainingModelFileName,
 		trainingRatio,
@@ -66,13 +66,47 @@ func AccuracyTest() {
 	fmt.Printf("\033[32m- Total tests: %d\033[0m\n", totalTests)
 	fmt.Printf("\033[32m- Correct predictions: %d\033[0m\n", correctPredictions)
 	fmt.Printf("\033[32m- Accuracy: %.2f%%\033[0m\n", accuracyPercentage)
-	fmt.Printf("\033[32m- Training model created: %s\033[0m\n", trainingModelFileName)
 
-	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n- Source model: %s\n- Training ratio: %d%%\n- Total tests: %d\n- Correct predictions: %d\n- Accuracy: %.2f%%\n- Training model: %s",
+	// Display dataset statistics in console
+	fmt.Printf("\n\033[34mDataset Statistics:\033[0m\n")
+	fmt.Printf("\033[34mTraining Dataset:\033[0m\n")
+	fmt.Printf("\033[34m- Total samples: %d\033[0m\n", trainingStats.TotalSamples)
+	if len(trainingStats.PestDistribution) > 0 {
+		fmt.Printf("\033[34m- Pest types: %d\033[0m\n", len(trainingStats.PestDistribution))
+	}
+	if len(trainingStats.DateDistribution) > 0 {
+		fmt.Printf("\033[34m- Date range: %d dates\033[0m\n", len(trainingStats.DateDistribution))
+	}
+
+	fmt.Printf("\033[34mValidation Dataset:\033[0m\n")
+	fmt.Printf("\033[34m- Total samples: %d\033[0m\n", validationStats.TotalSamples)
+	if len(validationStats.PestDistribution) > 0 {
+		fmt.Printf("\033[34m- Pest types: %d\033[0m\n", len(validationStats.PestDistribution))
+	}
+	if len(validationStats.DateDistribution) > 0 {
+		fmt.Printf("\033[34m- Date range: %d dates\033[0m\n", len(validationStats.DateDistribution))
+	}
+
+	// Format dataset statistics for Discord message
+	trainingStatsFormatted := delivery.FormatDatasetStats(trainingStats, "Training")
+	validationStatsFormatted := delivery.FormatDatasetStats(validationStats, "Validation")
+
+	// Create comprehensive Discord message
+	discordMessage := fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n"+
+		"**Test Results:**\n"+
+		"- Source model: %s\n"+
+		"- Training ratio: %d%%\n"+
+		"- Total tests: %d\n"+
+		"- Correct predictions: %d\n"+
+		"- Accuracy: %.2f%%\n\n"+
+		"%s\n\n%s",
 		selectedModel,
 		trainingRatio,
 		totalTests,
 		correctPredictions,
 		accuracyPercentage,
-		trainingModelFileName))
+		trainingStatsFormatted,
+		validationStatsFormatted)
+
+	notification.SendDiscordSuccessNotification(discordMessage)
 }

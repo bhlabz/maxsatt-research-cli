@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
@@ -19,39 +21,67 @@ type GroupedData struct {
 	Rows []ValidationRow
 }
 
+// DatasetStats represents statistics about a dataset
+type DatasetStats struct {
+	TotalSamples     int
+	PestDistribution map[string]int
+	DateDistribution map[string]int
+	FarmDistribution map[string]int
+	PlotDistribution map[string]int
+}
+
 // RunAccuracyTest performs the complete accuracy test process
-func RunAccuracyTest(sourceModelFileName, trainingModelFileName string, trainingRatio int) (float64, int, int, error) {
+func RunAccuracyTest(sourceModelFileName, trainingModelFileName string, trainingRatio int) (float64, int, int, *DatasetStats, *DatasetStats, error) {
 	fmt.Println("Starting accuracy test process...")
 
 	// Read and parse the source model dataset
 	rows, err := readModelDataset(sourceModelFileName)
 	if err != nil {
-		return 0, 0, 0, fmt.Errorf("failed to read model dataset: %w", err)
+		return 0, 0, 0, nil, nil, fmt.Errorf("failed to read model dataset: %w", err)
 	}
 
 	if len(rows) == 0 {
-		return 0, 0, 0, fmt.Errorf("empty model file given")
+		return 0, 0, 0, nil, nil, fmt.Errorf("empty model file given")
 	}
 
 	// Split data into training and validation sets
 	trainingData, validationData := splitModelDataByRatio(rows, trainingRatio)
+
+	// Calculate training and validation dataset statistics
+	trainingStats := calculateDatasetStats(trainingData)
+	validationStats := calculateDatasetStats(validationData)
 
 	fmt.Printf("Split data: %d training rows, %d validation rows\n", len(trainingData), len(validationData))
 
 	// Create training model file with proper naming format
 	err = createTrainingModelFile(trainingData, sourceModelFileName, trainingModelFileName)
 	if err != nil {
-		return 0, 0, 0, fmt.Errorf("failed to create training model: %w", err)
+		return 0, 0, 0, nil, nil, fmt.Errorf("failed to create training model: %w", err)
 	}
 
 	// Test model accuracy on validation data
 	correctPredictions, totalTests, err := testModelAccuracyOnValidation(validationData, trainingModelFileName)
 	if err != nil {
-		return 0, 0, 0, fmt.Errorf("failed to test model accuracy: %w", err)
+		return 0, 0, 0, nil, nil, fmt.Errorf("failed to test model accuracy: %w", err)
 	}
 
 	accuracy := float64(correctPredictions) / float64(totalTests)
-	return accuracy, totalTests, correctPredictions, nil
+
+	// Clean up the training model file after testing
+	cleanupTrainingModelFile(trainingModelFileName)
+
+	return accuracy, totalTests, correctPredictions, trainingStats, validationStats, nil
+}
+
+// cleanupTrainingModelFile removes the training model file after accuracy testing
+func cleanupTrainingModelFile(trainingModelFileName string) {
+	filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), trainingModelFileName)
+	err := os.Remove(filePath)
+	if err != nil {
+		fmt.Printf("Warning: Failed to delete training model file %s: %v\n", trainingModelFileName, err)
+	} else {
+		fmt.Printf("Training model file %s deleted successfully\n", trainingModelFileName)
+	}
 }
 
 // readModelDataset reads and parses the model dataset
@@ -179,4 +209,117 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 	}
 
 	return correctPredictions, totalTests, nil
+}
+
+// calculateDatasetStats calculates comprehensive statistics for a dataset
+func calculateDatasetStats(data []dataset.FinalData) *DatasetStats {
+	stats := &DatasetStats{
+		TotalSamples:     len(data),
+		PestDistribution: make(map[string]int),
+		DateDistribution: make(map[string]int),
+		FarmDistribution: make(map[string]int),
+		PlotDistribution: make(map[string]int),
+	}
+
+	for _, row := range data {
+		// Count by pest (label)
+		label := "unknown"
+		if row.Label != nil && *row.Label != "" {
+			label = *row.Label
+		}
+		stats.PestDistribution[label]++
+
+		// Count by date (using EndDate for consistency)
+		dateKey := row.EndDate.Format("2006-01-02")
+		stats.DateDistribution[dateKey]++
+
+		// Count by farm
+		stats.FarmDistribution[row.Farm]++
+
+		// Count by plot
+		stats.PlotDistribution[row.Plot]++
+	}
+
+	return stats
+}
+
+// FormatDatasetStats formats dataset statistics for Discord message
+func FormatDatasetStats(stats *DatasetStats, datasetName string) string {
+	if stats == nil {
+		return fmt.Sprintf("%s: No data available", datasetName)
+	}
+
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("**%s Dataset:**\n", datasetName))
+	sb.WriteString(fmt.Sprintf("- Total samples: %d\n", stats.TotalSamples))
+
+	// Pest distribution
+	if len(stats.PestDistribution) > 0 {
+		sb.WriteString("- Pest distribution:\n")
+		// Sort pests by count for better readability
+		type pestCount struct {
+			pest  string
+			count int
+		}
+		var pestCounts []pestCount
+		for pest, count := range stats.PestDistribution {
+			pestCounts = append(pestCounts, pestCount{pest, count})
+		}
+		sort.Slice(pestCounts, func(i, j int) bool {
+			return pestCounts[i].count > pestCounts[j].count
+		})
+
+		for _, pc := range pestCounts {
+			sb.WriteString(fmt.Sprintf("  • %s: %d samples\n", pc.pest, pc.count))
+		}
+	}
+
+	// Date distribution (top 5 most common dates)
+	if len(stats.DateDistribution) > 0 {
+		sb.WriteString("- Date distribution (top 5):\n")
+		type dateCount struct {
+			date  string
+			count int
+		}
+		var dateCounts []dateCount
+		for date, count := range stats.DateDistribution {
+			dateCounts = append(dateCounts, dateCount{date, count})
+		}
+		sort.Slice(dateCounts, func(i, j int) bool {
+			return dateCounts[i].count > dateCounts[j].count
+		})
+
+		limit := 5
+		if len(dateCounts) < limit {
+			limit = len(dateCounts)
+		}
+		for i := 0; i < limit; i++ {
+			sb.WriteString(fmt.Sprintf("  • %s: %d samples\n", dateCounts[i].date, dateCounts[i].count))
+		}
+	}
+
+	// Farm and plot distribution
+	if len(stats.FarmDistribution) > 0 {
+		sb.WriteString("- Farms: ")
+		farms := make([]string, 0, len(stats.FarmDistribution))
+		for farm := range stats.FarmDistribution {
+			farms = append(farms, farm)
+		}
+		sort.Strings(farms)
+		sb.WriteString(strings.Join(farms, ", "))
+		sb.WriteString("\n")
+	}
+
+	if len(stats.PlotDistribution) > 0 {
+		sb.WriteString("- Plots: ")
+		plots := make([]string, 0, len(stats.PlotDistribution))
+		for plot := range stats.PlotDistribution {
+			plots = append(plots, plot)
+		}
+		sort.Strings(plots)
+		sb.WriteString(strings.Join(plots, ", "))
+		sb.WriteString("\n")
+	}
+
+	return sb.String()
 }
