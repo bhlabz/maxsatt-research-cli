@@ -71,21 +71,9 @@ func AccuracyTest() {
 	fmt.Printf("\n\033[34mDataset Statistics:\033[0m\n")
 	fmt.Printf("\033[34mTraining Dataset:\033[0m\n")
 	fmt.Printf("\033[34m- Total samples: %d\033[0m\n", trainingStats.TotalSamples)
-	if len(trainingStats.PestDistribution) > 0 {
-		fmt.Printf("\033[34m- Pest types: %d\033[0m\n", len(trainingStats.PestDistribution))
-	}
-	if len(trainingStats.DateDistribution) > 0 {
-		fmt.Printf("\033[34m- Date range: %d dates\033[0m\n", len(trainingStats.DateDistribution))
-	}
 
 	fmt.Printf("\033[34mValidation Dataset:\033[0m\n")
 	fmt.Printf("\033[34m- Total samples: %d\033[0m\n", validationStats.TotalSamples)
-	if len(validationStats.PestDistribution) > 0 {
-		fmt.Printf("\033[34m- Pest types: %d\033[0m\n", len(validationStats.PestDistribution))
-	}
-	if len(validationStats.DateDistribution) > 0 {
-		fmt.Printf("\033[34m- Date range: %d dates\033[0m\n", len(validationStats.DateDistribution))
-	}
 
 	// Format dataset statistics for Discord message
 	trainingStatsFormatted := delivery.FormatDatasetStats(trainingStats, "Training")
