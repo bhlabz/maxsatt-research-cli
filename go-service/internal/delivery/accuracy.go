@@ -23,11 +23,8 @@ type GroupedData struct {
 
 // DatasetStats represents statistics about a dataset
 type DatasetStats struct {
-	TotalSamples     int
-	PestDistribution map[string]int
-	DateDistribution map[string]int
-	FarmDistribution map[string]int
-	PlotDistribution map[string]int
+	TotalSamples          int
+	PestMonthDistribution map[string]int // key: pest|YYYY-MM
 }
 
 // RunAccuracyTest performs the complete accuracy test process
@@ -102,17 +99,53 @@ func readModelDataset(modelFileName string) ([]dataset.FinalData, error) {
 	return rows, nil
 }
 
-// splitModelDataByRatio splits the model data into training and validation sets
+// splitModelDataByRatio splits the model data into training and validation sets by group (EndDate, Label, Farm, Plot)
 func splitModelDataByRatio(data []dataset.FinalData, trainingRatio int) ([]dataset.FinalData, []dataset.FinalData) {
-	// Shuffle the data for random split
+	type groupKey struct {
+		EndDate time.Time
+		Label   string
+		Farm    string
+		Plot    string
+	}
+
+	// Group data by (EndDate, Label, Farm, Plot)
+	groups := make(map[groupKey][]dataset.FinalData)
+	for _, row := range data {
+		label := ""
+		if row.Label != nil {
+			label = *row.Label
+		}
+		key := groupKey{
+			EndDate: row.EndDate,
+			Label:   label,
+			Farm:    row.Farm,
+			Plot:    row.Plot,
+		}
+		groups[key] = append(groups[key], row)
+	}
+
+	// Collect all group keys
+	var keys []groupKey
+	for k := range groups {
+		keys = append(keys, k)
+	}
+
+	// Shuffle the group keys
 	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(data), func(i, j int) {
-		data[i], data[j] = data[j], data[i]
+	rand.Shuffle(len(keys), func(i, j int) {
+		keys[i], keys[j] = keys[j], keys[i]
 	})
 
-	trainingCount := (len(data) * trainingRatio) / 100
-	trainingData := data[:trainingCount]
-	validationData := data[trainingCount:]
+	// Split groups by ratio
+	trainingGroupCount := (len(keys) * trainingRatio) / 100
+	var trainingData, validationData []dataset.FinalData
+	for i, k := range keys {
+		if i < trainingGroupCount {
+			trainingData = append(trainingData, groups[k]...)
+		} else {
+			validationData = append(validationData, groups[k]...)
+		}
+	}
 
 	return trainingData, validationData
 }
@@ -214,32 +247,18 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 // calculateDatasetStats calculates comprehensive statistics for a dataset
 func calculateDatasetStats(data []dataset.FinalData) *DatasetStats {
 	stats := &DatasetStats{
-		TotalSamples:     len(data),
-		PestDistribution: make(map[string]int),
-		DateDistribution: make(map[string]int),
-		FarmDistribution: make(map[string]int),
-		PlotDistribution: make(map[string]int),
+		TotalSamples:          len(data),
+		PestMonthDistribution: make(map[string]int),
 	}
-
 	for _, row := range data {
-		// Count by pest (label)
 		label := "unknown"
 		if row.Label != nil && *row.Label != "" {
 			label = *row.Label
 		}
-		stats.PestDistribution[label]++
-
-		// Count by date (using EndDate for consistency)
-		dateKey := row.EndDate.Format("2006-01-02")
-		stats.DateDistribution[dateKey]++
-
-		// Count by farm
-		stats.FarmDistribution[row.Farm]++
-
-		// Count by plot
-		stats.PlotDistribution[row.Plot]++
+		month := row.EndDate.Format("2006-01")
+		key := label + "|" + month
+		stats.PestMonthDistribution[key]++
 	}
-
 	return stats
 }
 
@@ -253,72 +272,33 @@ func FormatDatasetStats(stats *DatasetStats, datasetName string) string {
 	sb.WriteString(fmt.Sprintf("**%s Dataset:**\n", datasetName))
 	sb.WriteString(fmt.Sprintf("- Total samples: %d\n", stats.TotalSamples))
 
-	// Pest distribution
-	if len(stats.PestDistribution) > 0 {
-		sb.WriteString("- Pest distribution:\n")
-		// Sort pests by count for better readability
-		type pestCount struct {
+	// Pest/Month distribution
+	if len(stats.PestMonthDistribution) > 0 {
+		sb.WriteString("- Pest/Month distribution:\n")
+		// Collect and sort keys for stable output
+		type pestMonthCount struct {
 			pest  string
+			month string
 			count int
 		}
-		var pestCounts []pestCount
-		for pest, count := range stats.PestDistribution {
-			pestCounts = append(pestCounts, pestCount{pest, count})
+		var counts []pestMonthCount
+		for key, count := range stats.PestMonthDistribution {
+			parts := strings.SplitN(key, "|", 2)
+			pest, month := parts[0], "unknown"
+			if len(parts) > 1 {
+				month = parts[1]
+			}
+			counts = append(counts, pestMonthCount{pest, month, count})
 		}
-		sort.Slice(pestCounts, func(i, j int) bool {
-			return pestCounts[i].count > pestCounts[j].count
+		sort.Slice(counts, func(i, j int) bool {
+			if counts[i].pest == counts[j].pest {
+				return counts[i].month < counts[j].month
+			}
+			return counts[i].pest < counts[j].pest
 		})
-
-		for _, pc := range pestCounts {
-			sb.WriteString(fmt.Sprintf("  • %s: %d samples\n", pc.pest, pc.count))
+		for _, c := range counts {
+			sb.WriteString(fmt.Sprintf("  • %s (%s): %d samples\n", c.pest, c.month, c.count))
 		}
-	}
-
-	// Date distribution (top 5 most common dates)
-	if len(stats.DateDistribution) > 0 {
-		sb.WriteString("- Date distribution (top 5):\n")
-		type dateCount struct {
-			date  string
-			count int
-		}
-		var dateCounts []dateCount
-		for date, count := range stats.DateDistribution {
-			dateCounts = append(dateCounts, dateCount{date, count})
-		}
-		sort.Slice(dateCounts, func(i, j int) bool {
-			return dateCounts[i].count > dateCounts[j].count
-		})
-
-		limit := 5
-		if len(dateCounts) < limit {
-			limit = len(dateCounts)
-		}
-		for i := 0; i < limit; i++ {
-			sb.WriteString(fmt.Sprintf("  • %s: %d samples\n", dateCounts[i].date, dateCounts[i].count))
-		}
-	}
-
-	// Farm and plot distribution
-	if len(stats.FarmDistribution) > 0 {
-		sb.WriteString("- Farms: ")
-		farms := make([]string, 0, len(stats.FarmDistribution))
-		for farm := range stats.FarmDistribution {
-			farms = append(farms, farm)
-		}
-		sort.Strings(farms)
-		sb.WriteString(strings.Join(farms, ", "))
-		sb.WriteString("\n")
-	}
-
-	if len(stats.PlotDistribution) > 0 {
-		sb.WriteString("- Plots: ")
-		plots := make([]string, 0, len(stats.PlotDistribution))
-		for plot := range stats.PlotDistribution {
-			plots = append(plots, plot)
-		}
-		sort.Strings(plots)
-		sb.WriteString(strings.Join(plots, ", "))
-		sb.WriteString("\n")
 	}
 
 	return sb.String()
