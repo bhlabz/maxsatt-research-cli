@@ -139,90 +139,68 @@ func (bands Bands) Valid() PixelStatus {
 }
 
 // GetImages retrieves satellite images based on the given parameters
-func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[time.Time]*godal.Dataset, error) {
+func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate time.Time) (map[time.Time]*godal.Dataset, error) {
 	images := make(map[time.Time]*godal.Dataset)
-	imagesNotFoundFile := fmt.Sprintf("%s/data/images/invalid_images.json", properties.RootPath())
-
-	// Load images_not_found.json
-	var imagesNotFound []string
-	if _, err := os.Stat(imagesNotFoundFile); err == nil {
-		data, err := os.ReadFile(imagesNotFoundFile)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read %s: %v", imagesNotFoundFile, err)
-		}
-		if err := json.Unmarshal(data, &imagesNotFound); err != nil {
-			return nil, fmt.Errorf("invalid JSON in %s: %v", imagesNotFoundFile, err)
-		}
-	}
 
 	// Ensure images directory exists
 	if _, err := os.Stat(fmt.Sprintf("%s/data/images", properties.RootPath())); os.IsNotExist(err) {
-		if err := os.Mkdir("images", os.ModePerm); err != nil {
+		if err := os.MkdirAll(fmt.Sprintf("%s/data/images", properties.RootPath()), os.ModePerm); err != nil {
 			return nil, fmt.Errorf("failed to create images directory: %v", err)
 		}
 	}
 
-	// Iterate through dates
-	progressbar := progressbar.Default(int64(endDate.Sub(startDate).Hours()/24), "Getting images")
-	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, satelliteIntervalDays) {
-		startImageDate := currentDate
-		endImageDate := currentDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
-		imageName := fmt.Sprintf("%s_%s_%s.tif", farm, plot, currentDate.Format("2006-01-02"))
-		fileName := fmt.Sprintf("%s/data/images/%s_%s/%s", properties.RootPath(), farm, plot, imageName)
+	bandData, err := requestImage(startDate, endDate, []*godal.Geometry{geometry})
+	if err != nil {
+		return nil, fmt.Errorf("error requesting image: %v", err)
+	}
 
-		// Skip if image is in the not-found list
-		if contains(imagesNotFound, imageName) {
-			progressbar.Add(1)
-			continue
+	imagePath := fmt.Sprintf("%s/data/images/%s_%s", properties.RootPath(), farm, plot)
+	if _, err := os.Stat(imagePath); os.IsNotExist(err) {
+		if mkErr := os.MkdirAll(imagePath, os.ModePerm); mkErr != nil {
+			return nil, fmt.Errorf("failed to create directory %s: %v", imagePath, mkErr)
 		}
+	}
 
-		// Skip if file already exists
-		if _, err := os.Stat(fileName); err == nil {
-			data, err := godal.Open(fileName, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
-				if ec == godal.CE_Warning {
-					return nil
-				}
-				return err
-			}))
-
-			if err != nil {
-				return nil, fmt.Errorf("failed to open %s: %v", fileName, err)
-			}
-			images[currentDate] = data
-			progressbar.Add(1)
-			continue
+	// Find all unique dates
+	dateSet := make(map[time.Time]struct{})
+	for _, dateMap := range bandData {
+		for date := range dateMap[0] {
+			dateSet[date] = struct{}{}
 		}
+	}
 
-		imageBytes, err := requestImage(startImageDate, endImageDate, geometry)
-		if err != nil {
-			if err.Error() == "Image not found" {
-				imagesNotFound = append(imagesNotFound, fileName)
-				saveImagesNotFound(imagesNotFoundFile, imagesNotFound)
+	progressbar := progressbar.Default(int64(len(dateSet)), "Creating temp. tiff image")
+
+	for date := range dateSet {
+		var mainBandFile string
+		for band, dateMap := range bandData {
+			data, ok := dateMap[0][date]
+			if !ok {
 				continue
 			}
-			return nil, fmt.Errorf("error requesting image: %v", err)
-		}
-
-		imagePath := fmt.Sprintf("%s/data/images/%s_%s", properties.RootPath(), farm, plot)
-		// Verifica se o diretório existe e cria caso não
-		if _, err := os.Stat(imagePath); os.IsNotExist(err) {
-			if mkErr := os.MkdirAll(imagePath, os.ModePerm); mkErr != nil {
-				return nil, fmt.Errorf("failed to create directory %s: %v", imagePath, mkErr)
+			bandFile := filepath.Join(imagePath, fmt.Sprintf("%s_%s_%s_%s.tif", farm, plot, date.Format("2006-01-02"), band))
+			if err := os.WriteFile(bandFile, data, 0644); err != nil {
+				return nil, fmt.Errorf("failed to write band file %s: %v", bandFile, err)
+			}
+			if band == "B04" || band == "B08" {
+				mainBandFile = bandFile
 			}
 		}
-
-		permImageName := filepath.Join(imagePath, imageName)
-		tempImageName := imagePath + ".temp"
-		if err := os.WriteFile(tempImageName, imageBytes, 0644); err != nil {
-			return nil, fmt.Errorf("failed to write image file: %v", err)
+		if mainBandFile == "" {
+			// fallback to any band for this date
+			for band, dateMap := range bandData {
+				_, ok := dateMap[0][date]
+				if ok {
+					mainBandFile = filepath.Join(imagePath, fmt.Sprintf("%s_%s_%s_%s.tif", farm, plot, date.Format("2006-01-02"), band))
+					break
+				}
+			}
 		}
-		defer os.Remove(tempImageName)
-
-		if err = reprojectAutoUTM(tempImageName, permImageName); err != nil {
-			return nil, fmt.Errorf("failed to reproject image: %v", err)
+		if mainBandFile == "" {
+			progressbar.Add(1)
+			continue
 		}
-
-		ds, err := godal.Open(permImageName, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
+		ds, err := godal.Open(mainBandFile, godal.ErrLogger(func(ec godal.ErrorCategory, code int, msg string) error {
 			if ec == godal.CE_Warning {
 				return nil
 			}
@@ -230,38 +208,10 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 		}))
 		if err != nil {
 			fmt.Println(err.Error())
-			return nil, err
-		}
-
-		indexes, err := GetIndexesFromImage(ds)
-		if err != nil {
-			return nil, err
-		}
-
-		height := len(indexes["ndmi"])
-		width := len(indexes["ndmi"][0])
-		totalPixels := height * width
-		count := 0
-		for y := 0; y < height; y++ {
-			for x := 0; x < width; x++ {
-				bands := GetBands(indexes, x, y)
-				pixelStatus := bands.Valid()
-				if pixelStatus == PixelStatusInvalid {
-					count++
-				}
-			}
-		}
-		if count == totalPixels {
-			imagesNotFound = append(imagesNotFound, imageName)
-			saveImagesNotFound(imagesNotFoundFile, imagesNotFound)
-			if err := os.Remove(permImageName); err != nil {
-				fmt.Printf("failed to delete image file %s: %v\n", permImageName, err)
-			}
 			progressbar.Add(1)
 			continue
 		}
-
-		images[currentDate] = ds
+		images[date] = ds
 		progressbar.Add(1)
 	}
 	return images, nil

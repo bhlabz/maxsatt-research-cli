@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package imageservice;
+
+option go_package = "github.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufs";
+
+service ImageService {
+  rpc ListAvailableDates(ListAvailableDatesRequest) returns (ListAvailableDatesResponse);
+  rpc GetBandValues(GetBandValuesRequest) returns (GetBandValuesResponse);
+}
+
+message ListAvailableDatesRequest {
+  repeated string geojson_features = 1; // Array of GeoJSON geometries as strings
+  repeated string bands = 2;  // List of band names (e.g., "B02", "B04")
+  string start_date = 3;      // "YYYY-MM-DD"
+  string end_date = 4;        // "YYYY-MM-DD"
+}
+
+message ListAvailableDatesResponse {
+  repeated string available_dates = 1; // List of available dates in "YYYY-MM-DD"
+}
+
+message GetBandValuesRequest {
+  repeated string geojson_features = 1; // Array of GeoJSON geometries as strings
+  repeated string bands = 2;
+  string date = 3; // "YYYY-MM-DD"
+}
+
+message GetBandValuesResponse {
+  map<string, bytes> band_data = 1;
+} 

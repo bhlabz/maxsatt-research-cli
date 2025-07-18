@@ -21,7 +21,7 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]dataset.Pixe
 		return nil, err
 	}
 
-	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string,
 		return nil, err
 	}
 
-	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.Pi
 	}
 
 	stepStart := time.Now()
-	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate)
 	if err != nil {
 		return nil, err
 	}

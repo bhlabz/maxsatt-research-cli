@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 from run_model import run_model
 from pest_clustering_server import serve_pest_clustering
 from plot_pixels_server import serve_plot_pixels
+import image_service_pb2_grpc
+from image_service_server import ImageServiceServicer
 
 
 class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServicer):
@@ -107,6 +109,7 @@ def serve(port):
     ])
     clear_and_smooth_pb2_grpc.add_ClearAndSmoothServiceServicer_to_server(ClearAndSmoothService(), server)
     run_model_pb2_grpc.add_RunModelServiceServicer_to_server(RunModelServiceServicer(), server)
+    image_service_pb2_grpc.add_ImageServiceServicer_to_server(ImageServiceServicer(), server)
     serve_pest_clustering(server)  # Add pest clustering service
     serve_plot_pixels(server) # Add plot pixels service
     server.add_insecure_port(f'[::]:{port}')

@@ -54,7 +54,7 @@ func AnalyzeIndices() {
 		return
 	}
 
-	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate)
 	if err != nil {
 		fmt.Printf("\n\033[31mError retrieving images: %s\033[0m\n", err.Error())
 		return

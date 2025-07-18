@@ -131,7 +131,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			endDate := date.AddDate(0, 0, -daysBeforeEvidenceToAnalyze)
 			startDate := endDate.AddDate(0, 0, -daysToFetch)
 
-			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
 				fmt.Println(err.Error())
