@@ -4,6 +4,7 @@ data/result/*
 data/final/*
 data/delta/*
 data/model/*
+data/weather/*
 tests/pest_spread/images/*
 tests/pest_spread/centroids/*
 tests/resultant_geojson/output/*

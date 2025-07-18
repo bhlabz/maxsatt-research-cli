@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
-	delta1 "github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
@@ -107,6 +106,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		date, err := time.Parse("02/01/06", row.Date)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error parsing date: %v", err))
+			fmt.Println(err.Error())
 			continue
 		}
 		pest := row.Pest
@@ -114,7 +114,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		farm := row.Farm
 		plot := strings.Split(row.Plot, "-")[1]
 
-		finalData, err := delta1.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
+		finalData, err := dataset.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
 		if err != nil {
 			fmt.Println("Error getting saved final dataset: " + err.Error())
 		}
@@ -124,6 +124,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
@@ -133,58 +134,71 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting centroid latitude and longitude: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting weather: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			data, err := dataset.CreatePixelDataset(farm, plot, images)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 			if len(data) == 0 {
 				err = fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				fmt.Println(err.Error())
+				continue
 			}
 
 			cleanData, err := dataset.CreateCleanDataset(farm, plot, data)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating clean dataset: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			deltaDataset, err := dataset.CreateDeltaDataset(farm, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
 			samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
 			bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
 
-			finalData, err := delta1.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
+			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 
-			err = delta1.SaveFinalData(finalData, date)
+			err = dataset.SaveFinalData(createdFinalData, date)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
+
+			finalData = createdFinalData
 		}
+
 		filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
 		fileExists := false
 
@@ -196,6 +210,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error opening dataset: %v", err))
+			fmt.Println(err.Error())
 			continue
 		}
 		defer file.Close()
@@ -204,6 +219,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			_, err = file.Seek(0, io.SeekEnd)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error seeking to end of file: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 		}
@@ -215,6 +231,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		if !fileExists {
 			if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
 				errors = append(errors, fmt.Sprintf("Error writing header to CSV file: %v", err))
+				fmt.Println(err.Error())
 				continue
 			}
 			continue
@@ -222,8 +239,11 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		// Write the data rows
 		if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
 			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
+			fmt.Println(err.Error())
 			continue
 		}
+
+		fmt.Printf("Processed row %d/%d: Farm=%s, Plot=%s, Pest=%s, Severity=%s, rows=%d\n", i+1, target, farm, plot, pest, severity, len(finalData))
 
 	}
 
@@ -234,6 +254,104 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 	if len(errors) > 0 {
 		notification.SendDiscordWarnNotification(fmt.Sprintf("Dataset creation completed with %d errors.\n Errors: %s", len(errors), strings.Join(errors, "/n")))
 	}
+	filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
+	err = deduplicateCSVFile(filePath)
+	if err != nil {
+		fmt.Printf("[Deduplication] Error during deduplication: %v\n", err)
+	}
+
 	fmt.Println("Dataset created successfully")
+	return nil
+}
+
+// deduplicateCSVFile removes duplicate rows from a CSV file based on selected columns and overwrites the file.
+func deduplicateCSVFile(filePath string) error {
+	fmt.Printf("[Deduplication] Starting deduplication for file: %s\n", filePath)
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to open file for deduplication: %w", err)
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	headers, err := reader.Read()
+	if err != nil {
+		return fmt.Errorf("failed to read CSV header: %w", err)
+	}
+
+	var records [][]string
+	for {
+		record, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("failed to read CSV row: %w", err)
+		}
+		records = append(records, record)
+	}
+
+	// Indices of columns to deduplicate on (based on header order)
+	colIdx := map[string]int{}
+	for i, h := range headers {
+		colIdx[h] = i
+	}
+	// List of columns to deduplicate on
+	dedupCols := []string{
+		"avg_temperature", "temp_std_dev", "avg_humidity", "humidity_std_dev", "total_precipitation", "dry_days_consecutive",
+		"ndre", "ndmi", "psri", "ndvi", "delta_min", "delta_max", "delta", "ndre_derivative", "ndmi_derivative", "psri_derivative", "ndvi_derivative", "label",
+	}
+
+	unique := make(map[string]struct{})
+	var deduped [][]string
+	for _, row := range records {
+		var keyParts []string
+		for _, col := range dedupCols {
+			idx, ok := colIdx[col]
+			if !ok || idx >= len(row) {
+				keyParts = append(keyParts, "")
+			} else {
+				keyParts = append(keyParts, row[idx])
+			}
+		}
+		key := strings.Join(keyParts, "||")
+		if _, exists := unique[key]; !exists {
+			unique[key] = struct{}{}
+			deduped = append(deduped, row)
+		}
+	}
+
+	if len(deduped) == len(records) {
+		fmt.Printf("[Deduplication] No duplicates found. Total rows: %d\n", len(deduped))
+		return nil
+	}
+
+	fmt.Printf("[Deduplication] Removed %d duplicate rows. Clean rows: %d\n", len(records)-len(deduped), len(deduped))
+
+	// Write back to the same file
+	tmpPath := filePath + ".tmp"
+	outFile, err := os.Create(tmpPath)
+	if err != nil {
+		return fmt.Errorf("failed to create temp file for deduplication: %w", err)
+	}
+	defer outFile.Close()
+
+	writer := csv.NewWriter(outFile)
+	if err := writer.Write(headers); err != nil {
+		return fmt.Errorf("failed to write header: %w", err)
+	}
+	if err := writer.WriteAll(deduped); err != nil {
+		return fmt.Errorf("failed to write deduplicated rows: %w", err)
+	}
+	writer.Flush()
+	if err := writer.Error(); err != nil {
+		return fmt.Errorf("error flushing CSV writer: %w", err)
+	}
+
+	// Replace original file
+	if err := os.Rename(tmpPath, filePath); err != nil {
+		return fmt.Errorf("failed to replace original file with deduplicated file: %w", err)
+	}
+	fmt.Printf("[Deduplication] Deduplication complete. File updated: %s\n", filePath)
 	return nil
 }

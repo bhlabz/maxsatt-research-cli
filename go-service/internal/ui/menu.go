@@ -17,6 +17,7 @@ func ShowMenu() {
 		{"Analyze pest infestation in forest for a specific date", AnalyzeForest},
 		{"Analyze forest plot image indices over time", AnalyzeIndices},
 		{"Create a new dataset", CreateDataset},
+		{"Test model accuracy", AccuracyTest},
 		{"View the list of available forests", ListForests},
 		{"View the list of available forest plots", func() { ListPlots("") }},
 		{"Analyze forest plot image deforestation spread over time", AnalyzeSpread},
