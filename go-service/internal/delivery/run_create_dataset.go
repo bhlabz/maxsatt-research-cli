@@ -108,8 +108,10 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		row := rows[i]
 		date, err := time.Parse("2006-01-02", row.Date)
 		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error parsing date: %v", err))
+			errMsg := fmt.Sprintf("Error parsing date: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, row.Forest, row.Plot, row.Pest, row.Severity)
+			errors = append(errors, errMsg)
 			fmt.Println(err.Error())
+			notification.SendDiscordWarnNotification(errMsg)
 			continue
 		}
 		pest := row.Pest
@@ -119,15 +121,19 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 
 		finalData, err := dataset.GetSavedFinalData(forest, plot, date, deltaMin, deltaMax)
 		if err != nil {
+			errMsg := fmt.Sprintf("Error getting saved final dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 			fmt.Println("Error getting saved final dataset: " + err.Error())
+			notification.SendDiscordWarnNotification(errMsg)
 		}
 
 		if finalData == nil {
 
 			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
+				errMsg := fmt.Sprintf("Error getting geometry: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
@@ -136,49 +142,63 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 
 			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
+				errMsg := fmt.Sprintf("Error getting images: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
 			latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error getting centroid latitude and longitude: %v", err))
+				errMsg := fmt.Sprintf("Error getting centroid latitude and longitude: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
 			historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error getting weather: %v", err))
+				errMsg := fmt.Sprintf("Error getting weather: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
 			data, err := dataset.CreatePixelDataset(forest, plot, images)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				errMsg := fmt.Sprintf("Error creating pixel dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 			if len(data) == 0 {
 				err = fmt.Errorf("no data available to create the dataset for forest: %s, plot: %s using %d images", forest, plot, len(images))
-				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
+				errMsg := fmt.Sprintf("Error creating pixel dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
 			cleanData, err := dataset.CreateCleanDataset(forest, plot, data)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error creating clean dataset: %v", err))
+				errMsg := fmt.Sprintf("Error creating clean dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
 			deltaDataset, err := dataset.CreateDeltaDataset(forest, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
+				errMsg := fmt.Sprintf("Error creating delta dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
@@ -189,15 +209,19 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 
 			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, forest, plot)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				errMsg := fmt.Sprintf("Error getting climate group data: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
 			err = dataset.SaveFinalData(createdFinalData, date)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
+				errMsg := fmt.Sprintf("Error getting climate group data: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
+				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
+				notification.SendDiscordWarnNotification(errMsg)
 				continue
 			}
 
