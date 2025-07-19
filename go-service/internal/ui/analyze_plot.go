@@ -12,7 +12,7 @@ import (
 
 // AnalyzePlot handles the UI for analyzing pest infestation in a forest plot for a specific date
 func AnalyzePlot() {
-	PrintWarning("- A '.geojson' file with the farm name should be present in data/geojsons folder.\n- The '.geojson' file should contain the desired plot in its features identified by plot_id.")
+	PrintWarning("- A '.geojson' file with the forest name should be present in data/geojsons folder.\n- The '.geojson' file should contain the desired plot in its features identified by plot_id.")
 
 	// Select model
 	selectedModel, err := SelectModel()

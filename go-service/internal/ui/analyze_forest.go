@@ -17,7 +17,7 @@ import (
 // AnalyzeForest handles the UI for analyzing pest infestation in forest for a specific date
 func AnalyzeForest() {
 	fmt.Println("\033[33m\nWarning:\033[0m")
-	fmt.Println("\033[33m- A '.geojson' file with the farm name should be present in data/geojsons folder.\033[0m")
+	fmt.Println("\033[33m- A '.geojson' file with the forest name should be present in data/geojsons folder.\033[0m")
 	fmt.Println("\033[33m- The '.geojson' file should contain the desired plot in its features identified by plot_id.\n\033[0m")
 	reader := bufio.NewReader(os.Stdin)
 

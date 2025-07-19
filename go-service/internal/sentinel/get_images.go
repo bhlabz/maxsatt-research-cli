@@ -139,7 +139,7 @@ func (bands Bands) Valid() PixelStatus {
 }
 
 // GetImages retrieves satellite images based on the given parameters
-func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[time.Time]*godal.Dataset, error) {
+func GetImages(geometry *godal.Geometry, forest, plot string, startDate, endDate time.Time, satelliteIntervalDays int) (map[time.Time]*godal.Dataset, error) {
 	images := make(map[time.Time]*godal.Dataset)
 	imagesNotFoundFile := fmt.Sprintf("%s/data/images/invalid_images.json", properties.RootPath())
 
@@ -167,8 +167,8 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, satelliteIntervalDays) {
 		startImageDate := currentDate
 		endImageDate := currentDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
-		imageName := fmt.Sprintf("%s_%s_%s.tif", farm, plot, currentDate.Format("2006-01-02"))
-		fileName := fmt.Sprintf("%s/data/images/%s_%s/%s", properties.RootPath(), farm, plot, imageName)
+		imageName := fmt.Sprintf("%s_%s_%s.tif", forest, plot, currentDate.Format("2006-01-02"))
+		fileName := fmt.Sprintf("%s/data/images/%s_%s/%s", properties.RootPath(), forest, plot, imageName)
 
 		// Skip if image is in the not-found list
 		if contains(imagesNotFound, imageName) {
@@ -203,7 +203,7 @@ func GetImages(geometry *godal.Geometry, farm, plot string, startDate, endDate t
 			return nil, fmt.Errorf("error requesting image: %v", err)
 		}
 
-		imagePath := fmt.Sprintf("%s/data/images/%s_%s", properties.RootPath(), farm, plot)
+		imagePath := fmt.Sprintf("%s/data/images/%s_%s", properties.RootPath(), forest, plot)
 		// Verifica se o diretório existe e cria caso não
 		if _, err := os.Stat(imagePath); os.IsNotExist(err) {
 			if mkErr := os.MkdirAll(imagePath, os.ModePerm); mkErr != nil {

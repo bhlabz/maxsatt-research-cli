@@ -24,7 +24,7 @@ class PestClusteringServicer(pest_clustering_pb2_grpc.PestClusteringServiceServi
         # Log the received data
         for i, delta_data in enumerate(request.delta_data):
             logger.info(f"Sample {i+1}:")
-            logger.info(f"  Farm: {delta_data.farm}")
+            logger.info(f"  Forest: {delta_data.forest}")
             logger.info(f"  Plot: {delta_data.plot}")
             logger.info(f"  Position: ({delta_data.x}, {delta_data.y})")
             logger.info(f"  Dates: {delta_data.start_date} to {delta_data.end_date}")

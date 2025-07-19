@@ -32,9 +32,9 @@ func GetCentroidLatitudeLongitudeFromGeometry(g *godal.Geometry) (float64, float
 	return centroid.Y(), centroid.X(), nil
 }
 
-func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {
+func GetGeometryFromGeoJSON(forest, plot string) (*godal.Geometry, error) {
 
-	filePath := fmt.Sprintf("%s/data/geojsons/%s.geojson", properties.RootPath(), farm)
+	filePath := fmt.Sprintf("%s/data/geojsons/%s.geojson", properties.RootPath(), forest)
 
 	godal.RegisterInternalDrivers()
 	ds, err := godal.Open(filePath)
@@ -63,11 +63,11 @@ func GetGeometryFromGeoJSON(farm, plot string) (*godal.Geometry, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("geometry not found for farm %s and plot %s", farm, plot)
+	return nil, fmt.Errorf("geometry not found for forest %s and plot %s", forest, plot)
 }
 
-func getAllPlotsAndGeometries(farm string) ([]map[string]interface{}, error) {
-	filePath := fmt.Sprintf("geojsons/%s.geojson", farm)
+func getAllPlotsAndGeometries(forest string) ([]map[string]interface{}, error) {
+	filePath := fmt.Sprintf("geojsons/%s.geojson", forest)
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err

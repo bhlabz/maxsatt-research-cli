@@ -16,7 +16,7 @@ message FinalData {
     }
     WeatherMetrics weather = 1;
     message DeltaData {
-        string farm = 1;
+        string forest = 1;
         string plot = 2;
         int32 delta_min = 3;
         int32 delta_max = 4;

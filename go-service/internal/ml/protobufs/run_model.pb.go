@@ -7,11 +7,12 @@
 package protobufs
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -391,7 +392,7 @@ func (x *FinalData_WeatherMetrics) GetDryDaysConsecutive() int32 {
 
 type FinalData_DeltaData struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Farm           string                 `protobuf:"bytes,1,opt,name=farm,proto3" json:"farm,omitempty"`
+	Forest         string                 `protobuf:"bytes,1,opt,name=forest,proto3" json:"forest,omitempty"`
 	Plot           string                 `protobuf:"bytes,2,opt,name=plot,proto3" json:"plot,omitempty"`
 	DeltaMin       int32                  `protobuf:"varint,3,opt,name=delta_min,json=deltaMin,proto3" json:"delta_min,omitempty"`
 	DeltaMax       int32                  `protobuf:"varint,4,opt,name=delta_max,json=deltaMax,proto3" json:"delta_max,omitempty"`
@@ -447,7 +448,7 @@ func (*FinalData_DeltaData) Descriptor() ([]byte, []int) {
 
 func (x *FinalData_DeltaData) GetFarm() string {
 	if x != nil {
-		return x.Farm
+		return x.Forest
 	}
 	return ""
 }

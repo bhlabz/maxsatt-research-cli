@@ -17,6 +17,7 @@ var ColorMap = map[string]Color{
 	"Psilideo":             {0, 255, 0},     // green
 	"Formiga":              {255, 0, 0},     // red
 	"Lagarta Desfolhadora": {0, 0, 255},     // blue
+	"Saudavel":             {0, 0, 255},     // blue
 }
 
 func DiscordErrorNotificationUrl() string {

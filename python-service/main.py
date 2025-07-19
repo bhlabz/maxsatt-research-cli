@@ -48,7 +48,7 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
                     "humidity_std_dev": weather.humidity_std_dev,
                     "total_precipitation": weather.total_precipitation,
                     "dry_days_consecutive": weather.dry_days_consecutive,
-                    "farm": delta.farm,
+                    "forest": delta.forest,
                     "plot": delta.plot,
                     "delta_min": delta.delta_min,
                     "delta_max": delta.delta_max,

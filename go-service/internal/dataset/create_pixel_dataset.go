@@ -62,7 +62,7 @@ func xyToLatLon(dataset *godal.Dataset, x, y int) (float64, float64, error) {
 	return ys[0], xs[0], nil
 }
 
-func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
+func CreatePixelDataset(forest, plot string, images map[time.Time]*godal.Dataset) (map[[2]int]map[time.Time]PixelData, error) {
 	var width, height, totalPixels int
 
 	for _, imageData := range images {
@@ -138,7 +138,7 @@ func CreatePixelDataset(farm, plot string, images map[time.Time]*godal.Dataset) 
 	}
 
 	if len(historicalPixelDataset) == 0 {
-		return nil, fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images from dates %v", farm, plot, len(images), sortedImageDates)
+		return nil, fmt.Errorf("no data available to create the dataset for forest: %s, plot: %s using %d images from dates %v", forest, plot, len(images), sortedImageDates)
 	}
 	fmt.Printf("Got %d valid images\n", validImagesCount)
 	return historicalPixelDataset, nil

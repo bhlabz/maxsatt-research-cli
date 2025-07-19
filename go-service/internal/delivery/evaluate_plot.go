@@ -13,25 +13,25 @@ import (
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
 )
 
-func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]dataset.PixelData, error) {
+func EvaluatePlotCleanData(forest, plot string, endDate time.Time) ([]dataset.PixelData, error) {
 	startDate := endDate.AddDate(0, 0, -40)
 
-	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+	geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 	if err != nil {
 		return nil, err
 	}
 
-	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := dataset.CreatePixelDataset(farm, plot, images)
+	data, err := dataset.CreatePixelDataset(forest, plot, images)
 	if err != nil {
 		return nil, err
 	}
 
-	cleanDataset, err := dataset.CreateCleanDataset(farm, plot, data)
+	cleanDataset, err := dataset.CreateCleanDataset(forest, plot, data)
 	if err != nil {
 		return nil, err
 	}
@@ -56,32 +56,32 @@ func EvaluatePlotCleanData(farm, plot string, endDate time.Time) ([]dataset.Pixe
 	return groupedData[mostRecentDate], nil
 }
 
-func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string, endDate time.Time) (map[[2]int]map[time.Time]dataset.DeltaData, error) {
+func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, forest, plot string, endDate time.Time) (map[[2]int]map[time.Time]dataset.DeltaData, error) {
 
 	getDaysBeforeEvidenceToAnalyse := deltaDays + deltaDaysThreshold
 	startDate := endDate.AddDate(0, 0, -getDaysBeforeEvidenceToAnalyse)
 
-	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+	geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 	if err != nil {
 		return nil, err
 	}
 
-	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := dataset.CreatePixelDataset(farm, plot, images)
+	data, err := dataset.CreatePixelDataset(forest, plot, images)
 	if err != nil {
 		return nil, err
 	}
 
-	cleanData, err := dataset.CreateCleanDataset(farm, plot, data)
+	cleanData, err := dataset.CreateCleanDataset(forest, plot, data)
 	if err != nil {
 		return nil, err
 	}
 
-	deltaDataset, err := dataset.CreateDeltaDataset(farm, plot, deltaDays, deltaDaysThreshold, cleanData)
+	deltaDataset, err := dataset.CreateDeltaDataset(forest, plot, deltaDays, deltaDaysThreshold, cleanData)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func EvaluatePlotDeltaData(deltaDays, deltaDaysThreshold int, farm, plot string,
 	return deltaDataset, nil
 }
 
-func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.PixelResult, error) {
+func EvaluatePlotFinalData(model, forest, plot string, endDate time.Time) ([]ml.PixelResult, error) {
 	start := time.Now()
 	// Parse the model string according to the expected format
 	fmt.Println("Parsing model string:", model)
@@ -135,30 +135,30 @@ func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.Pi
 	fmt.Println("startDate", startDate)
 	fmt.Println("endDate", endDate)
 
-	geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+	geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 	if err != nil {
 		return nil, err
 	}
 
 	stepStart := time.Now()
-	images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+	images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Printf("GetImages took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	data, err := dataset.CreatePixelDataset(farm, plot, images)
+	data, err := dataset.CreatePixelDataset(forest, plot, images)
 	if err != nil {
 		return nil, err
 	}
 
-	cleanData, err := dataset.CreateCleanDataset(farm, plot, data)
+	cleanData, err := dataset.CreateCleanDataset(forest, plot, data)
 	if err != nil {
 		return nil, err
 	}
 
-	deltaDataset, err := dataset.CreateDeltaDataset(farm, plot, deltaDays, deltaDaysThreshold, cleanData)
+	deltaDataset, err := dataset.CreateDeltaDataset(forest, plot, deltaDays, deltaDaysThreshold, cleanData)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func EvaluatePlotFinalData(model, farm, plot string, endDate time.Time) ([]ml.Pi
 	fmt.Printf("FetchWeather took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	plotFinalDataset, err := delta1.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, farm, plot)
+	plotFinalDataset, err := delta1.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, forest, plot)
 	if err != nil {
 		return nil, err
 	}

@@ -91,7 +91,7 @@ func convertToProtoFinalData(data []dataset.FinalData) []*protobufs.FinalData {
 				DryDaysConsecutive: int32(d.DryDaysConsecutive),
 			},
 			Delta: &protobufs.FinalData_DeltaData{
-				Farm:           d.Farm,
+				Forest:         d.Forest,
 				Plot:           d.Plot,
 				DeltaMin:       int32(d.DeltaMin),
 				DeltaMax:       int32(d.DeltaMax),

@@ -21,7 +21,7 @@ type ValidationRow struct {
 	Date     string `csv:"date"`
 	Pest     string `csv:"pest"`
 	Severity string `csv:"severity"`
-	Farm     string `csv:"farm"`
+	Forest   string `csv:"forest"`
 	Plot     string `csv:"plot"`
 }
 
@@ -103,7 +103,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			fmt.Println("Error:", err)
 		}()
 		row := rows[i]
-		date, err := time.Parse("02/01/06", row.Date)
+		date, err := time.Parse("2006-01-02", row.Date)
 		if err != nil {
 			errors = append(errors, fmt.Sprintf("Error parsing date: %v", err))
 			fmt.Println(err.Error())
@@ -111,17 +111,17 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		}
 		pest := row.Pest
 		severity := row.Severity
-		farm := row.Farm
+		forest := row.Forest
 		plot := strings.Split(row.Plot, "-")[1]
 
-		finalData, err := dataset.GetSavedFinalData(farm, plot, date, deltaMin, deltaMax)
+		finalData, err := dataset.GetSavedFinalData(forest, plot, date, deltaMin, deltaMax)
 		if err != nil {
 			fmt.Println("Error getting saved final dataset: " + err.Error())
 		}
 
 		if finalData == nil {
 
-			geometry, err := sentinel.GetGeometryFromGeoJSON(farm, plot)
+			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting geometry: %v", err))
 				fmt.Println(err.Error())
@@ -131,7 +131,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			endDate := date.AddDate(0, 0, -daysBeforeEvidenceToAnalyze)
 			startDate := endDate.AddDate(0, 0, -daysToFetch)
 
-			images, err := sentinel.GetImages(geometry, farm, plot, startDate, endDate, 1)
+			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting images: %v", err))
 				fmt.Println(err.Error())
@@ -152,27 +152,27 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 				continue
 			}
 
-			data, err := dataset.CreatePixelDataset(farm, plot, images)
+			data, err := dataset.CreatePixelDataset(forest, plot, images)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
 			if len(data) == 0 {
-				err = fmt.Errorf("no data available to create the dataset for farm: %s, plot: %s using %d images", farm, plot, len(images))
+				err = fmt.Errorf("no data available to create the dataset for forest: %s, plot: %s using %d images", forest, plot, len(images))
 				errors = append(errors, fmt.Sprintf("Error creating pixel dataset: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
 
-			cleanData, err := dataset.CreateCleanDataset(farm, plot, data)
+			cleanData, err := dataset.CreateCleanDataset(forest, plot, data)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating clean dataset: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
 
-			deltaDataset, err := dataset.CreateDeltaDataset(farm, plot, deltaMin, deltaMax, cleanData)
+			deltaDataset, err := dataset.CreateDeltaDataset(forest, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error creating delta dataset: %v", err))
 				fmt.Println(err.Error())
@@ -182,7 +182,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
 			bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
 
-			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, farm, plot)
+			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, forest, plot)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("Error getting climate group data: %v", err))
 				fmt.Println(err.Error())
@@ -243,7 +243,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			continue
 		}
 
-		fmt.Printf("Processed row %d/%d: Farm=%s, Plot=%s, Pest=%s, Severity=%s, rows=%d\n", i+1, target, farm, plot, pest, severity, len(finalData))
+		fmt.Printf("Processed row %d/%d: Forest=%s, Plot=%s, Pest=%s, Severity=%s, rows=%d\n", i+1, target, forest, plot, pest, severity, len(finalData))
 
 	}
 

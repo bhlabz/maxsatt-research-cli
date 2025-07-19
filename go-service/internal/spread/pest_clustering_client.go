@@ -49,7 +49,7 @@ func (c *PestClusteringClient) ClusterizeSpread(deltaData []dataset.DeltaData) (
 	var pbDeltaData []*pb.DeltaData
 	for _, data := range deltaData {
 		pbData := &pb.DeltaData{
-			Farm:           data.Farm,
+			Forest:         data.Forest,
 			Plot:           data.Plot,
 			DeltaMin:       int32(data.DeltaMin),
 			DeltaMax:       int32(data.DeltaMax),
@@ -101,7 +101,7 @@ func (c *PestClusteringClient) ClusterizeSpread(deltaData []dataset.DeltaData) (
 
 		// Convert protobuf DeltaData back to delta.Data
 		deltaData := dataset.DeltaData{
-			Farm:      pbSample.Data.Farm,
+			Forest:    pbSample.Data.Forest,
 			Plot:      pbSample.Data.Plot,
 			DeltaMin:  int(pbSample.Data.DeltaMin),
 			DeltaMax:  int(pbSample.Data.DeltaMax),

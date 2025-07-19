@@ -14,11 +14,11 @@ import (
 	"github.com/gocarina/gocsv"
 )
 
-// GroupedData represents data grouped by farm and date
+// GroupedData represents data grouped by forest and date
 type GroupedData struct {
-	Farm string
-	Date time.Time
-	Rows []ValidationRow
+	Forest string
+	Date   time.Time
+	Rows   []ValidationRow
 }
 
 // DatasetStats represents statistics about a dataset
@@ -99,16 +99,16 @@ func readModelDataset(modelFileName string) ([]dataset.FinalData, error) {
 	return rows, nil
 }
 
-// splitModelDataByRatio splits the model data into training and validation sets by group (EndDate, Label, Farm, Plot)
+// splitModelDataByRatio splits the model data into training and validation sets by group (EndDate, Label, Forest, Plot)
 func splitModelDataByRatio(data []dataset.FinalData, trainingRatio int) ([]dataset.FinalData, []dataset.FinalData) {
 	type groupKey struct {
 		EndDate time.Time
 		Label   string
-		Farm    string
+		Forest  string
 		Plot    string
 	}
 
-	// Group data by (EndDate, Label, Farm, Plot)
+	// Group data by (EndDate, Label, Forest, Plot)
 	groups := make(map[groupKey][]dataset.FinalData)
 	for _, row := range data {
 		label := ""
@@ -118,7 +118,7 @@ func splitModelDataByRatio(data []dataset.FinalData, trainingRatio int) ([]datas
 		key := groupKey{
 			EndDate: row.EndDate,
 			Label:   label,
-			Farm:    row.Farm,
+			Forest:  row.Forest,
 			Plot:    row.Plot,
 		}
 		groups[key] = append(groups[key], row)
@@ -178,10 +178,10 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 	correctPredictions := 0
 	totalTests := 0
 
-	// Group validation data by farm and plot for evaluation
+	// Group validation data by forest and plot for evaluation
 	validationGroups := make(map[string][]dataset.FinalData)
 	for _, data := range validationData {
-		key := fmt.Sprintf("%s_%s", data.Farm, data.Plot)
+		key := fmt.Sprintf("%s_%s", data.Forest, data.Plot)
 		validationGroups[key] = append(validationGroups[key], data)
 	}
 
@@ -190,9 +190,9 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 			continue
 		}
 
-		// Use the first data point to get farm and plot info
+		// Use the first data point to get forest and plot info
 		sample := groupData[0]
-		farm := sample.Farm
+		forest := sample.Forest
 		plot := sample.Plot
 
 		// Get the most recent date from the group
@@ -204,10 +204,10 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 		}
 
 		// Evaluate the plot using the trained model
-		results, err := EvaluatePlotFinalData(trainingModelFileName, farm, plot, mostRecentDate)
+		results, err := EvaluatePlotFinalData(trainingModelFileName, forest, plot, mostRecentDate)
 		if err != nil {
-			fmt.Printf("Warning: error evaluating %s-%s: %v\n", farm, plot, err)
-			notification.SendDiscordWarnNotification(fmt.Sprintf("Warning: error evaluating %s-%s: %v\n", farm, plot, err))
+			fmt.Printf("Warning: error evaluating %s-%s: %v\n", forest, plot, err)
+			notification.SendDiscordWarnNotification(fmt.Sprintf("Warning: error evaluating %s-%s: %v\n", forest, plot, err))
 			continue
 		}
 

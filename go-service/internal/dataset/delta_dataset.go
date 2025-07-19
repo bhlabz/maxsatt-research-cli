@@ -13,7 +13,7 @@ import (
 
 type DeltaData struct {
 	PixelData
-	Farm           string    `csv:"farm"`
+	Forest         string    `csv:"forest"`
 	Plot           string    `csv:"plot"`
 	DeltaMin       int       `csv:"delta_min"`
 	DeltaMax       int       `csv:"delta_max"`
@@ -27,7 +27,7 @@ type DeltaData struct {
 	Label          *string   `csv:"label"`
 }
 
-func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]DeltaData, error) {
+func CreateDeltaDataset(forest, plot string, deltaMin, deltaMax int, cleanDataset map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]DeltaData, error) {
 
 	var deltaDataset = make(map[[2]int]map[time.Time]DeltaData)
 	found := 0
@@ -74,7 +74,7 @@ func CreateDeltaDataset(farm, plot string, deltaMin, deltaMax int, cleanDataset 
 				ndviDerivative := (ndviValue - ndviStart) / float64(timeDiff)
 
 				data := DeltaData{
-					Farm:           farm,
+					Forest:         forest,
 					Plot:           plot,
 					DeltaMin:       deltaMin,
 					DeltaMax:       deltaMax,
@@ -220,7 +220,7 @@ func removeInvalidDates(result map[[2]int]map[time.Time]PixelData) map[[2]int]ma
 	return result
 }
 
-func CreateCleanDataset(farm, plot string, data map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]PixelData, error) {
+func CreateCleanDataset(forest, plot string, data map[[2]int]map[time.Time]PixelData) (map[[2]int]map[time.Time]PixelData, error) {
 	result := removeInvalidDates(data)
 
 	result = estimatePixels(result)
