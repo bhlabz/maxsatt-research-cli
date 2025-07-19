@@ -112,7 +112,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		pest := row.Pest
 		severity := row.Severity
 		forest := row.Forest
-		plot := strings.Split(row.Plot, "-")[1]
+		plot := row.Plot
 
 		finalData, err := dataset.GetSavedFinalData(forest, plot, date, deltaMin, deltaMax)
 		if err != nil {
