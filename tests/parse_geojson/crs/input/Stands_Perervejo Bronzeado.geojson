@@ -10,7 +10,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "0",
-        "Data Avaliação": "29/04/2022",
+        "date": "2022-04-29",
         "Incidência": "100.00%",
         "Severidade": "70%",
         "Padrão espacial": "Gradiente",
@@ -59,7 +59,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "1",
-        "Data Avaliação": "18/04/2022",
+        "date": "2022-04-18",
         "Incidência": "54.92%",
         "Severidade": "50%",
         "Padrão espacial": "Gradiente",
@@ -108,7 +108,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "2",
-        "Data Avaliação": "18/04/2022",
+        "date": "2022-04-18",
         "Incidência": "4.89%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -157,7 +157,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "3",
-        "Data Avaliação": "03/04/2022",
+        "date": "2022-04-03",
         "Incidência": "5.17%",
         "Severidade": "30%",
         "Padrão espacial": "Reboleira",
@@ -206,7 +206,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "4",
-        "Data Avaliação": "03/04/2022",
+        "date": "2022-04-03",
         "Incidência": "47.75%",
         "Severidade": "50%",
         "Padrão espacial": "Gradiente",
@@ -255,7 +255,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "5",
-        "Data Avaliação": "02/04/2022",
+        "date": "2022-04-02",
         "Incidência": "44.40%",
         "Severidade": "70%",
         "Padrão espacial": "Gradiente",
@@ -304,7 +304,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "6",
-        "Data Avaliação": "02/04/2022",
+        "date": "2022-04-02",
         "Incidência": "47.16%",
         "Severidade": "70%",
         "Padrão espacial": "Gradiente",
@@ -353,7 +353,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "7",
-        "Data Avaliação": "31/03/2022",
+        "date": "2022-03-31",
         "Incidência": "88.80%",
         "Severidade": "90%",
         "Padrão espacial": "Gradiente",
@@ -402,7 +402,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "8",
-        "Data Avaliação": "29/03/2022",
+        "date": "2022-03-29",
         "Incidência": "34.77%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -451,7 +451,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "9",
-        "Data Avaliação": "27/03/2022",
+        "date": "2022-03-27",
         "Incidência": "100.00%",
         "Severidade": "15%",
         "Padrão espacial": "Gradiente",
@@ -500,7 +500,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "10",
-        "Data Avaliação": "27/03/2022",
+        "date": "2022-03-27",
         "Incidência": "50.00%",
         "Severidade": "40%",
         "Padrão espacial": "Gradiente",
@@ -549,7 +549,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "11",
-        "Data Avaliação": "27/03/2022",
+        "date": "2022-03-27",
         "Incidência": "50.00%",
         "Severidade": "40%",
         "Padrão espacial": "Gradiente",
@@ -598,7 +598,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "12",
-        "Data Avaliação": "26/03/2022",
+        "date": "2022-03-26",
         "Incidência": "97.35%",
         "Severidade": "40%",
         "Padrão espacial": "Gradiente",
@@ -647,7 +647,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "13",
-        "Data Avaliação": "24/03/2022",
+        "date": "2022-03-24",
         "Incidência": "13.69%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -696,7 +696,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "14",
-        "Data Avaliação": "24/03/2022",
+        "date": "2022-03-24",
         "Incidência": "33.26%",
         "Severidade": "50%",
         "Padrão espacial": "Gradiente",
@@ -745,7 +745,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "15",
-        "Data Avaliação": "22/03/2022",
+        "date": "2022-03-22",
         "Incidência": "50.00%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -794,7 +794,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "16",
-        "Data Avaliação": "22/03/2022",
+        "date": "2022-03-22",
         "Incidência": "50.00%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -843,7 +843,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "17",
-        "Data Avaliação": "22/03/2022",
+        "date": "2022-03-22",
         "Incidência": "50.00%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -892,7 +892,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "18",
-        "Data Avaliação": "22/03/2022",
+        "date": "2022-03-22",
         "Incidência": "50.00%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -941,7 +941,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "19",
-        "Data Avaliação": "22/03/2022",
+        "date": "2022-03-22",
         "Incidência": "50.00%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -990,7 +990,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "20",
-        "Data Avaliação": "20/03/2022",
+        "date": "2022-03-20",
         "Incidência": "100.00%",
         "Severidade": "50%",
         "Padrão espacial": "Gradiente",
@@ -1039,7 +1039,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "21",
-        "Data Avaliação": "19/03/2022",
+        "date": "2022-03-19",
         "Incidência": "1.17%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -1088,7 +1088,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "22",
-        "Data Avaliação": "19/03/2022",
+        "date": "2022-03-19",
         "Incidência": "15.29%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -1137,7 +1137,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "23",
-        "Data Avaliação": "15/03/2022",
+        "date": "2022-03-15",
         "Incidência": "100.00%",
         "Severidade": "30%",
         "Padrão espacial": "Gradiente",
@@ -1186,7 +1186,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "24",
-        "Data Avaliação": "13/03/2022",
+        "date": "2022-03-13",
         "Incidência": "2.09%",
         "Severidade": "30%",
         "Padrão espacial": "Bordadura",
@@ -1235,7 +1235,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "25",
-        "Data Avaliação": "14/02/2022",
+        "date": "2022-02-14",
         "Incidência": "7.19%",
         "Severidade": "70%",
         "Padrão espacial": "Gradiente",
@@ -1284,7 +1284,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "26",
-        "Data Avaliação": "14/02/2022",
+        "date": "2022-02-14",
         "Incidência": "3.52%",
         "Severidade": "70%",
         "Padrão espacial": "Gradiente",
@@ -1333,7 +1333,7 @@
       "type": "Feature",
       "properties": {
         "plot_id": "27",
-        "Data Avaliação": "14/02/2022",
+        "date": "2022-02-14",
         "Incidência": "8.84%",
         "Severidade": "70%",
         "Padrão espacial": "Gradiente",
