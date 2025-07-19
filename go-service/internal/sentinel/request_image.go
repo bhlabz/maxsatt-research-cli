@@ -15,7 +15,11 @@ import (
 )
 
 func calculatePixels(distance float64, resolution float64) int {
-	return int(distance * (111_000.0 / resolution)) // Rough conversion assuming degrees to meters
+	pixels := distance * (111_000.0 / resolution)
+	if pixels < 1 {
+		return 1
+	}
+	return int(pixels)
 }
 
 func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byte, error) {
@@ -30,6 +34,13 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 
 	widthPixels := calculatePixels(bbox[2]-bbox[0], 10)
 	heightPixels := calculatePixels(bbox[3]-bbox[1], 10)
+	// Clamp to allowed range (1-2500)
+	if widthPixels > 2500 {
+		widthPixels = 2500
+	}
+	if heightPixels > 2500 {
+		heightPixels = 2500
+	}
 
 	evalscript := `
     //VERSION=3
@@ -77,8 +88,8 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 			},
 		},
 		"output": map[string]interface{}{
-			"width":  heightPixels,
-			"height": widthPixels,
+			"width":  widthPixels,
+			"height": heightPixels,
 			"responses": []map[string]interface{}{
 				{
 					"identifier": "default",
