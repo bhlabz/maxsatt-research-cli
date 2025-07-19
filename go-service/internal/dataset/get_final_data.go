@@ -77,6 +77,15 @@ func GetFinalData(deltaDataset map[[2]int]map[time.Time]DeltaData, historicalWea
 			}
 		}
 	}
+	if len(dates) == 0 {
+		availableDates := make([]string, 0)
+		for date := range deltaDataset {
+			for innerDate := range deltaDataset[date] {
+				availableDates = append(availableDates, innerDate.Format("2006-01-02"))
+			}
+		}
+		return nil, fmt.Errorf("no dates found in the specified range from %s to %s. Available dates: %v", startDate.Format("2006-01-02"), endDate.Format("2006-01-02"), availableDates)
+	}
 
 	lastDate := utils.SortDates(dates, false)[0]
 

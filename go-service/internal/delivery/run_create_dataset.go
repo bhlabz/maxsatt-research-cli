@@ -25,7 +25,10 @@ type ValidationRow struct {
 	Plot     string `csv:"plot"`
 }
 
-func getSamplesAmountFromSeverity(severity string, datasetLength int) int {
+func getSamplesAmountFromSeverity(_ string, datasetLength int) int {
+	if datasetLength <= 2 {
+		return datasetLength
+	}
 	return datasetLength / 2
 }
 
@@ -181,6 +184,8 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 
 			samplesAmount := getSamplesAmountFromSeverity(severity, len(deltaDataset))
 			bestSamples := getBestSamplesFromDeltaDataset(deltaDataset, samplesAmount, pest)
+
+			fmt.Printf("Best samples for pest %s with severity %s: %d samples. dataset with %d samples\n", pest, severity, len(bestSamples), len(deltaDataset))
 
 			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, forest, plot)
 			if err != nil {
