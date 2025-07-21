@@ -42,12 +42,10 @@ func CreateDataset() {
 	for i, h := range headers {
 		colIdx[h] = i
 	}
-	// Group by forest, plot, pest, month
+	// Group by pest and month
 	type groupKey struct {
-		Forest string
-		Plot   string
-		Pest   string
-		Month  string
+		Pest  string
+		Month string
 	}
 	groupCounts := make(map[groupKey]int)
 	for {
@@ -55,13 +53,7 @@ func CreateDataset() {
 		if err != nil {
 			break
 		}
-		forest, plot, pest, date := "", "", "", ""
-		if idx, ok := colIdx["forest"]; ok {
-			forest = record[idx]
-		}
-		if idx, ok := colIdx["plot"]; ok {
-			plot = record[idx]
-		}
+		pest, date := "", ""
 		if idx, ok := colIdx["pest"]; ok {
 			pest = record[idx]
 		}
@@ -72,14 +64,14 @@ func CreateDataset() {
 		if len(date) >= 7 {
 			month = date[:7]
 		}
-		key := groupKey{Forest: forest, Plot: plot, Pest: pest, Month: month}
+		key := groupKey{Pest: pest, Month: month}
 		groupCounts[key]++
 	}
 	// Build summary string
 	summaryLines := make([]string, 0, len(groupCounts))
 	pestToMonths := make(map[string]map[string]struct{})
 	for k, count := range groupCounts {
-		summaryLines = append(summaryLines, fmt.Sprintf("Farm: %s, Plot: %s, Pest: %s, Month: %s (%d samples)", k.Forest, k.Plot, k.Pest, k.Month, count))
+		summaryLines = append(summaryLines, fmt.Sprintf("Pest: %s, Month: %s (%d samples)", k.Pest, k.Month, count))
 		if _, ok := pestToMonths[k.Pest]; !ok {
 			pestToMonths[k.Pest] = make(map[string]struct{})
 		}
