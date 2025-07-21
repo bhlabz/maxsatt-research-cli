@@ -115,5 +115,5 @@ func CreateDataset() {
 		return
 	}
 	fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
-	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s\n---\n%s", outputDataFileName, summary))
+	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s\nSummary:\n%s\n", outputDataFileName, summary))
 }

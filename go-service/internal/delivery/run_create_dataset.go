@@ -109,7 +109,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		date, err := time.Parse("2006-01-02", row.Date)
 		if err != nil {
 			errMsg := fmt.Sprintf("Error parsing date: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, row.Forest, row.Plot, row.Pest, row.Severity)
-			errors = append(errors, errMsg)
 			fmt.Println(err.Error())
 			notification.SendDiscordWarnNotification(errMsg)
 			continue
@@ -131,7 +130,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			geometry, err := sentinel.GetGeometryFromGeoJSON(forest, plot)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting geometry: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -143,7 +141,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			images, err := sentinel.GetImages(geometry, forest, plot, startDate, endDate, 1)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting images: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -152,7 +149,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			latitude, longitude, err := sentinel.GetCentroidLatitudeLongitudeFromGeometry(geometry)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting centroid latitude and longitude: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -161,7 +157,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			historicalWeather, err := weather.FetchWeather(latitude, longitude, startDate.AddDate(0, -4, 0), endDate, 10)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting weather: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -170,7 +165,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			data, err := dataset.CreatePixelDataset(forest, plot, images)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error creating pixel dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -178,7 +172,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if len(data) == 0 {
 				err = fmt.Errorf("no data available to create the dataset for forest: %s, plot: %s using %d images", forest, plot, len(images))
 				errMsg := fmt.Sprintf("Error creating pixel dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -187,7 +180,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			cleanData, err := dataset.CreateCleanDataset(forest, plot, data)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error creating clean dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -196,7 +188,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			deltaDataset, err := dataset.CreateDeltaDataset(forest, plot, deltaMin, deltaMax, cleanData)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error creating delta dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -210,7 +201,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			createdFinalData, err := dataset.GetFinalData(bestSamples, historicalWeather, startDate, endDate, forest, plot)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting climate group data: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -219,7 +209,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			err = dataset.SaveFinalData(createdFinalData, date)
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting climate group data: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
-				errors = append(errors, errMsg)
 				fmt.Println(err.Error())
 				notification.SendDiscordWarnNotification(errMsg)
 				continue
@@ -238,7 +227,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 
 		file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			errors = append(errors, fmt.Sprintf("Error opening dataset: %v", err))
 			fmt.Println(err.Error())
 			continue
 		}
@@ -247,7 +235,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		if fileExists {
 			_, err = file.Seek(0, io.SeekEnd)
 			if err != nil {
-				errors = append(errors, fmt.Sprintf("Error seeking to end of file: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
@@ -259,7 +246,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		// Write the header only if the file does not already exist
 		if !fileExists {
 			if err := gocsv.MarshalCSV(&finalData, writer); err != nil {
-				errors = append(errors, fmt.Sprintf("Error writing header to CSV file: %v", err))
 				fmt.Println(err.Error())
 				continue
 			}
@@ -267,7 +253,6 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		}
 		// Write the data rows
 		if err := gocsv.MarshalCSVWithoutHeaders(&finalData, writer); err != nil {
-			errors = append(errors, fmt.Sprintf("Error writing to CSV file: %v", err))
 			fmt.Println(err.Error())
 			continue
 		}
