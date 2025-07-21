@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from run_model import run_model
 from pest_clustering_server import serve_pest_clustering
 from plot_pixels_server import serve_plot_pixels
+import traceback
 
 
 class ClearAndSmoothService(clear_and_smooth_pb2_grpc.ClearAndSmoothServiceServicer):
@@ -94,7 +95,8 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
                 response.results.append(pixel_result)
             return response
         except Exception as e:
-            print(f"Error in RunModel: {e}")
+            print(f"Error in RunModel: {e} ({type(e)})")
+            traceback.print_exc()
             context.set_details(str(e))
             context.set_code(grpc.StatusCode.INTERNAL)
             return run_model_pb2.RunModelResponse()
