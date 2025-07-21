@@ -116,6 +116,6 @@ func CreateDataset() {
 			end = len(summary)
 		}
 		chunk := summary[start:end]
-		notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset summary (part):\n%s", chunk))
+		notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset summary (%s):\n%s", outputDataFileName, chunk))
 	}
 }
