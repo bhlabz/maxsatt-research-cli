@@ -115,6 +115,15 @@ func CreateDataset() {
 		return
 	}
 	fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
-	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s\n", outputDataFileName))
-	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \nSummary: %s\n", summary))
+	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \nFile: %s\n", outputDataFileName))
+	// Split summary into chunks if too long for Discord
+	const maxDiscordEmbedLen = 1800
+	for start := 0; start < len(summary); start += maxDiscordEmbedLen {
+		end := start + maxDiscordEmbedLen
+		if end > len(summary) {
+			end = len(summary)
+		}
+		chunk := summary[start:end]
+		notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset summary (part):\n%s", chunk))
+	}
 }
