@@ -1,7 +1,10 @@
 package ui
 
 import (
+	"encoding/csv"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -19,6 +22,82 @@ func CreateDataset() {
 	var inputDataFileName string
 	fmt.Scanln(&inputDataFileName)
 
+	// --- Dataset summary extraction ---
+	inputPath := filepath.Join("data", "training_input", inputDataFileName)
+	file, err := os.Open(inputPath)
+	if err != nil {
+		fmt.Printf("\n\033[31mError opening input file for summary: %s\033[0m\n", err.Error())
+		return
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	headers, err := reader.Read()
+	if err != nil {
+		fmt.Printf("\n\033[31mError reading CSV header: %s\033[0m\n", err.Error())
+		return
+	}
+	colIdx := map[string]int{}
+	for i, h := range headers {
+		colIdx[h] = i
+	}
+	plots := make(map[string]struct{})
+	pests := make(map[string]struct{})
+	months := make(map[string]struct{})
+	for {
+		record, err := reader.Read()
+		if err != nil {
+			break
+		}
+		forest := ""
+		plot := ""
+		pest := ""
+		date := ""
+		if idx, ok := colIdx["forest"]; ok {
+			forest = record[idx]
+		}
+		if idx, ok := colIdx["plot"]; ok {
+			plot = record[idx]
+		}
+		if idx, ok := colIdx["pest"]; ok {
+			pest = record[idx]
+		}
+		if idx, ok := colIdx["date"]; ok {
+			date = record[idx]
+		}
+		plots[forest+"/"+plot] = struct{}{}
+		pests[pest] = struct{}{}
+		if len(date) >= 7 {
+			months[date[:7]] = struct{}{} // YYYY-MM
+		}
+	}
+	plotCount := len(plots)
+	pestList := make([]string, 0, len(pests))
+	for p := range pests {
+		pestList = append(pestList, p)
+	}
+	monthList := make([]string, 0, len(months))
+	for m := range months {
+		monthList = append(monthList, m)
+	}
+	pestSummary := ""
+	if len(pestList) == 1 {
+		pestSummary = pestList[0]
+	} else if len(pestList) > 1 {
+		pestSummary = "multiple"
+	} else {
+		pestSummary = "unknown"
+	}
+	monthSummary := ""
+	if len(monthList) == 1 {
+		monthSummary = monthList[0]
+	} else if len(monthList) > 1 {
+		monthSummary = "multiple"
+	} else {
+		monthSummary = "unknown"
+	}
+	// --- End summary extraction ---
+
 	fmt.Print("\033[34mEnter the ideal delta days for the image analysis: \033[0m")
 	var deltaDays int
 	fmt.Scanln(&deltaDays)
@@ -32,7 +111,7 @@ func CreateDataset() {
 	fmt.Scanln(&daysBeforeEvidenceToAnalyze)
 
 	outputDataFileName := fmt.Sprintf("%s_%s_%d_%d_%d.csv", strings.TrimSuffix(inputDataFileName, ".csv"), time.Now().Format("2006-01-02"), deltaDays, deltaDaysThreshold, daysBeforeEvidenceToAnalyze)
-	err := delivery.CreateDataset(inputDataFileName, outputDataFileName, deltaDays, deltaDaysThreshold, daysBeforeEvidenceToAnalyze)
+	err = delivery.CreateDataset(inputDataFileName, outputDataFileName, deltaDays, deltaDaysThreshold, daysBeforeEvidenceToAnalyze)
 	if err != nil {
 		fmt.Printf("\n\033[31mError creating dataset: %s\033[0m\n", err.Error())
 		if !strings.Contains(err.Error(), "empty csv file given") {
@@ -41,5 +120,6 @@ func CreateDataset() {
 		return
 	}
 	fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
-	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s", outputDataFileName))
+	summary := fmt.Sprintf("%d plots in month %s for pest %s", plotCount, monthSummary, pestSummary)
+	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s\n%s", outputDataFileName, summary))
 }
