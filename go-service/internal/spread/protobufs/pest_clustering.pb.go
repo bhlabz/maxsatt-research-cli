@@ -2,17 +2,16 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: internal/ml/protobufs/pest_clustering.proto
+// source: pest_clustering.proto
 
 package protobufs
 
 import (
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -50,7 +49,7 @@ type DeltaData struct {
 
 func (x *DeltaData) Reset() {
 	*x = DeltaData{}
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[0]
+	mi := &file_pest_clustering_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -62,7 +61,7 @@ func (x *DeltaData) String() string {
 func (*DeltaData) ProtoMessage() {}
 
 func (x *DeltaData) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[0]
+	mi := &file_pest_clustering_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -75,7 +74,7 @@ func (x *DeltaData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeltaData.ProtoReflect.Descriptor instead.
 func (*DeltaData) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_pest_clustering_proto_rawDescGZIP(), []int{0}
+	return file_pest_clustering_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *DeltaData) GetForest() string {
@@ -228,7 +227,7 @@ type PestSpreadSample struct {
 
 func (x *PestSpreadSample) Reset() {
 	*x = PestSpreadSample{}
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[1]
+	mi := &file_pest_clustering_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -240,7 +239,7 @@ func (x *PestSpreadSample) String() string {
 func (*PestSpreadSample) ProtoMessage() {}
 
 func (x *PestSpreadSample) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[1]
+	mi := &file_pest_clustering_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -253,7 +252,7 @@ func (x *PestSpreadSample) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PestSpreadSample.ProtoReflect.Descriptor instead.
 func (*PestSpreadSample) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_pest_clustering_proto_rawDescGZIP(), []int{1}
+	return file_pest_clustering_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PestSpreadSample) GetData() *DeltaData {
@@ -279,7 +278,7 @@ type ClusterizeSpreadRequest struct {
 
 func (x *ClusterizeSpreadRequest) Reset() {
 	*x = ClusterizeSpreadRequest{}
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[2]
+	mi := &file_pest_clustering_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -291,7 +290,7 @@ func (x *ClusterizeSpreadRequest) String() string {
 func (*ClusterizeSpreadRequest) ProtoMessage() {}
 
 func (x *ClusterizeSpreadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[2]
+	mi := &file_pest_clustering_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -304,7 +303,7 @@ func (x *ClusterizeSpreadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClusterizeSpreadRequest.ProtoReflect.Descriptor instead.
 func (*ClusterizeSpreadRequest) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_pest_clustering_proto_rawDescGZIP(), []int{2}
+	return file_pest_clustering_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ClusterizeSpreadRequest) GetDeltaData() []*DeltaData {
@@ -323,7 +322,7 @@ type ClusterizeSpreadResponse struct {
 
 func (x *ClusterizeSpreadResponse) Reset() {
 	*x = ClusterizeSpreadResponse{}
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[3]
+	mi := &file_pest_clustering_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -335,7 +334,7 @@ func (x *ClusterizeSpreadResponse) String() string {
 func (*ClusterizeSpreadResponse) ProtoMessage() {}
 
 func (x *ClusterizeSpreadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_pest_clustering_proto_msgTypes[3]
+	mi := &file_pest_clustering_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,7 +347,7 @@ func (x *ClusterizeSpreadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClusterizeSpreadResponse.ProtoReflect.Descriptor instead.
 func (*ClusterizeSpreadResponse) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_pest_clustering_proto_rawDescGZIP(), []int{3}
+	return file_pest_clustering_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ClusterizeSpreadResponse) GetPestSpreadSamples() []*PestSpreadSample {
@@ -358,13 +357,13 @@ func (x *ClusterizeSpreadResponse) GetPestSpreadSamples() []*PestSpreadSample {
 	return nil
 }
 
-var File_internal_ml_protobufs_pest_clustering_proto protoreflect.FileDescriptor
+var File_pest_clustering_proto protoreflect.FileDescriptor
 
-const file_internal_ml_protobufs_pest_clustering_proto_rawDesc = "" +
+const file_pest_clustering_proto_rawDesc = "" +
 	"\n" +
-	"+internal/ml/protobufs/pest_clustering.proto\"\x9d\x04\n" +
-	"\tDeltaData\x12\x12\n" +
-	"\x04forest\x18\x01 \x01(\tR\x04forest\x12\x12\n" +
+	"\x15pest_clustering.proto\"\xa1\x04\n" +
+	"\tDeltaData\x12\x16\n" +
+	"\x06forest\x18\x01 \x01(\tR\x06forest\x12\x12\n" +
 	"\x04plot\x18\x02 \x01(\tR\x04plot\x12\x1b\n" +
 	"\tdelta_min\x18\x03 \x01(\x05R\bdeltaMin\x12\x1b\n" +
 	"\tdelta_max\x18\x04 \x01(\x05R\bdeltaMax\x12\x14\n" +
@@ -401,25 +400,25 @@ const file_internal_ml_protobufs_pest_clustering_proto_rawDesc = "" +
 	"/protobufsb\x06proto3"
 
 var (
-	file_internal_ml_protobufs_pest_clustering_proto_rawDescOnce sync.Once
-	file_internal_ml_protobufs_pest_clustering_proto_rawDescData []byte
+	file_pest_clustering_proto_rawDescOnce sync.Once
+	file_pest_clustering_proto_rawDescData []byte
 )
 
-func file_internal_ml_protobufs_pest_clustering_proto_rawDescGZIP() []byte {
-	file_internal_ml_protobufs_pest_clustering_proto_rawDescOnce.Do(func() {
-		file_internal_ml_protobufs_pest_clustering_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_pest_clustering_proto_rawDesc), len(file_internal_ml_protobufs_pest_clustering_proto_rawDesc)))
+func file_pest_clustering_proto_rawDescGZIP() []byte {
+	file_pest_clustering_proto_rawDescOnce.Do(func() {
+		file_pest_clustering_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_pest_clustering_proto_rawDesc), len(file_pest_clustering_proto_rawDesc)))
 	})
-	return file_internal_ml_protobufs_pest_clustering_proto_rawDescData
+	return file_pest_clustering_proto_rawDescData
 }
 
-var file_internal_ml_protobufs_pest_clustering_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_internal_ml_protobufs_pest_clustering_proto_goTypes = []any{
+var file_pest_clustering_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_pest_clustering_proto_goTypes = []any{
 	(*DeltaData)(nil),                // 0: DeltaData
 	(*PestSpreadSample)(nil),         // 1: PestSpreadSample
 	(*ClusterizeSpreadRequest)(nil),  // 2: ClusterizeSpreadRequest
 	(*ClusterizeSpreadResponse)(nil), // 3: ClusterizeSpreadResponse
 }
-var file_internal_ml_protobufs_pest_clustering_proto_depIdxs = []int32{
+var file_pest_clustering_proto_depIdxs = []int32{
 	0, // 0: PestSpreadSample.data:type_name -> DeltaData
 	0, // 1: ClusterizeSpreadRequest.delta_data:type_name -> DeltaData
 	1, // 2: ClusterizeSpreadResponse.pest_spread_samples:type_name -> PestSpreadSample
@@ -432,26 +431,26 @@ var file_internal_ml_protobufs_pest_clustering_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_internal_ml_protobufs_pest_clustering_proto_init() }
-func file_internal_ml_protobufs_pest_clustering_proto_init() {
-	if File_internal_ml_protobufs_pest_clustering_proto != nil {
+func init() { file_pest_clustering_proto_init() }
+func file_pest_clustering_proto_init() {
+	if File_pest_clustering_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_pest_clustering_proto_rawDesc), len(file_internal_ml_protobufs_pest_clustering_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pest_clustering_proto_rawDesc), len(file_pest_clustering_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_internal_ml_protobufs_pest_clustering_proto_goTypes,
-		DependencyIndexes: file_internal_ml_protobufs_pest_clustering_proto_depIdxs,
-		MessageInfos:      file_internal_ml_protobufs_pest_clustering_proto_msgTypes,
+		GoTypes:           file_pest_clustering_proto_goTypes,
+		DependencyIndexes: file_pest_clustering_proto_depIdxs,
+		MessageInfos:      file_pest_clustering_proto_msgTypes,
 	}.Build()
-	File_internal_ml_protobufs_pest_clustering_proto = out.File
-	file_internal_ml_protobufs_pest_clustering_proto_goTypes = nil
-	file_internal_ml_protobufs_pest_clustering_proto_depIdxs = nil
+	File_pest_clustering_proto = out.File
+	file_pest_clustering_proto_goTypes = nil
+	file_pest_clustering_proto_depIdxs = nil
 }

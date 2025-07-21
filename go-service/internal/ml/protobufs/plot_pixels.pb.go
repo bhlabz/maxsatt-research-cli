@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: internal/ml/protobufs/plot_pixels.proto
+// source: plot_pixels.proto
 
 package protobufs
 
@@ -31,7 +31,7 @@ type Pixel struct {
 
 func (x *Pixel) Reset() {
 	*x = Pixel{}
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[0]
+	mi := &file_plot_pixels_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +43,7 @@ func (x *Pixel) String() string {
 func (*Pixel) ProtoMessage() {}
 
 func (x *Pixel) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[0]
+	mi := &file_plot_pixels_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *Pixel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Pixel.ProtoReflect.Descriptor instead.
 func (*Pixel) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{0}
+	return file_plot_pixels_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Pixel) GetX() int32 {
@@ -87,7 +87,7 @@ type PlotPixelsRequest struct {
 
 func (x *PlotPixelsRequest) Reset() {
 	*x = PlotPixelsRequest{}
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[1]
+	mi := &file_plot_pixels_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -99,7 +99,7 @@ func (x *PlotPixelsRequest) String() string {
 func (*PlotPixelsRequest) ProtoMessage() {}
 
 func (x *PlotPixelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[1]
+	mi := &file_plot_pixels_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -112,7 +112,7 @@ func (x *PlotPixelsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlotPixelsRequest.ProtoReflect.Descriptor instead.
 func (*PlotPixelsRequest) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{1}
+	return file_plot_pixels_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PlotPixelsRequest) GetNDVI() map[string]float64 {
@@ -166,7 +166,7 @@ type PlotPixelsResponse struct {
 
 func (x *PlotPixelsResponse) Reset() {
 	*x = PlotPixelsResponse{}
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[2]
+	mi := &file_plot_pixels_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -178,7 +178,7 @@ func (x *PlotPixelsResponse) String() string {
 func (*PlotPixelsResponse) ProtoMessage() {}
 
 func (x *PlotPixelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[2]
+	mi := &file_plot_pixels_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -191,7 +191,7 @@ func (x *PlotPixelsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlotPixelsResponse.ProtoReflect.Descriptor instead.
 func (*PlotPixelsResponse) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{2}
+	return file_plot_pixels_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *PlotPixelsResponse) GetMessage() string {
@@ -216,7 +216,7 @@ type PlotDeltaPixelsRequest struct {
 
 func (x *PlotDeltaPixelsRequest) Reset() {
 	*x = PlotDeltaPixelsRequest{}
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[3]
+	mi := &file_plot_pixels_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +228,7 @@ func (x *PlotDeltaPixelsRequest) String() string {
 func (*PlotDeltaPixelsRequest) ProtoMessage() {}
 
 func (x *PlotDeltaPixelsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[3]
+	mi := &file_plot_pixels_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +241,7 @@ func (x *PlotDeltaPixelsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlotDeltaPixelsRequest.ProtoReflect.Descriptor instead.
 func (*PlotDeltaPixelsRequest) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{3}
+	return file_plot_pixels_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PlotDeltaPixelsRequest) GetNDREDerivative() map[string]float64 {
@@ -302,7 +302,7 @@ type PlotDeltaPixelsResponse struct {
 
 func (x *PlotDeltaPixelsResponse) Reset() {
 	*x = PlotDeltaPixelsResponse{}
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[4]
+	mi := &file_plot_pixels_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -314,7 +314,7 @@ func (x *PlotDeltaPixelsResponse) String() string {
 func (*PlotDeltaPixelsResponse) ProtoMessage() {}
 
 func (x *PlotDeltaPixelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_plot_pixels_proto_msgTypes[4]
+	mi := &file_plot_pixels_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -327,7 +327,7 @@ func (x *PlotDeltaPixelsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PlotDeltaPixelsResponse.ProtoReflect.Descriptor instead.
 func (*PlotDeltaPixelsResponse) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP(), []int{4}
+	return file_plot_pixels_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *PlotDeltaPixelsResponse) GetMessage() string {
@@ -337,11 +337,11 @@ func (x *PlotDeltaPixelsResponse) GetMessage() string {
 	return ""
 }
 
-var File_internal_ml_protobufs_plot_pixels_proto protoreflect.FileDescriptor
+var File_plot_pixels_proto protoreflect.FileDescriptor
 
-const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
+const file_plot_pixels_proto_rawDesc = "" +
 	"\n" +
-	"'internal/ml/protobufs/plot_pixels.proto\x12\x02ml\"#\n" +
+	"\x11plot_pixels.proto\x12\x02ml\"#\n" +
 	"\x05Pixel\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x05R\x01x\x12\f\n" +
 	"\x01y\x18\x02 \x01(\x05R\x01y\"\xba\x03\n" +
@@ -393,19 +393,19 @@ const file_internal_ml_protobufs_plot_pixels_proto_rawDesc = "" +
 	"\x0fPlotDeltaPixels\x12\x1a.ml.PlotDeltaPixelsRequest\x1a\x1b.ml.PlotDeltaPixelsResponseBJZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufsb\x06proto3"
 
 var (
-	file_internal_ml_protobufs_plot_pixels_proto_rawDescOnce sync.Once
-	file_internal_ml_protobufs_plot_pixels_proto_rawDescData []byte
+	file_plot_pixels_proto_rawDescOnce sync.Once
+	file_plot_pixels_proto_rawDescData []byte
 )
 
-func file_internal_ml_protobufs_plot_pixels_proto_rawDescGZIP() []byte {
-	file_internal_ml_protobufs_plot_pixels_proto_rawDescOnce.Do(func() {
-		file_internal_ml_protobufs_plot_pixels_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_plot_pixels_proto_rawDesc), len(file_internal_ml_protobufs_plot_pixels_proto_rawDesc)))
+func file_plot_pixels_proto_rawDescGZIP() []byte {
+	file_plot_pixels_proto_rawDescOnce.Do(func() {
+		file_plot_pixels_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_plot_pixels_proto_rawDesc), len(file_plot_pixels_proto_rawDesc)))
 	})
-	return file_internal_ml_protobufs_plot_pixels_proto_rawDescData
+	return file_plot_pixels_proto_rawDescData
 }
 
-var file_internal_ml_protobufs_plot_pixels_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
-var file_internal_ml_protobufs_plot_pixels_proto_goTypes = []any{
+var file_plot_pixels_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_plot_pixels_proto_goTypes = []any{
 	(*Pixel)(nil),                   // 0: ml.Pixel
 	(*PlotPixelsRequest)(nil),       // 1: ml.PlotPixelsRequest
 	(*PlotPixelsResponse)(nil),      // 2: ml.PlotPixelsResponse
@@ -419,7 +419,7 @@ var file_internal_ml_protobufs_plot_pixels_proto_goTypes = []any{
 	nil,                             // 10: ml.PlotDeltaPixelsRequest.PSRIDerivativeEntry
 	nil,                             // 11: ml.PlotDeltaPixelsRequest.NDVIDerivativeEntry
 }
-var file_internal_ml_protobufs_plot_pixels_proto_depIdxs = []int32{
+var file_plot_pixels_proto_depIdxs = []int32{
 	5,  // 0: ml.PlotPixelsRequest.NDVI:type_name -> ml.PlotPixelsRequest.NDVIEntry
 	6,  // 1: ml.PlotPixelsRequest.NDRE:type_name -> ml.PlotPixelsRequest.NDREEntry
 	7,  // 2: ml.PlotPixelsRequest.NDMI:type_name -> ml.PlotPixelsRequest.NDMIEntry
@@ -440,26 +440,26 @@ var file_internal_ml_protobufs_plot_pixels_proto_depIdxs = []int32{
 	0,  // [0:9] is the sub-list for field type_name
 }
 
-func init() { file_internal_ml_protobufs_plot_pixels_proto_init() }
-func file_internal_ml_protobufs_plot_pixels_proto_init() {
-	if File_internal_ml_protobufs_plot_pixels_proto != nil {
+func init() { file_plot_pixels_proto_init() }
+func file_plot_pixels_proto_init() {
+	if File_plot_pixels_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_plot_pixels_proto_rawDesc), len(file_internal_ml_protobufs_plot_pixels_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_plot_pixels_proto_rawDesc), len(file_plot_pixels_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_internal_ml_protobufs_plot_pixels_proto_goTypes,
-		DependencyIndexes: file_internal_ml_protobufs_plot_pixels_proto_depIdxs,
-		MessageInfos:      file_internal_ml_protobufs_plot_pixels_proto_msgTypes,
+		GoTypes:           file_plot_pixels_proto_goTypes,
+		DependencyIndexes: file_plot_pixels_proto_depIdxs,
+		MessageInfos:      file_plot_pixels_proto_msgTypes,
 	}.Build()
-	File_internal_ml_protobufs_plot_pixels_proto = out.File
-	file_internal_ml_protobufs_plot_pixels_proto_goTypes = nil
-	file_internal_ml_protobufs_plot_pixels_proto_depIdxs = nil
+	File_plot_pixels_proto = out.File
+	file_plot_pixels_proto_goTypes = nil
+	file_plot_pixels_proto_depIdxs = nil
 }

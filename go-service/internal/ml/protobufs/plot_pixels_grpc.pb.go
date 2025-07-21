@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: internal/ml/protobufs/plot_pixels.proto
+// source: plot_pixels.proto
 
 package protobufs
 
@@ -155,5 +155,5 @@ var PlotPixelsService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "internal/ml/protobufs/plot_pixels.proto",
+	Metadata: "plot_pixels.proto",
 }

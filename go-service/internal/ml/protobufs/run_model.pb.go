@@ -2,17 +2,16 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v5.29.3
-// source: internal/ml/protobufs/run_model.proto
+// source: run_model.proto
 
 package protobufs
 
 import (
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -33,7 +32,7 @@ type FinalData struct {
 
 func (x *FinalData) Reset() {
 	*x = FinalData{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[0]
+	mi := &file_run_model_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +44,7 @@ func (x *FinalData) String() string {
 func (*FinalData) ProtoMessage() {}
 
 func (x *FinalData) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[0]
+	mi := &file_run_model_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +57,7 @@ func (x *FinalData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FinalData.ProtoReflect.Descriptor instead.
 func (*FinalData) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{0}
+	return file_run_model_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *FinalData) GetWeather() *FinalData_WeatherMetrics {
@@ -95,7 +94,7 @@ type PixelResult struct {
 
 func (x *PixelResult) Reset() {
 	*x = PixelResult{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[1]
+	mi := &file_run_model_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -107,7 +106,7 @@ func (x *PixelResult) String() string {
 func (*PixelResult) ProtoMessage() {}
 
 func (x *PixelResult) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[1]
+	mi := &file_run_model_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -120,7 +119,7 @@ func (x *PixelResult) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PixelResult.ProtoReflect.Descriptor instead.
 func (*PixelResult) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{1}
+	return file_run_model_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PixelResult) GetX() int32 {
@@ -168,7 +167,7 @@ type LabelProbability struct {
 
 func (x *LabelProbability) Reset() {
 	*x = LabelProbability{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[2]
+	mi := &file_run_model_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -180,7 +179,7 @@ func (x *LabelProbability) String() string {
 func (*LabelProbability) ProtoMessage() {}
 
 func (x *LabelProbability) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[2]
+	mi := &file_run_model_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -193,7 +192,7 @@ func (x *LabelProbability) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LabelProbability.ProtoReflect.Descriptor instead.
 func (*LabelProbability) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{2}
+	return file_run_model_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *LabelProbability) GetLabel() string {
@@ -220,7 +219,7 @@ type RunModelRequest struct {
 
 func (x *RunModelRequest) Reset() {
 	*x = RunModelRequest{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[3]
+	mi := &file_run_model_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -232,7 +231,7 @@ func (x *RunModelRequest) String() string {
 func (*RunModelRequest) ProtoMessage() {}
 
 func (x *RunModelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[3]
+	mi := &file_run_model_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -245,7 +244,7 @@ func (x *RunModelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RunModelRequest.ProtoReflect.Descriptor instead.
 func (*RunModelRequest) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{3}
+	return file_run_model_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *RunModelRequest) GetData() []*FinalData {
@@ -271,7 +270,7 @@ type RunModelResponse struct {
 
 func (x *RunModelResponse) Reset() {
 	*x = RunModelResponse{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[4]
+	mi := &file_run_model_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -283,7 +282,7 @@ func (x *RunModelResponse) String() string {
 func (*RunModelResponse) ProtoMessage() {}
 
 func (x *RunModelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[4]
+	mi := &file_run_model_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -296,7 +295,7 @@ func (x *RunModelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RunModelResponse.ProtoReflect.Descriptor instead.
 func (*RunModelResponse) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{4}
+	return file_run_model_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *RunModelResponse) GetResults() []*PixelResult {
@@ -320,7 +319,7 @@ type FinalData_WeatherMetrics struct {
 
 func (x *FinalData_WeatherMetrics) Reset() {
 	*x = FinalData_WeatherMetrics{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[5]
+	mi := &file_run_model_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -332,7 +331,7 @@ func (x *FinalData_WeatherMetrics) String() string {
 func (*FinalData_WeatherMetrics) ProtoMessage() {}
 
 func (x *FinalData_WeatherMetrics) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[5]
+	mi := &file_run_model_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -345,7 +344,7 @@ func (x *FinalData_WeatherMetrics) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FinalData_WeatherMetrics.ProtoReflect.Descriptor instead.
 func (*FinalData_WeatherMetrics) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{0, 0}
+	return file_run_model_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (x *FinalData_WeatherMetrics) GetAvgTemperature() float64 {
@@ -418,7 +417,7 @@ type FinalData_DeltaData struct {
 
 func (x *FinalData_DeltaData) Reset() {
 	*x = FinalData_DeltaData{}
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[6]
+	mi := &file_run_model_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -430,7 +429,7 @@ func (x *FinalData_DeltaData) String() string {
 func (*FinalData_DeltaData) ProtoMessage() {}
 
 func (x *FinalData_DeltaData) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_ml_protobufs_run_model_proto_msgTypes[6]
+	mi := &file_run_model_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -443,7 +442,7 @@ func (x *FinalData_DeltaData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FinalData_DeltaData.ProtoReflect.Descriptor instead.
 func (*FinalData_DeltaData) Descriptor() ([]byte, []int) {
-	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{0, 1}
+	return file_run_model_proto_rawDescGZIP(), []int{0, 1}
 }
 
 func (x *FinalData_DeltaData) GetForest() string {
@@ -586,11 +585,11 @@ func (x *FinalData_DeltaData) GetLongitude() float64 {
 	return 0
 }
 
-var File_internal_ml_protobufs_run_model_proto protoreflect.FileDescriptor
+var File_run_model_proto protoreflect.FileDescriptor
 
-const file_internal_ml_protobufs_run_model_proto_rawDesc = "" +
+const file_run_model_proto_rawDesc = "" +
 	"\n" +
-	"%internal/ml/protobufs/run_model.proto\"\xb9\a\n" +
+	"\x0frun_model.proto\"\xbd\a\n" +
 	"\tFinalData\x123\n" +
 	"\aweather\x18\x01 \x01(\v2\x19.FinalData.WeatherMetricsR\aweather\x12*\n" +
 	"\x05delta\x18\x02 \x01(\v2\x14.FinalData.DeltaDataR\x05delta\x12\x1d\n" +
@@ -603,9 +602,9 @@ const file_internal_ml_protobufs_run_model_proto_rawDesc = "" +
 	"\favg_humidity\x18\x03 \x01(\x01R\vavgHumidity\x12(\n" +
 	"\x10humidity_std_dev\x18\x04 \x01(\x01R\x0ehumidityStdDev\x12/\n" +
 	"\x13total_precipitation\x18\x05 \x01(\x01R\x12totalPrecipitation\x120\n" +
-	"\x14dry_days_consecutive\x18\x06 \x01(\x05R\x12dryDaysConsecutive\x1a\x9d\x04\n" +
-	"\tDeltaData\x12\x12\n" +
-	"\x04forest\x18\x01 \x01(\tR\x04forest\x12\x12\n" +
+	"\x14dry_days_consecutive\x18\x06 \x01(\x05R\x12dryDaysConsecutive\x1a\xa1\x04\n" +
+	"\tDeltaData\x12\x16\n" +
+	"\x06forest\x18\x01 \x01(\tR\x06forest\x12\x12\n" +
 	"\x04plot\x18\x02 \x01(\tR\x04plot\x12\x1b\n" +
 	"\tdelta_min\x18\x03 \x01(\x05R\bdeltaMin\x12\x1b\n" +
 	"\tdelta_max\x18\x04 \x01(\x05R\bdeltaMax\x12\x14\n" +
@@ -646,19 +645,19 @@ const file_internal_ml_protobufs_run_model_proto_rawDesc = "" +
 	"\bRunModel\x12\x10.RunModelRequest\x1a\x11.RunModelResponseBJZHgithub.com/forest-guardian/forest-guardian-api-poc/internal/ml/protobufsb\x06proto3"
 
 var (
-	file_internal_ml_protobufs_run_model_proto_rawDescOnce sync.Once
-	file_internal_ml_protobufs_run_model_proto_rawDescData []byte
+	file_run_model_proto_rawDescOnce sync.Once
+	file_run_model_proto_rawDescData []byte
 )
 
-func file_internal_ml_protobufs_run_model_proto_rawDescGZIP() []byte {
-	file_internal_ml_protobufs_run_model_proto_rawDescOnce.Do(func() {
-		file_internal_ml_protobufs_run_model_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_run_model_proto_rawDesc), len(file_internal_ml_protobufs_run_model_proto_rawDesc)))
+func file_run_model_proto_rawDescGZIP() []byte {
+	file_run_model_proto_rawDescOnce.Do(func() {
+		file_run_model_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_run_model_proto_rawDesc), len(file_run_model_proto_rawDesc)))
 	})
-	return file_internal_ml_protobufs_run_model_proto_rawDescData
+	return file_run_model_proto_rawDescData
 }
 
-var file_internal_ml_protobufs_run_model_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_internal_ml_protobufs_run_model_proto_goTypes = []any{
+var file_run_model_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_run_model_proto_goTypes = []any{
 	(*FinalData)(nil),                // 0: FinalData
 	(*PixelResult)(nil),              // 1: PixelResult
 	(*LabelProbability)(nil),         // 2: LabelProbability
@@ -667,7 +666,7 @@ var file_internal_ml_protobufs_run_model_proto_goTypes = []any{
 	(*FinalData_WeatherMetrics)(nil), // 5: FinalData.WeatherMetrics
 	(*FinalData_DeltaData)(nil),      // 6: FinalData.DeltaData
 }
-var file_internal_ml_protobufs_run_model_proto_depIdxs = []int32{
+var file_run_model_proto_depIdxs = []int32{
 	5, // 0: FinalData.weather:type_name -> FinalData.WeatherMetrics
 	6, // 1: FinalData.delta:type_name -> FinalData.DeltaData
 	2, // 2: PixelResult.result:type_name -> LabelProbability
@@ -682,26 +681,26 @@ var file_internal_ml_protobufs_run_model_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_internal_ml_protobufs_run_model_proto_init() }
-func file_internal_ml_protobufs_run_model_proto_init() {
-	if File_internal_ml_protobufs_run_model_proto != nil {
+func init() { file_run_model_proto_init() }
+func file_run_model_proto_init() {
+	if File_run_model_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_ml_protobufs_run_model_proto_rawDesc), len(file_internal_ml_protobufs_run_model_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_run_model_proto_rawDesc), len(file_run_model_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_internal_ml_protobufs_run_model_proto_goTypes,
-		DependencyIndexes: file_internal_ml_protobufs_run_model_proto_depIdxs,
-		MessageInfos:      file_internal_ml_protobufs_run_model_proto_msgTypes,
+		GoTypes:           file_run_model_proto_goTypes,
+		DependencyIndexes: file_run_model_proto_depIdxs,
+		MessageInfos:      file_run_model_proto_msgTypes,
 	}.Build()
-	File_internal_ml_protobufs_run_model_proto = out.File
-	file_internal_ml_protobufs_run_model_proto_goTypes = nil
-	file_internal_ml_protobufs_run_model_proto_depIdxs = nil
+	File_run_model_proto = out.File
+	file_run_model_proto_goTypes = nil
+	file_run_model_proto_depIdxs = nil
 }

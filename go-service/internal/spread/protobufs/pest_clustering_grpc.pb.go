@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: internal/ml/protobufs/pest_clustering.proto
+// source: pest_clustering.proto
 
 package protobufs
 
@@ -117,5 +117,5 @@ var PestClusteringService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "internal/ml/protobufs/pest_clustering.proto",
+	Metadata: "pest_clustering.proto",
 }
