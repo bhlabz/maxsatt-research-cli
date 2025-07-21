@@ -42,18 +42,20 @@ func CreateDataset() {
 	for i, h := range headers {
 		colIdx[h] = i
 	}
-	plots := make(map[string]struct{})
-	pests := make(map[string]struct{})
-	months := make(map[string]struct{})
+	// Group by forest, plot, pest, month
+	type groupKey struct {
+		Forest string
+		Plot   string
+		Pest   string
+		Month  string
+	}
+	groupCounts := make(map[groupKey]int)
 	for {
 		record, err := reader.Read()
 		if err != nil {
 			break
 		}
-		forest := ""
-		plot := ""
-		pest := ""
-		date := ""
+		forest, plot, pest, date := "", "", "", ""
 		if idx, ok := colIdx["forest"]; ok {
 			forest = record[idx]
 		}
@@ -66,37 +68,29 @@ func CreateDataset() {
 		if idx, ok := colIdx["date"]; ok {
 			date = record[idx]
 		}
-		plots[forest+"/"+plot] = struct{}{}
-		pests[pest] = struct{}{}
+		month := ""
 		if len(date) >= 7 {
-			months[date[:7]] = struct{}{} // YYYY-MM
+			month = date[:7]
 		}
+		key := groupKey{Forest: forest, Plot: plot, Pest: pest, Month: month}
+		groupCounts[key]++
 	}
-	plotCount := len(plots)
-	pestList := make([]string, 0, len(pests))
-	for p := range pests {
-		pestList = append(pestList, p)
+	// Build summary string
+	summaryLines := make([]string, 0, len(groupCounts))
+	pestToMonths := make(map[string]map[string]struct{})
+	for k, count := range groupCounts {
+		summaryLines = append(summaryLines, fmt.Sprintf("Farm: %s, Plot: %s, Pest: %s, Month: %s (%d samples)", k.Forest, k.Plot, k.Pest, k.Month, count))
+		if _, ok := pestToMonths[k.Pest]; !ok {
+			pestToMonths[k.Pest] = make(map[string]struct{})
+		}
+		pestToMonths[k.Pest][k.Month] = struct{}{}
 	}
-	monthList := make([]string, 0, len(months))
-	for m := range months {
-		monthList = append(monthList, m)
+	// Add pest-month summary lines
+	for pest, months := range pestToMonths {
+		monthCount := len(months)
+		summaryLines = append(summaryLines, fmt.Sprintf("%d months for pest %s", monthCount, pest))
 	}
-	pestSummary := ""
-	if len(pestList) == 1 {
-		pestSummary = pestList[0]
-	} else if len(pestList) > 1 {
-		pestSummary = "multiple"
-	} else {
-		pestSummary = "unknown"
-	}
-	monthSummary := ""
-	if len(monthList) == 1 {
-		monthSummary = monthList[0]
-	} else if len(monthList) > 1 {
-		monthSummary = "multiple"
-	} else {
-		monthSummary = "unknown"
-	}
+	summary := strings.Join(summaryLines, "\n")
 	// --- End summary extraction ---
 
 	fmt.Print("\033[34mEnter the ideal delta days for the image analysis: \033[0m")
@@ -121,6 +115,5 @@ func CreateDataset() {
 		return
 	}
 	fmt.Printf("\n\033[32mDataset created successfully!\033[0m\n")
-	summary := fmt.Sprintf("%d plots in month %s for pest %s", plotCount, monthSummary, pestSummary)
-	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s\n%s", outputDataFileName, summary))
+	notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nDataset created successfully! \n\nFile: %s\n---\n%s", outputDataFileName, summary))
 }
