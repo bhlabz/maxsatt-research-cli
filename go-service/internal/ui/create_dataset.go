@@ -10,6 +10,7 @@ import (
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delivery"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 )
 
 // CreateDataset handles the UI for creating a new dataset
@@ -23,7 +24,7 @@ func CreateDataset() {
 	fmt.Scanln(&inputDataFileName)
 
 	// --- Dataset summary extraction ---
-	inputPath := filepath.Join("data", "training_input", inputDataFileName)
+	inputPath := filepath.Join(properties.RootPath(), "data", "training_input", inputDataFileName)
 	file, err := os.Open(inputPath)
 	if err != nil {
 		fmt.Printf("\n\033[31mError opening input file for summary: %s\033[0m\n", err.Error())
