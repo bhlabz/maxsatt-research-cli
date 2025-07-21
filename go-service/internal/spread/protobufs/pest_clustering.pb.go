@@ -78,7 +78,7 @@ func (*DeltaData) Descriptor() ([]byte, []int) {
 	return file_internal_ml_protobufs_pest_clustering_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DeltaData) GetFarm() string {
+func (x *DeltaData) GetForest() string {
 	if x != nil {
 		return x.Forest
 	}
@@ -364,7 +364,7 @@ const file_internal_ml_protobufs_pest_clustering_proto_rawDesc = "" +
 	"\n" +
 	"+internal/ml/protobufs/pest_clustering.proto\"\x9d\x04\n" +
 	"\tDeltaData\x12\x12\n" +
-	"\x04farm\x18\x01 \x01(\tR\x04farm\x12\x12\n" +
+	"\x04forest\x18\x01 \x01(\tR\x04forest\x12\x12\n" +
 	"\x04plot\x18\x02 \x01(\tR\x04plot\x12\x1b\n" +
 	"\tdelta_min\x18\x03 \x01(\x05R\bdeltaMin\x12\x1b\n" +
 	"\tdelta_max\x18\x04 \x01(\x05R\bdeltaMax\x12\x14\n" +

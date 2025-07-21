@@ -313,7 +313,7 @@ func contains(slice []string, item string) bool {
 // 	geometry := Geometry{Coordinates: nil, CRS: "WGS84"}
 // 	startDate, _ := time.Parse("2006-01-02", "2023-01-01")
 // 	endDate, _ := time.Parse("2006-01-02", "2023-01-10")
-// 	images, err := GetImages(geometry, "farm1", "plot1", startDate, endDate, 5)
+// 	images, err := GetImages(geometry, "forest1", "plot1", startDate, endDate, 5)
 // 	if err != nil {
 // 		fmt.Println("Error:", err)
 // 		return

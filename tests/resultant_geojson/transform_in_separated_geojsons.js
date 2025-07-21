@@ -48,8 +48,8 @@ function processGeoJSONFiles(folder) {
       });
 
       // Extract forest and plot from the file name
-      const [farm1, farm2, farn3, plot] = fileOrFolder.split("_");
-      const forest = `${farm1}_${farm2}_${farn3}`;
+      const [forest1, forest2, farn3, plot] = fileOrFolder.split("_");
+      const forest = `${forest1}_${forest2}_${farn3}`;
       // Write separate GeoJSON for each pest
       Object.entries(pestFeaturesMap).forEach(([pest, features]) => {
         const pestGeoJSON = {

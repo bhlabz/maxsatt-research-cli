@@ -446,7 +446,7 @@ func (*FinalData_DeltaData) Descriptor() ([]byte, []int) {
 	return file_internal_ml_protobufs_run_model_proto_rawDescGZIP(), []int{0, 1}
 }
 
-func (x *FinalData_DeltaData) GetFarm() string {
+func (x *FinalData_DeltaData) GetForest() string {
 	if x != nil {
 		return x.Forest
 	}
@@ -605,7 +605,7 @@ const file_internal_ml_protobufs_run_model_proto_rawDesc = "" +
 	"\x13total_precipitation\x18\x05 \x01(\x01R\x12totalPrecipitation\x120\n" +
 	"\x14dry_days_consecutive\x18\x06 \x01(\x05R\x12dryDaysConsecutive\x1a\x9d\x04\n" +
 	"\tDeltaData\x12\x12\n" +
-	"\x04farm\x18\x01 \x01(\tR\x04farm\x12\x12\n" +
+	"\x04forest\x18\x01 \x01(\tR\x04forest\x12\x12\n" +
 	"\x04plot\x18\x02 \x01(\tR\x04plot\x12\x1b\n" +
 	"\tdelta_min\x18\x03 \x01(\x05R\bdeltaMin\x12\x1b\n" +
 	"\tdelta_max\x18\x04 \x01(\x05R\bdeltaMax\x12\x14\n" +
