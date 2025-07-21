@@ -46,7 +46,7 @@ func AccuracyTest() {
 	fmt.Printf("\033[32m- Training ratio: %d%%\033[0m\n", trainingRatio)
 	fmt.Printf("\033[32m- Training model will be: %s\033[0m\n", trainingModelFileName)
 
-	accuracy, totalTests, correctPredictions, trainingStats, validationStats, err := delivery.RunAccuracyTest(
+	accuracy, totalTests, correctPredictions, trainingStats, validationStats, accretionMissStats, err := delivery.RunAccuracyTest(
 		selectedModel,
 		trainingModelFileName,
 		trainingRatio,
@@ -71,13 +71,17 @@ func AccuracyTest() {
 	fmt.Printf("\n\033[34mDataset Statistics:\033[0m\n")
 	fmt.Printf("\033[34mTraining Dataset:\033[0m\n")
 	fmt.Printf("\033[34m- Total samples: %d\033[0m\n", trainingStats.TotalSamples)
-
 	fmt.Printf("\033[34mValidation Dataset:\033[0m\n")
 	fmt.Printf("\033[34m- Total samples: %d\033[0m\n", validationStats.TotalSamples)
 
-	// Format dataset statistics for Discord message
-	trainingStatsFormatted := delivery.FormatDatasetStats(trainingStats, "Training")
-	validationStatsFormatted := delivery.FormatDatasetStats(validationStats, "Validation")
+	// Show accretion/miss stats in console
+	fmt.Printf("\n\033[35mAccretion/Miss Breakdown:\033[0m\n")
+	fmt.Print(delivery.FormatAccretionMissStats(accretionMissStats))
+
+	// Format dataset statistics for Discord message (with percentages)
+	trainingStatsFormatted := delivery.FormatDatasetStatsWithPercent(trainingStats, "Training")
+	validationStatsFormatted := delivery.FormatDatasetStatsWithPercent(validationStats, "Validation")
+	accretionMissFormatted := delivery.FormatAccretionMissStats(accretionMissStats)
 
 	// Create comprehensive Discord message
 	discordMessage := fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n"+
@@ -87,14 +91,15 @@ func AccuracyTest() {
 		"- Total tests: %d\n"+
 		"- Correct predictions: %d\n"+
 		"- Accuracy: %.2f%%\n\n"+
-		"%s\n\n%s",
+		"%s\n\n%s\n\n%s",
 		selectedModel,
 		trainingRatio,
 		totalTests,
 		correctPredictions,
 		accuracyPercentage,
 		trainingStatsFormatted,
-		validationStatsFormatted)
+		validationStatsFormatted,
+		accretionMissFormatted)
 
 	notification.SendDiscordSuccessNotification(discordMessage)
 }

@@ -27,18 +27,31 @@ type DatasetStats struct {
 	PestMonthDistribution map[string]int // key: pest|YYYY-MM
 }
 
+// Add new struct for detailed stats
+
+type AccretionMissStats struct {
+	ForestPlot map[string]map[string]map[string]*PestStats // forest -> plot -> pest -> stats
+	TotalTests int
+}
+
+type PestStats struct {
+	Accretions   int
+	Misses       int
+	MissAffirmed map[string]int // pest label that was affirmed instead
+}
+
 // RunAccuracyTest performs the complete accuracy test process
-func RunAccuracyTest(sourceModelFileName, trainingModelFileName string, trainingRatio int) (float64, int, int, *DatasetStats, *DatasetStats, error) {
+func RunAccuracyTest(sourceModelFileName, trainingModelFileName string, trainingRatio int) (float64, int, int, *DatasetStats, *DatasetStats, *AccretionMissStats, error) {
 	fmt.Println("Starting accuracy test process...")
 
 	// Read and parse the source model dataset
 	rows, err := readModelDataset(sourceModelFileName)
 	if err != nil {
-		return 0, 0, 0, nil, nil, fmt.Errorf("failed to read model dataset: %w", err)
+		return 0, 0, 0, nil, nil, nil, fmt.Errorf("failed to read model dataset: %w", err)
 	}
 
 	if len(rows) == 0 {
-		return 0, 0, 0, nil, nil, fmt.Errorf("empty model file given")
+		return 0, 0, 0, nil, nil, nil, fmt.Errorf("empty model file given")
 	}
 
 	// Split data into training and validation sets
@@ -53,21 +66,20 @@ func RunAccuracyTest(sourceModelFileName, trainingModelFileName string, training
 	// Create training model file with proper naming format
 	err = createTrainingModelFile(trainingData, sourceModelFileName, trainingModelFileName)
 	if err != nil {
-		return 0, 0, 0, nil, nil, fmt.Errorf("failed to create training model: %w", err)
+		return 0, 0, 0, nil, nil, nil, fmt.Errorf("failed to create training model: %w", err)
 	}
 
 	// Test model accuracy on validation data
-	correctPredictions, totalTests, err := testModelAccuracyOnValidation(validationData, trainingModelFileName)
+	correctPredictions, totalTests, accretionMissStats, err := testModelAccuracyOnValidation(validationData, trainingModelFileName)
 	if err != nil {
-		return 0, 0, 0, nil, nil, fmt.Errorf("failed to test model accuracy: %w", err)
+		return 0, 0, 0, nil, nil, nil, fmt.Errorf("failed to test model accuracy: %w", err)
 	}
-
 	accuracy := float64(correctPredictions) / float64(totalTests)
 
 	// Clean up the training model file after testing
 	cleanupTrainingModelFile(trainingModelFileName)
 
-	return accuracy, totalTests, correctPredictions, trainingStats, validationStats, nil
+	return accuracy, totalTests, correctPredictions, trainingStats, validationStats, accretionMissStats, nil
 }
 
 // cleanupTrainingModelFile removes the training model file after accuracy testing
@@ -172,11 +184,13 @@ func createTrainingModelFile(trainingData []dataset.FinalData, sourceModelFileNa
 }
 
 // testModelAccuracyOnValidation tests the model accuracy on validation data
-func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingModelFileName string) (int, int, error) {
+func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingModelFileName string) (int, int, *AccretionMissStats, error) {
 	fmt.Println("Testing model accuracy on validation data...")
 
 	correctPredictions := 0
 	totalTests := 0
+
+	stats := &AccretionMissStats{ForestPlot: make(map[string]map[string]map[string]*PestStats)}
 
 	// Group validation data by forest and plot for evaluation
 	validationGroups := make(map[string][]dataset.FinalData)
@@ -211,7 +225,6 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 			continue
 		}
 
-		// Check if any result matches the expected label
 		for _, result := range results {
 			// Find the label with highest probability
 			var bestLabel string
@@ -233,15 +246,28 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 				}
 			}
 
-			// Compare with expected label
+			if _, ok := stats.ForestPlot[forest]; !ok {
+				stats.ForestPlot[forest] = make(map[string]map[string]*PestStats)
+			}
+			if _, ok := stats.ForestPlot[forest][plot]; !ok {
+				stats.ForestPlot[forest][plot] = make(map[string]*PestStats)
+			}
+			if _, ok := stats.ForestPlot[forest][plot][expectedLabel]; !ok {
+				stats.ForestPlot[forest][plot][expectedLabel] = &PestStats{MissAffirmed: make(map[string]int)}
+			}
+
 			if bestLabel == expectedLabel {
 				correctPredictions++
+				stats.ForestPlot[forest][plot][expectedLabel].Accretions++
+			} else {
+				stats.ForestPlot[forest][plot][expectedLabel].Misses++
+				stats.ForestPlot[forest][plot][expectedLabel].MissAffirmed[bestLabel]++
 			}
 			totalTests++
 		}
 	}
-
-	return correctPredictions, totalTests, nil
+	stats.TotalTests = totalTests
+	return correctPredictions, totalTests, stats, nil
 }
 
 // calculateDatasetStats calculates comprehensive statistics for a dataset
@@ -301,5 +327,72 @@ func FormatDatasetStats(stats *DatasetStats, datasetName string) string {
 		}
 	}
 
+	return sb.String()
+}
+
+// Add formatting function for accretion/miss stats
+func FormatAccretionMissStats(stats *AccretionMissStats) string {
+	if stats == nil || stats.TotalTests == 0 {
+		return "No accretion/miss data available."
+	}
+	var sb strings.Builder
+	for forest, plots := range stats.ForestPlot {
+		for plot, pests := range plots {
+			for pest, pestStats := range pests {
+				total := pestStats.Accretions + pestStats.Misses
+				if total == 0 {
+					continue
+				}
+				accretionPct := float64(pestStats.Accretions) / float64(total) * 100
+				if pestStats.Accretions > 0 {
+					sb.WriteString(fmt.Sprintf("Forest %s plot %s had %.1f%% accretions on pest %s\n", forest, plot, accretionPct, pest))
+				}
+				if pestStats.Misses > 0 {
+					for affirmed, count := range pestStats.MissAffirmed {
+						affirmPct := float64(count) / float64(total) * 100
+						sb.WriteString(fmt.Sprintf("Forest %s plot %s had %.1f%% misses on pest %s affirming pest %s\n", forest, plot, affirmPct, pest, affirmed))
+					}
+				}
+			}
+		}
+	}
+	return sb.String()
+}
+
+// Add a new function to format dataset stats with percentages
+func FormatDatasetStatsWithPercent(stats *DatasetStats, datasetName string) string {
+	if stats == nil || stats.TotalSamples == 0 {
+		return fmt.Sprintf("%s: No data available", datasetName)
+	}
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("**%s Dataset:**\n", datasetName))
+	sb.WriteString(fmt.Sprintf("- Total samples: %d\n", stats.TotalSamples))
+	if len(stats.PestMonthDistribution) > 0 {
+		sb.WriteString("- Pest/Month distribution (percentages):\n")
+		type pestMonthCount struct {
+			pest  string
+			month string
+			count int
+		}
+		var counts []pestMonthCount
+		for key, count := range stats.PestMonthDistribution {
+			parts := strings.SplitN(key, "|", 2)
+			pest, month := parts[0], "unknown"
+			if len(parts) > 1 {
+				month = parts[1]
+			}
+			counts = append(counts, pestMonthCount{pest, month, count})
+		}
+		sort.Slice(counts, func(i, j int) bool {
+			if counts[i].pest == counts[j].pest {
+				return counts[i].month < counts[j].month
+			}
+			return counts[i].pest < counts[j].pest
+		})
+		for _, c := range counts {
+			pct := float64(c.count) / float64(stats.TotalSamples) * 100
+			sb.WriteString(fmt.Sprintf("  • %s (%s): %d samples (%.1f%%)\n", c.pest, c.month, c.count, pct))
+		}
+	}
 	return sb.String()
 }
