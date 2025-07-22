@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/airbusgeo/godal"
@@ -110,55 +111,74 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 	}
 
 	// OAuth2 configuration from environment variables
-	clientID := os.Getenv("COPERNICUS_CLIENT_ID")
-	clientSecret := os.Getenv("COPERNICUS_CLIENT_SECRET")
+	clientIDs := os.Getenv("COPERNICUS_CLIENT_ID")
+	clientSecrets := os.Getenv("COPERNICUS_CLIENT_SECRET")
 	tokenURL := os.Getenv("COPERNICUS_TOKEN_URL")
 
-	if clientID == "" || clientSecret == "" || tokenURL == "" {
+	clientIDList := strings.Split(clientIDs, ",")
+	clientSecretList := strings.Split(clientSecrets, ",")
+
+	if clientIDs == "" || clientSecrets == "" || tokenURL == "" {
 		return nil, fmt.Errorf("missing required environment variables: COPERNICUS_CLIENT_ID, COPERNICUS_CLIENT_SECRET, or COPERNICUS_TOKEN_URL")
 	}
 
-	config := &clientcredentials.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		TokenURL:     tokenURL,
-	}
-
-	// Create an HTTP client with OAuth2
-	httpClient := config.Client(context.Background())
-
-	url := "https://sh.dataspace.copernicus.eu/api/v1/process"
-
-	// Retry logic
-	retries := 10
-	var response *http.Response
-	for attempt := 1; attempt <= retries; attempt++ {
-		response, err = httpClient.Post(url, "application/json", bytes.NewBuffer(requestBody))
-		if err == nil && response.StatusCode == http.StatusOK {
-			break
+	var responseContent []byte
+	for i, clientID := range clientIDList {
+		if i >= len(clientSecretList) {
+			return nil, fmt.Errorf("mismatched number of client IDs and secrets")
+		}
+		clientSecret := clientSecretList[i]
+		config := &clientcredentials.Config{
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
+			TokenURL:     tokenURL,
 		}
 
-		if response != nil {
-			body, _ := io.ReadAll(response.Body)
-			fmt.Printf("Attempt %d failed: %s\n", attempt, string(body))
-			response.Body.Close()
-		} else {
-			fmt.Printf("Attempt %d failed: %v\n", attempt, err)
+		// Create an HTTP client with OAuth2
+		httpClient := config.Client(context.Background())
+
+		url := "https://sh.dataspace.copernicus.eu/api/v1/process"
+
+		// Retry logic
+		retries := 10
+		var response *http.Response
+		for attempt := 1; attempt <= retries; attempt++ {
+			response, err = httpClient.Post(url, "application/json", bytes.NewBuffer(requestBody))
+			if err == nil && response.StatusCode == http.StatusOK {
+				break
+			}
+
+			if response != nil {
+				body, _ := io.ReadAll(response.Body)
+				bodyStr := string(body)
+				response.Body.Close()
+				if strings.Contains(bodyStr, "403") {
+					err = fmt.Errorf("unauthorized access, check your client ID and secret")
+					break
+				}
+				fmt.Printf("Attempt %d failed: %s\n", attempt, bodyStr)
+
+			} else {
+				fmt.Printf("Attempt %d failed: %v\n", attempt, err)
+			}
+
+			time.Sleep(5 * time.Second) // Wait for 2 seconds before retrying
 		}
 
-		time.Sleep(5 * time.Second) // Wait for 2 seconds before retrying
+		if err != nil {
+			err = fmt.Errorf("failed to request image after %d attempts: %v", retries, err)
+			continue
+		}
+		defer response.Body.Close()
+
+		// Read the response body
+		responseContent, err = io.ReadAll(response.Body)
+		response.Body.Close()
+		if err != nil {
+			err = fmt.Errorf("failed to read response body: %v", err)
+			continue
+		}
 	}
 
-	if err != nil {
-		return nil, fmt.Errorf("failed to request image after %d attempts: %v", retries, err)
-	}
-	defer response.Body.Close()
-
-	// Read the response body
-	responseContent, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
-	}
-
-	return responseContent, nil
+	return responseContent, err
 }
