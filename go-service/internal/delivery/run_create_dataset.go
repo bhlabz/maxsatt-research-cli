@@ -26,10 +26,10 @@ type ValidationRow struct {
 }
 
 func getSamplesAmountFromSeverity(_ string, datasetLength int) int {
-	if datasetLength <= 2 {
+	if datasetLength <= 4 {
 		return datasetLength
 	}
-	return datasetLength / 2
+	return datasetLength - (datasetLength / 4)
 }
 
 func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]dataset.DeltaData, samplesAmount int, label string) map[[2]int]map[time.Time]dataset.DeltaData {
