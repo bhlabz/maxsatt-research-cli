@@ -40,18 +40,30 @@ func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]datase
 			deltaDatasetSlice = append(deltaDatasetSlice, sample)
 		}
 	}
-
 	sort.Slice(deltaDatasetSlice, func(i, j int) bool {
-		if deltaDatasetSlice[i].NDREDerivative != deltaDatasetSlice[j].NDREDerivative {
-			return deltaDatasetSlice[i].NDREDerivative < deltaDatasetSlice[j].NDREDerivative
+		if label == "Saudavel" {
+			if deltaDatasetSlice[i].NDREDerivative != deltaDatasetSlice[j].NDREDerivative {
+				return deltaDatasetSlice[i].NDREDerivative > deltaDatasetSlice[j].NDREDerivative
+			}
+			if deltaDatasetSlice[i].NDMIDerivative != deltaDatasetSlice[j].NDMIDerivative {
+				return deltaDatasetSlice[i].NDMIDerivative > deltaDatasetSlice[j].NDMIDerivative
+			}
+			if deltaDatasetSlice[i].NDVIDerivative != deltaDatasetSlice[j].NDVIDerivative {
+				return deltaDatasetSlice[i].NDVIDerivative > deltaDatasetSlice[j].NDVIDerivative
+			}
+			return deltaDatasetSlice[i].PSRIDerivative < deltaDatasetSlice[j].PSRIDerivative
+		} else {
+			if deltaDatasetSlice[i].NDREDerivative != deltaDatasetSlice[j].NDREDerivative {
+				return deltaDatasetSlice[i].NDREDerivative < deltaDatasetSlice[j].NDREDerivative
+			}
+			if deltaDatasetSlice[i].NDMIDerivative != deltaDatasetSlice[j].NDMIDerivative {
+				return deltaDatasetSlice[i].NDMIDerivative < deltaDatasetSlice[j].NDMIDerivative
+			}
+			if deltaDatasetSlice[i].NDVIDerivative != deltaDatasetSlice[j].NDVIDerivative {
+				return deltaDatasetSlice[i].NDVIDerivative < deltaDatasetSlice[j].NDVIDerivative
+			}
+			return deltaDatasetSlice[i].PSRIDerivative > deltaDatasetSlice[j].PSRIDerivative
 		}
-		if deltaDatasetSlice[i].NDMIDerivative != deltaDatasetSlice[j].NDMIDerivative {
-			return deltaDatasetSlice[i].NDMIDerivative < deltaDatasetSlice[j].NDMIDerivative
-		}
-		if deltaDatasetSlice[i].NDVIDerivative != deltaDatasetSlice[j].NDVIDerivative {
-			return deltaDatasetSlice[i].NDVIDerivative < deltaDatasetSlice[j].NDVIDerivative
-		}
-		return deltaDatasetSlice[i].PSRIDerivative > deltaDatasetSlice[j].PSRIDerivative
 	})
 
 	// Add name and pest (label) to each sample
