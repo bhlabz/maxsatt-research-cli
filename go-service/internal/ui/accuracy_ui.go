@@ -84,22 +84,55 @@ func AccuracyTest() {
 	accretionMissFormatted := delivery.FormatAccretionMissStats(accretionMissStats)
 
 	// Create comprehensive Discord message
-	discordMessage := fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n"+
+	headerMessage := fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n"+
 		"**Test Results:**\n"+
 		"- Source model: %s\n"+
 		"- Training ratio: %d%%\n"+
 		"- Total tests: %d\n"+
 		"- Correct predictions: %d\n"+
-		"- Accuracy: %.2f%%\n\n"+
-		"%s\n\n%s\n\n%s",
+		"- Accuracy: %.2f%%",
 		selectedModel,
 		trainingRatio,
 		totalTests,
 		correctPredictions,
-		accuracyPercentage,
-		trainingStatsFormatted,
-		validationStatsFormatted,
-		accretionMissFormatted)
+		accuracyPercentage)
+	notification.SendDiscordSuccessNotification(headerMessage)
 
-	notification.SendDiscordSuccessNotification(discordMessage)
+	const maxDiscordMessageLength = 1800
+
+	// Send training stats
+	if len(trainingStatsFormatted) > 0 {
+		for start := 0; start < len(trainingStatsFormatted); start += maxDiscordMessageLength {
+			end := start + maxDiscordMessageLength
+			if end > len(trainingStatsFormatted) {
+				end = len(trainingStatsFormatted)
+			}
+			chunk := trainingStatsFormatted[start:end]
+			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\n%s", chunk))
+		}
+	}
+
+	// Send validation stats
+	if len(validationStatsFormatted) > 0 {
+		for start := 0; start < len(validationStatsFormatted); start += maxDiscordMessageLength {
+			end := start + maxDiscordMessageLength
+			if end > len(validationStatsFormatted) {
+				end = len(validationStatsFormatted)
+			}
+			chunk := validationStatsFormatted[start:end]
+			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\n%s", chunk))
+		}
+	}
+
+	// Send accretion/miss stats
+	if len(accretionMissFormatted) > 0 {
+		for start := 0; start < len(accretionMissFormatted); start += maxDiscordMessageLength {
+			end := start + maxDiscordMessageLength
+			if end > len(accretionMissFormatted) {
+				end = len(accretionMissFormatted)
+			}
+			chunk := accretionMissFormatted[start:end]
+			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nAccretion/Miss Breakdown:\n%s", chunk))
+		}
+	}
 }
