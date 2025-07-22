@@ -62,7 +62,10 @@ func CreateDataset() {
 		}
 		month := ""
 		if len(date) >= 7 {
-			month = date[:7]
+			parts := strings.Split(date, "-")
+			if len(parts) >= 2 {
+				month = parts[1] // e.g., "08" for August
+			}
 		}
 		key := groupKey{Pest: pest, Month: month}
 		groupCounts[key]++

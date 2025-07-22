@@ -42,6 +42,18 @@ class RunModelServiceServicer(run_model_pb2_grpc.RunModelServiceServicer):
             for item in request.data:
                 weather = item.weather
                 delta = item.delta
+                # Validate required fields in delta
+                required_fields = [
+                    'forest', 'plot', 'delta_min', 'delta_max', 'delta', 'start_date', 'end_date',
+                    'latitude', 'longitude', 'x', 'y', 'psri', 'ndvi', 'psri_derivative', 'ndvi_derivative'
+                ]
+                missing_fields = [field for field in required_fields if not hasattr(delta, field)]
+                if missing_fields:
+                    print(f"\n[ERROR] Missing required fields in delta: {missing_fields}")
+                    print(f"[ERROR] Full delta object: {delta}")
+                    print(f"[ERROR] Full item: {item}")
+                    print(f"[ERROR] Full request: {request}")
+                    raise ValueError(f"Missing required fields in delta: {missing_fields}")
                 row = {
                     "avg_temperature": weather.avg_temperature,
                     "temp_std_dev": weather.temp_std_dev,
