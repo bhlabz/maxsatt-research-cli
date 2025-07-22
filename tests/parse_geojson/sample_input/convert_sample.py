@@ -1,6 +1,6 @@
-import os
-import json
 import csv
+import json
+import os
 from datetime import datetime
 
 INPUT_DIR = os.path.join(os.path.dirname(__file__), 'input')
@@ -14,19 +14,22 @@ def get_pest_from_filename(filename):
     # Assumes pest is the last part after the last underscore and before .geojson
     base = os.path.basename(filename)
     name, _ = os.path.splitext(base)
-    parts = name.split('_')
+    parts = name.split('-')
     return parts[-1] if len(parts) > 1 else ''
 
 def process_geojson_file(filepath):
+    serial = 1
     forest = os.path.splitext(os.path.basename(filepath))[0]
     pest = get_pest_from_filename(filepath)
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
     features = data.get('features', [])
     rows = []
+    serial = 1
     for feature in features:
+        serial += 1
         props = feature.get('properties', {})
-        plot = props.get('plot_id', '')
+        plot = props.get('plot_id', serial)
         severity = props.get('severity', 'LOW')
         date = props.get('date', '')
         rows.append({

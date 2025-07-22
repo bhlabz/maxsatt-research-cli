@@ -45,6 +45,8 @@ def update_crs(geojson):
         "type": "name",
         "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}
     }
+    for i, feature in enumerate(geojson.get('features', [])):
+        feature['properties']['plot_id'] = i + 1
     return geojson
 
 def process_geojson_file(input_path, output_path):
