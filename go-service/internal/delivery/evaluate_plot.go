@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
-	delta1 "github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
 	ml "github.com/forest-guardian/forest-guardian-api-poc/internal/ml"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
@@ -177,7 +176,7 @@ func EvaluatePlotFinalData(model, forest, plot string, endDate time.Time) ([]ml.
 	fmt.Printf("FetchWeather took %v\n", time.Since(stepStart))
 
 	stepStart = time.Now()
-	plotFinalDataset, err := delta1.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, forest, plot)
+	plotFinalDataset, err := dataset.GetFinalData(deltaDataset, historicalWeather, startDate, endDate, forest, plot)
 	if err != nil {
 		return nil, err
 	}

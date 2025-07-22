@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0frun_model.proto\"\x88\x05\n\tFinalData\x12*\n\x07weather\x18\x01 \x01(\x0b\x32\x19.FinalData.WeatherMetrics\x12#\n\x05\x64\x65lta\x18\x02 \x01(\x0b\x32\x14.FinalData.DeltaData\x12\x12\n\ncreated_at\x18\x03 \x01(\t\x1a\xaa\x01\n\x0eWeatherMetrics\x12\x17\n\x0f\x61vg_temperature\x18\x01 \x01(\x01\x12\x14\n\x0ctemp_std_dev\x18\x02 \x01(\x01\x12\x14\n\x0c\x61vg_humidity\x18\x03 \x01(\x01\x12\x18\n\x10humidity_std_dev\x18\x04 \x01(\x01\x12\x1b\n\x13total_precipitation\x18\x05 \x01(\x01\x12\x1c\n\x14\x64ry_days_consecutive\x18\x06 \x01(\x05\x1a\xe8\x02\n\tDeltaData\x12\x0c\n\x04\x66\x61rm\x18\x01 \x01(\t\x12\x0c\n\x04plot\x18\x02 \x01(\t\x12\x11\n\tdelta_min\x18\x03 \x01(\x05\x12\x11\n\tdelta_max\x18\x04 \x01(\x05\x12\r\n\x05\x64\x65lta\x18\x05 \x01(\x05\x12\x12\n\nstart_date\x18\x06 \x01(\t\x12\x10\n\x08\x65nd_date\x18\x07 \x01(\t\x12\t\n\x01x\x18\x08 \x01(\x05\x12\t\n\x01y\x18\t \x01(\x05\x12\x0c\n\x04ndre\x18\n \x01(\x01\x12\x0c\n\x04ndmi\x18\x0b \x01(\x01\x12\x0c\n\x04psri\x18\x0c \x01(\x01\x12\x0c\n\x04ndvi\x18\r \x01(\x01\x12\x17\n\x0fndre_derivative\x18\x0e \x01(\x01\x12\x17\n\x0fndmi_derivative\x18\x0f \x01(\x01\x12\x17\n\x0fpsri_derivative\x18\x10 \x01(\x01\x12\x17\n\x0fndvi_derivative\x18\x11 \x01(\x01\x12\r\n\x05label\x18\x12 \x01(\t\x12\x10\n\x08latitude\x18\x13 \x01(\x01\x12\x11\n\tlongitude\x18\x14 \x01(\x01\"k\n\x0bPixelResult\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12!\n\x06result\x18\x05 \x03(\x0b\x32\x11.LabelProbability\"6\n\x10LabelProbability\x12\r\n\x05label\x18\x01 \x01(\t\x12\x13\n\x0bprobability\x18\x02 \x01(\x01\":\n\x0fRunModelRequest\x12\x18\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\n.FinalData\x12\r\n\x05model\x18\x02 \x01(\t\"1\n\x10RunModelResponse\x12\x1d\n\x07results\x18\x01 \x03(\x0b\x32\x0c.PixelResult2B\n\x0fRunModelService\x12/\n\x08RunModel\x12\x10.RunModelRequest\x1a\x11.RunModelResponseB\x0cZ\n/protobufsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0frun_model.proto\"\x8a\x05\n\tFinalData\x12*\n\x07weather\x18\x01 \x01(\x0b\x32\x19.FinalData.WeatherMetrics\x12#\n\x05\x64\x65lta\x18\x02 \x01(\x0b\x32\x14.FinalData.DeltaData\x12\x12\n\ncreated_at\x18\x03 \x01(\t\x1a\xaa\x01\n\x0eWeatherMetrics\x12\x17\n\x0f\x61vg_temperature\x18\x01 \x01(\x01\x12\x14\n\x0ctemp_std_dev\x18\x02 \x01(\x01\x12\x14\n\x0c\x61vg_humidity\x18\x03 \x01(\x01\x12\x18\n\x10humidity_std_dev\x18\x04 \x01(\x01\x12\x1b\n\x13total_precipitation\x18\x05 \x01(\x01\x12\x1c\n\x14\x64ry_days_consecutive\x18\x06 \x01(\x05\x1a\xea\x02\n\tDeltaData\x12\x0e\n\x06\x66orest\x18\x01 \x01(\t\x12\x0c\n\x04plot\x18\x02 \x01(\t\x12\x11\n\tdelta_min\x18\x03 \x01(\x05\x12\x11\n\tdelta_max\x18\x04 \x01(\x05\x12\r\n\x05\x64\x65lta\x18\x05 \x01(\x05\x12\x12\n\nstart_date\x18\x06 \x01(\t\x12\x10\n\x08\x65nd_date\x18\x07 \x01(\t\x12\t\n\x01x\x18\x08 \x01(\x05\x12\t\n\x01y\x18\t \x01(\x05\x12\x0c\n\x04ndre\x18\n \x01(\x01\x12\x0c\n\x04ndmi\x18\x0b \x01(\x01\x12\x0c\n\x04psri\x18\x0c \x01(\x01\x12\x0c\n\x04ndvi\x18\r \x01(\x01\x12\x17\n\x0fndre_derivative\x18\x0e \x01(\x01\x12\x17\n\x0fndmi_derivative\x18\x0f \x01(\x01\x12\x17\n\x0fpsri_derivative\x18\x10 \x01(\x01\x12\x17\n\x0fndvi_derivative\x18\x11 \x01(\x01\x12\r\n\x05label\x18\x12 \x01(\t\x12\x10\n\x08latitude\x18\x13 \x01(\x01\x12\x11\n\tlongitude\x18\x14 \x01(\x01\"k\n\x0bPixelResult\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12!\n\x06result\x18\x05 \x03(\x0b\x32\x11.LabelProbability\"6\n\x10LabelProbability\x12\r\n\x05label\x18\x01 \x01(\t\x12\x13\n\x0bprobability\x18\x02 \x01(\x01\":\n\x0fRunModelRequest\x12\x18\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\n.FinalData\x12\r\n\x05model\x18\x02 \x01(\t\"1\n\x10RunModelResponse\x12\x1d\n\x07results\x18\x01 \x03(\x0b\x32\x0c.PixelResult2B\n\x0fRunModelService\x12/\n\x08RunModel\x12\x10.RunModelRequest\x1a\x11.RunModelResponseB\x0cZ\n/protobufsb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,19 +23,19 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['DESCRIPTOR']._options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\n/protobufs'
   _globals['_FINALDATA']._serialized_start=20
-  _globals['_FINALDATA']._serialized_end=668
+  _globals['_FINALDATA']._serialized_end=670
   _globals['_FINALDATA_WEATHERMETRICS']._serialized_start=135
   _globals['_FINALDATA_WEATHERMETRICS']._serialized_end=305
   _globals['_FINALDATA_DELTADATA']._serialized_start=308
-  _globals['_FINALDATA_DELTADATA']._serialized_end=668
-  _globals['_PIXELRESULT']._serialized_start=670
-  _globals['_PIXELRESULT']._serialized_end=777
-  _globals['_LABELPROBABILITY']._serialized_start=779
-  _globals['_LABELPROBABILITY']._serialized_end=833
-  _globals['_RUNMODELREQUEST']._serialized_start=835
-  _globals['_RUNMODELREQUEST']._serialized_end=893
-  _globals['_RUNMODELRESPONSE']._serialized_start=895
-  _globals['_RUNMODELRESPONSE']._serialized_end=944
-  _globals['_RUNMODELSERVICE']._serialized_start=946
-  _globals['_RUNMODELSERVICE']._serialized_end=1012
+  _globals['_FINALDATA_DELTADATA']._serialized_end=670
+  _globals['_PIXELRESULT']._serialized_start=672
+  _globals['_PIXELRESULT']._serialized_end=779
+  _globals['_LABELPROBABILITY']._serialized_start=781
+  _globals['_LABELPROBABILITY']._serialized_end=835
+  _globals['_RUNMODELREQUEST']._serialized_start=837
+  _globals['_RUNMODELREQUEST']._serialized_end=895
+  _globals['_RUNMODELRESPONSE']._serialized_start=897
+  _globals['_RUNMODELRESPONSE']._serialized_end=946
+  _globals['_RUNMODELSERVICE']._serialized_start=948
+  _globals['_RUNMODELSERVICE']._serialized_end=1014
 # @@protoc_insertion_point(module_scope)
