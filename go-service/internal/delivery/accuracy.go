@@ -38,6 +38,7 @@ type PestStats struct {
 	Accretions   int
 	Misses       int
 	MissAffirmed map[string]int // pest label that was affirmed instead
+	EndDate      time.Time      // date from the sample
 }
 
 // RunAccuracyTest performs the complete accuracy test process
@@ -253,7 +254,7 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 				stats.ForestPlot[forest][plot] = make(map[string]*PestStats)
 			}
 			if _, ok := stats.ForestPlot[forest][plot][expectedLabel]; !ok {
-				stats.ForestPlot[forest][plot][expectedLabel] = &PestStats{MissAffirmed: make(map[string]int)}
+				stats.ForestPlot[forest][plot][expectedLabel] = &PestStats{MissAffirmed: make(map[string]int), EndDate: sample.EndDate}
 			}
 
 			if bestLabel == expectedLabel {
@@ -345,12 +346,12 @@ func FormatAccretionMissStats(stats *AccretionMissStats) string {
 				}
 				accretionPct := float64(pestStats.Accretions) / float64(total) * 100
 				if pestStats.Accretions > 0 {
-					sb.WriteString(fmt.Sprintf("Forest %s plot %s had %.1f%% accretions on pest %s\n", forest, plot, accretionPct, pest))
+					sb.WriteString(fmt.Sprintf("Forest %s plot %s had %.1f%% accretions on pest %s on %s\n", forest, plot, accretionPct, pest, pestStats.EndDate.Format("2006-01-02")))
 				}
 				if pestStats.Misses > 0 {
 					for affirmed, count := range pestStats.MissAffirmed {
 						affirmPct := float64(count) / float64(total) * 100
-						sb.WriteString(fmt.Sprintf("Forest %s plot %s had %.1f%% misses on pest %s affirming pest %s\n", forest, plot, affirmPct, pest, affirmed))
+						sb.WriteString(fmt.Sprintf("Forest %s plot %s had %.1f%% misses on pest %s affirming pest %s on %s\n", forest, plot, affirmPct, pest, affirmed, pestStats.EndDate.Format("2006-01-02")))
 					}
 				}
 			}
