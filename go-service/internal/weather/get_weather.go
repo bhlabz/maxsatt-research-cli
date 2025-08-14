@@ -101,11 +101,18 @@ func FetchWeather(latitude, longitude float64, startDate, endDate time.Time, ret
 		defer resp.Body.Close()
 
 		if resp.StatusCode == http.StatusOK {
+			fmt.Printf("Response headers: Content-Length=%s, Content-Encoding=%s\n", 
+				resp.Header.Get("Content-Length"), resp.Header.Get("Content-Encoding"))
+			
 			bodyBytes, err := io.ReadAll(resp.Body)
 			if err != nil {
+				fmt.Printf("Failed to read response body (partial read may have occurred): %v\n", err)
+				fmt.Printf("Partial body read (%d bytes): %s\n", len(bodyBytes), string(bodyBytes))
 				return nil, fmt.Errorf("failed to read response body: %v", err)
 			}
 			
+			fmt.Printf("Successfully read %d bytes from response body\n", len(bodyBytes))
+
 			err = json.Unmarshal(bodyBytes, &weatherData)
 			if err != nil {
 				fmt.Printf("Failed to decode JSON response. Body: %s\n", string(bodyBytes))
