@@ -70,15 +70,15 @@ func RunAccuracyTest(sourceModelFileName, trainingModelFileName string, training
 		return 0, 0, 0, nil, nil, nil, fmt.Errorf("failed to create training model: %w", err)
 	}
 
+	// Ensure training model file is always deleted, even if interrupted
+	defer cleanupTrainingModelFile(trainingModelFileName)
+
 	// Test model accuracy on validation data
 	correctPredictions, totalTests, accretionMissStats, err := testModelAccuracyOnValidation(validationData, trainingModelFileName)
 	if err != nil {
 		return 0, 0, 0, nil, nil, nil, fmt.Errorf("failed to test model accuracy: %w", err)
 	}
 	accuracy := float64(correctPredictions) / float64(totalTests)
-
-	// Clean up the training model file after testing
-	cleanupTrainingModelFile(trainingModelFileName)
 
 	return accuracy, totalTests, correctPredictions, trainingStats, validationStats, accretionMissStats, nil
 }
