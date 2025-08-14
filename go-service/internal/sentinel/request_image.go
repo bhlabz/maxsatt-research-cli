@@ -116,7 +116,6 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 	tokenURL := os.Getenv("COPERNICUS_TOKEN_URL")
 
 	clientIDList := strings.Split(clientIDs, ",")
-	fmt.Printf("Available client IDs: %d\n", len(clientIDList))
 
 	clientSecretList := strings.Split(clientSecrets, ",")
 
