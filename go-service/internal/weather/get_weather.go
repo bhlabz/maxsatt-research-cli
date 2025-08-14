@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -100,8 +101,14 @@ func FetchWeather(latitude, longitude float64, startDate, endDate time.Time, ret
 		defer resp.Body.Close()
 
 		if resp.StatusCode == http.StatusOK {
-			err = json.NewDecoder(resp.Body).Decode(&weatherData)
+			bodyBytes, err := io.ReadAll(resp.Body)
 			if err != nil {
+				return nil, fmt.Errorf("failed to read response body: %v", err)
+			}
+			
+			err = json.Unmarshal(bodyBytes, &weatherData)
+			if err != nil {
+				fmt.Printf("Failed to decode JSON response. Body: %s\n", string(bodyBytes))
 				return nil, fmt.Errorf("failed to parse response: %v", err)
 			}
 
