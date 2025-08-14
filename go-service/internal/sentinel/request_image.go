@@ -141,7 +141,7 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 		url := "https://sh.dataspace.copernicus.eu/api/v1/process"
 
 		// Retry logic
-		retries := 10
+		retries := 3
 		var response *http.Response
 		for attempt := 1; attempt <= retries; attempt++ {
 			response, err = httpClient.Post(url, "application/json", bytes.NewBuffer(requestBody))
@@ -153,17 +153,25 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 				body, _ := io.ReadAll(response.Body)
 				bodyStr := string(body)
 				response.Body.Close()
-				if strings.Contains(bodyStr, "403") {
+				
+				// Don't retry on authentication errors or rate limits
+				if response.StatusCode == http.StatusForbidden || strings.Contains(bodyStr, "403") {
 					err = fmt.Errorf("unauthorized access, check your client ID and secret")
 					break
 				}
-				fmt.Printf("Attempt %d failed: %s\n", attempt, bodyStr)
+				if response.StatusCode == http.StatusTooManyRequests || strings.Contains(bodyStr, "429") {
+					err = fmt.Errorf("rate limit exceeded for this token")
+					break
+				}
+				fmt.Printf("Client %d - Attempt %d failed: %s\n", i+1, attempt, bodyStr)
 
 			} else {
-				fmt.Printf("Attempt %d failed: %v\n", attempt, err)
+				fmt.Printf("Client %d - Attempt %d failed: %v\n", i+1, attempt, err)
 			}
 
-			time.Sleep(5 * time.Second) // Wait for 2 seconds before retrying
+			if attempt < retries {
+				time.Sleep(2 * time.Second)
+			}
 		}
 
 		if err != nil {
@@ -179,6 +187,7 @@ func requestImage(startDate, endDate time.Time, geometry *godal.Geometry) ([]byt
 			err = fmt.Errorf("failed to read response body: %v", err)
 			continue
 		}
+		break
 	}
 
 	return responseContent, err
