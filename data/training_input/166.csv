@@ -1,5 +1,5 @@
 forest,plot,pest,severity,date
-Gema,001A,Lagarta Desfolhadora,LOW,2024-07-01
+Gema,001A,Lagarta,LOW,2024-07-01
 Boi Preto VI,101,Psilideo,LOW,2024-05-01
 Boi Preto VI,102,Psilideo,MEDIUM,2024-05-01
 Boi Preto VI,103,Psilideo,MEDIUM,2024-05-01
@@ -83,85 +83,85 @@ Boi Preto XI,054,Formiga,HIGH,2024-10-01
 Boi Preto XI,055,Formiga,HIGH,2024-10-01
 Boi Preto XI,056,Formiga,HIGH,2024-10-01
 Boi Preto XI,057,Formiga,HIGH,2024-10-01
-Gema,001,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,001B,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,002,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,003,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,004,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,004A,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,004B,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,005,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,006,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,007,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,008,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,009,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,009A,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,010,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,011,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,011A,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,012,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,013,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,014,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,015,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,016,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,017,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,018,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,019,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,020,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,021,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,021A,Lagarta Desfolhadora,LOW,2024-07-01
-Gema,022,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,022A,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,023,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,024,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,024A,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,025,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,025A,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,026,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,027,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,028,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,028A,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,029,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,030,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,030A,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,031,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,032,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,033A,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,033B,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,034,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,035,Lagarta Desfolhadora,HIGH,2024-07-01
-Gema,036,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,037,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,038,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,039,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,039A,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,040,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,041,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,042,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,043,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,044,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,045,Lagarta Desfolhadora,MEDIUM,2024-07-01
-Gema,026,Lagarta Desfolhadora,LOW,2024-07-05
-Gema,026,Lagarta Desfolhadora,LOW,2024-07-10
-Gema,026,Lagarta Desfolhadora,LOW,2024-08-16
-Gema,026,Lagarta Desfolhadora,LOW,2024-11-14
-Gema,027,Lagarta Desfolhadora,LOW,2024-07-06
-Gema,027,Lagarta Desfolhadora,LOW,2024-07-11
-Gema,027,Lagarta Desfolhadora,LOW,2024-08-16
-Gema,027,Lagarta Desfolhadora,LOW,2024-11-14
-Gema,028,Lagarta Desfolhadora,LOW,2024-07-07
-Gema,028,Lagarta Desfolhadora,LOW,2024-07-12
-Gema,028,Lagarta Desfolhadora,LOW,2024-08-16
-Gema,028,Lagarta Desfolhadora,LOW,2024-11-14
-Gema,029,Lagarta Desfolhadora,LOW,2024-07-09
-Gema,029,Lagarta Desfolhadora,LOW,2024-07-14
-Gema,029,Lagarta Desfolhadora,LOW,2024-08-16
-Gema,029,Lagarta Desfolhadora,LOW,2024-11-14
-Terere,001,Lagarta Desfolhadora,LOW,2024-06-06
-Terere,002,Lagarta Desfolhadora,LOW,2024-05-13
-Terere,002,Lagarta Desfolhadora,LOW,2024-06-06
-Terere,003,Lagarta Desfolhadora,LOW,2024-05-13
-Terere,003,Lagarta Desfolhadora,LOW,2024-06-06
-Terere,004,Lagarta Desfolhadora,LOW,2024-05-08
-Terere,004,Lagarta Desfolhadora,LOW,2024-05-13
-Terere,004,Lagarta Desfolhadora,LOW,2024-06-06
+Gema,001,Lagarta,LOW,2024-07-01
+Gema,001B,Lagarta,LOW,2024-07-01
+Gema,002,Lagarta,LOW,2024-07-01
+Gema,003,Lagarta,LOW,2024-07-01
+Gema,004,Lagarta,LOW,2024-07-01
+Gema,004A,Lagarta,LOW,2024-07-01
+Gema,004B,Lagarta,LOW,2024-07-01
+Gema,005,Lagarta,LOW,2024-07-01
+Gema,006,Lagarta,LOW,2024-07-01
+Gema,007,Lagarta,LOW,2024-07-01
+Gema,008,Lagarta,LOW,2024-07-01
+Gema,009,Lagarta,LOW,2024-07-01
+Gema,009A,Lagarta,LOW,2024-07-01
+Gema,010,Lagarta,MEDIUM,2024-07-01
+Gema,011,Lagarta,LOW,2024-07-01
+Gema,011A,Lagarta,LOW,2024-07-01
+Gema,012,Lagarta,MEDIUM,2024-07-01
+Gema,013,Lagarta,MEDIUM,2024-07-01
+Gema,014,Lagarta,MEDIUM,2024-07-01
+Gema,015,Lagarta,MEDIUM,2024-07-01
+Gema,016,Lagarta,MEDIUM,2024-07-01
+Gema,017,Lagarta,MEDIUM,2024-07-01
+Gema,018,Lagarta,MEDIUM,2024-07-01
+Gema,019,Lagarta,MEDIUM,2024-07-01
+Gema,020,Lagarta,LOW,2024-07-01
+Gema,021,Lagarta,LOW,2024-07-01
+Gema,021A,Lagarta,LOW,2024-07-01
+Gema,022,Lagarta,MEDIUM,2024-07-01
+Gema,022A,Lagarta,MEDIUM,2024-07-01
+Gema,023,Lagarta,MEDIUM,2024-07-01
+Gema,024,Lagarta,MEDIUM,2024-07-01
+Gema,024A,Lagarta,MEDIUM,2024-07-01
+Gema,025,Lagarta,HIGH,2024-07-01
+Gema,025A,Lagarta,HIGH,2024-07-01
+Gema,026,Lagarta,HIGH,2024-07-01
+Gema,027,Lagarta,HIGH,2024-07-01
+Gema,028,Lagarta,HIGH,2024-07-01
+Gema,028A,Lagarta,HIGH,2024-07-01
+Gema,029,Lagarta,HIGH,2024-07-01
+Gema,030,Lagarta,HIGH,2024-07-01
+Gema,030A,Lagarta,HIGH,2024-07-01
+Gema,031,Lagarta,HIGH,2024-07-01
+Gema,032,Lagarta,HIGH,2024-07-01
+Gema,033A,Lagarta,MEDIUM,2024-07-01
+Gema,033B,Lagarta,MEDIUM,2024-07-01
+Gema,034,Lagarta,MEDIUM,2024-07-01
+Gema,035,Lagarta,HIGH,2024-07-01
+Gema,036,Lagarta,MEDIUM,2024-07-01
+Gema,037,Lagarta,MEDIUM,2024-07-01
+Gema,038,Lagarta,MEDIUM,2024-07-01
+Gema,039,Lagarta,MEDIUM,2024-07-01
+Gema,039A,Lagarta,MEDIUM,2024-07-01
+Gema,040,Lagarta,MEDIUM,2024-07-01
+Gema,041,Lagarta,MEDIUM,2024-07-01
+Gema,042,Lagarta,MEDIUM,2024-07-01
+Gema,043,Lagarta,MEDIUM,2024-07-01
+Gema,044,Lagarta,MEDIUM,2024-07-01
+Gema,045,Lagarta,MEDIUM,2024-07-01
+Gema,026,Lagarta,LOW,2024-07-05
+Gema,026,Lagarta,LOW,2024-07-10
+Gema,026,Lagarta,LOW,2024-08-16
+Gema,026,Lagarta,LOW,2024-11-14
+Gema,027,Lagarta,LOW,2024-07-06
+Gema,027,Lagarta,LOW,2024-07-11
+Gema,027,Lagarta,LOW,2024-08-16
+Gema,027,Lagarta,LOW,2024-11-14
+Gema,028,Lagarta,LOW,2024-07-07
+Gema,028,Lagarta,LOW,2024-07-12
+Gema,028,Lagarta,LOW,2024-08-16
+Gema,028,Lagarta,LOW,2024-11-14
+Gema,029,Lagarta,LOW,2024-07-09
+Gema,029,Lagarta,LOW,2024-07-14
+Gema,029,Lagarta,LOW,2024-08-16
+Gema,029,Lagarta,LOW,2024-11-14
+Terere,001,Lagarta,LOW,2024-06-06
+Terere,002,Lagarta,LOW,2024-05-13
+Terere,002,Lagarta,LOW,2024-06-06
+Terere,003,Lagarta,LOW,2024-05-13
+Terere,003,Lagarta,LOW,2024-06-06
+Terere,004,Lagarta,LOW,2024-05-08
+Terere,004,Lagarta,LOW,2024-05-13
+Terere,004,Lagarta,LOW,2024-06-06
