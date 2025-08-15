@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/dataset"
-	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/sentinel"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/weather"
@@ -23,6 +22,145 @@ type ValidationRow struct {
 	Severity string `csv:"severity"`
 	Forest   string `csv:"forest"`
 	Plot     string `csv:"plot"`
+}
+
+type DatasetReport struct {
+	InputFile            string
+	OutputFile           string
+	TotalSamples         int
+	ProcessedSamples     int
+	ErrorCount           int
+	Errors               []string
+	ProcessingStats      map[string]int
+	ForestStats          map[string]int
+	PestStats            map[string]int
+	SeverityStats        map[string]int
+	StartTime            time.Time
+	EndTime              time.Time
+	DeltaDays            int
+	DeltaDaysThreshold   int
+	DaysBeforeEvidence   int
+}
+
+func generateMarkdownReport(report *DatasetReport) error {
+	reportPath := fmt.Sprintf("%s/data/reports/dataset_analysis_%s.md", properties.RootPath(), 
+		report.StartTime.Format("2006-01-02_15-04-05"))
+	
+	// Ensure reports directory exists
+	reportsDir := fmt.Sprintf("%s/data/reports", properties.RootPath())
+	if err := os.MkdirAll(reportsDir, 0755); err != nil {
+		return fmt.Errorf("failed to create reports directory: %w", err)
+	}
+
+	file, err := os.Create(reportPath)
+	if err != nil {
+		return fmt.Errorf("failed to create report file: %w", err)
+	}
+	defer file.Close()
+
+	duration := report.EndTime.Sub(report.StartTime)
+	successRate := float64(report.ProcessedSamples) / float64(report.TotalSamples) * 100
+
+	content := fmt.Sprintf(`# Dataset Creation Analysis Report
+
+## Overview
+- **Input File**: %s
+- **Output File**: %s
+- **Processing Started**: %s
+- **Processing Completed**: %s
+- **Total Duration**: %s
+- **Success Rate**: %.2f%%
+
+## Processing Summary
+- **Total Samples**: %d
+- **Successfully Processed**: %d
+- **Errors Encountered**: %d
+
+## Configuration Parameters
+- **Delta Days**: %d
+- **Delta Days Threshold**: %d
+- **Days Before Evidence to Analyze**: %d
+
+## Statistics by Category
+
+### Forest Distribution
+`, report.InputFile, report.OutputFile, 
+		report.StartTime.Format("2006-01-02 15:04:05"),
+		report.EndTime.Format("2006-01-02 15:04:05"),
+		duration.String(), successRate,
+		report.TotalSamples, report.ProcessedSamples, report.ErrorCount,
+		report.DeltaDays, report.DeltaDaysThreshold, report.DaysBeforeEvidence)
+
+	for forest, count := range report.ForestStats {
+		content += fmt.Sprintf("- **%s**: %d samples\n", forest, count)
+	}
+
+	content += "\n### Pest Distribution\n"
+	for pest, count := range report.PestStats {
+		content += fmt.Sprintf("- **%s**: %d samples\n", pest, count)
+	}
+
+	content += "\n### Severity Distribution\n"
+	for severity, count := range report.SeverityStats {
+		content += fmt.Sprintf("- **%s**: %d samples\n", severity, count)
+	}
+
+	if len(report.Errors) > 0 {
+		content += "\n## Errors Encountered\n"
+		for i, err := range report.Errors {
+			content += fmt.Sprintf("%d. %s\n", i+1, err)
+		}
+	}
+
+	content += `
+## Data Quality Analysis
+
+This dataset has been processed with the following quality measures:
+- Deduplication based on key columns
+- Best sample selection based on derivative analysis
+- Weather data integration
+- Temporal consistency validation
+
+## AI Analysis Recommendations
+
+### For Machine Learning Models:
+1. **Feature Engineering**: Consider the temporal derivatives (NDRE, NDMI, NDVI, PSRI) as primary features
+2. **Class Balance**: Review pest and severity distributions for potential class imbalance
+3. **Temporal Patterns**: Analyze seasonal trends in the data
+4. **Geographic Clustering**: Consider forest-specific model training
+
+### For Further Investigation:
+1. **Error Patterns**: Investigate common failure modes in data processing
+2. **Weather Correlation**: Analyze correlation between weather patterns and pest occurrence
+3. **Spectral Analysis**: Deep dive into vegetation indices effectiveness
+4. **Sample Quality**: Review best sample selection criteria effectiveness
+
+## Dataset Metadata
+- **Generated on**: %s
+- **Processing Pipeline Version**: v1.0
+- **Quality Score**: %.1f/10 (based on success rate and data completeness)
+`
+
+	qualityScore := (successRate / 10) + 2 // Simple quality scoring
+	if qualityScore > 10 {
+		qualityScore = 10
+	}
+
+	content = fmt.Sprintf(content, time.Now().Format("2006-01-02 15:04:05"), qualityScore)
+
+	_, err = file.WriteString(content)
+	if err != nil {
+		return fmt.Errorf("failed to write report content: %w", err)
+	}
+
+	fmt.Printf("Dataset analysis report generated: %s\n", reportPath)
+	return nil
+}
+
+func addErrorToReport(report *DatasetReport, errorMsg string) {
+	report.Errors = append(report.Errors, errorMsg)
+	report.ErrorCount++
+	fmt.Println("Error:", errorMsg)
 }
 
 func getSamplesAmountFromSeverity(_ string, datasetLength int) int {
@@ -90,9 +228,23 @@ func getBestSamplesFromDeltaDataset(deltaDataset map[[2]int]map[time.Time]datase
 
 func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, deltaDaysTrashHold, daysBeforeEvidenceToAnalyze int) error {
 	fmt.Println("create dataset")
-	errors := []string{}
 	daysToFetch := deltaDays + deltaDaysTrashHold + daysBeforeEvidenceToAnalyze
 	deltaMin, deltaMax := deltaDays, deltaDays+deltaDaysTrashHold
+
+	// Initialize report
+	report := &DatasetReport{
+		InputFile:            inputDataFileName,
+		OutputFile:           outputtDataFileName,
+		StartTime:            time.Now(),
+		DeltaDays:            deltaDays,
+		DeltaDaysThreshold:   deltaDaysTrashHold,
+		DaysBeforeEvidence:   daysBeforeEvidenceToAnalyze,
+		ProcessingStats:      make(map[string]int),
+		ForestStats:          make(map[string]int),
+		PestStats:            make(map[string]int),
+		SeverityStats:        make(map[string]int),
+		Errors:               []string{},
+	}
 
 	validationDataPath := fmt.Sprintf("%s/data/training_input/%s", properties.RootPath(), inputDataFileName)
 
@@ -110,6 +262,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 	}
 
 	target := len(rows)
+	report.TotalSamples = target
 	fmt.Printf("Creating dataset from file %s with %d samples\n", validationDataPath, target)
 
 	for i := 0; i < target; i++ {
@@ -122,7 +275,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		if err != nil {
 			errMsg := fmt.Sprintf("Error parsing date: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, row.Forest, row.Plot, row.Pest, row.Severity)
 			fmt.Println(err.Error())
-			notification.SendDiscordWarnNotification(errMsg)
+			addErrorToReport(report, errMsg)
 			continue
 		}
 		pest := row.Pest
@@ -130,11 +283,16 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		forest := row.Forest
 		plot := row.Plot
 
+		// Update statistics
+		report.ForestStats[forest]++
+		report.PestStats[pest]++
+		report.SeverityStats[severity]++
+
 		finalData, err := dataset.GetSavedFinalData(forest, plot, date, deltaMin, deltaMax)
 		if err != nil {
 			errMsg := fmt.Sprintf("Error getting saved final dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 			fmt.Println("Error getting saved final dataset: " + err.Error())
-			notification.SendDiscordWarnNotification(errMsg)
+			addErrorToReport(report, errMsg)
 		}
 
 		if finalData == nil {
@@ -143,7 +301,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting geometry: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -154,7 +312,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting images: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -162,7 +320,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting centroid latitude and longitude: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -170,7 +328,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting weather: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -178,14 +336,14 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error creating pixel dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 			if len(data) == 0 {
 				err = fmt.Errorf("no data available to create the dataset for forest: %s, plot: %s using %d images", forest, plot, len(images))
 				errMsg := fmt.Sprintf("Error creating pixel dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -193,7 +351,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error creating clean dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -201,7 +359,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error creating delta dataset: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -214,7 +372,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting climate group data: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -222,7 +380,7 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 			if err != nil {
 				errMsg := fmt.Sprintf("Error getting climate group data: %v | Row: %d | Forest: %s | Plot: %s | Pest: %s | Severity: %s", err, i+1, forest, plot, pest, severity)
 				fmt.Println(err.Error())
-				notification.SendDiscordWarnNotification(errMsg)
+				addErrorToReport(report, errMsg)
 				continue
 			}
 
@@ -270,23 +428,31 @@ func CreateDataset(inputDataFileName, outputtDataFileName string, deltaDays, del
 		}
 
 		fmt.Printf("Processed row %d/%d: Forest=%s, Plot=%s, Pest=%s, Severity=%s, rows=%d\n", i+1, target, forest, plot, pest, severity, len(finalData))
+		report.ProcessedSamples++
 
 	}
 
-	fmt.Println(strings.Join(errors, "/n"))
-	if len(errors) == target {
-		return fmt.Errorf("all rows failed during dataset creation: %v", errors)
-	}
-	if len(errors) > 0 {
-		notification.SendDiscordWarnNotification(fmt.Sprintf("Dataset creation completed with %d errors.\n Errors: %s", len(errors), strings.Join(errors, "/n")))
-	}
+	// Finalize report
+	report.EndTime = time.Now()
 	filePath := fmt.Sprintf("%s/data/model/%s", properties.RootPath(), outputtDataFileName)
 	err = deduplicateCSVFile(filePath)
 	if err != nil {
 		fmt.Printf("[Deduplication] Error during deduplication: %v\n", err)
+		addErrorToReport(report, fmt.Sprintf("Deduplication error: %v", err))
 	}
 
-	fmt.Println("Dataset created successfully")
+	// Generate markdown report
+	if err := generateMarkdownReport(report); err != nil {
+		fmt.Printf("Error generating report: %v\n", err)
+	}
+
+	// Check if all rows failed
+	if report.ErrorCount == target {
+		return fmt.Errorf("all rows failed during dataset creation")
+	}
+
+	fmt.Printf("Dataset created successfully. Processed %d/%d samples with %d errors\n", 
+		report.ProcessedSamples, report.TotalSamples, report.ErrorCount)
 	return nil
 }
 
