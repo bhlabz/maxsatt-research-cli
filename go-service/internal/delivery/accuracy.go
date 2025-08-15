@@ -200,8 +200,16 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 		validationGroups[key] = append(validationGroups[key], data)
 	}
 
+	totalGroups := len(validationGroups)
+	processedGroups := 0
+
+	fmt.Printf("Processing %d test groups...\n", totalGroups)
+
 	for _, groupData := range validationGroups {
 		if len(groupData) == 0 {
+			processedGroups++
+			progress := float64(processedGroups) / float64(totalGroups) * 100
+			fmt.Printf("Progress: %d/%d groups completed (%.1f%%) - skipped empty group\n", processedGroups, totalGroups, progress)
 			continue
 		}
 
@@ -223,6 +231,9 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 		if err != nil {
 			fmt.Printf("Warning: error evaluating %s-%s: %v\n", forest, plot, err)
 			notification.SendDiscordWarnNotification(fmt.Sprintf("Warning: error evaluating %s-%s: %v\n", forest, plot, err))
+			processedGroups++
+			progress := float64(processedGroups) / float64(totalGroups) * 100
+			fmt.Printf("Progress: %d/%d groups completed (%.1f%%) - error in evaluation\n", processedGroups, totalGroups, progress)
 			continue
 		}
 
@@ -266,7 +277,14 @@ func testModelAccuracyOnValidation(validationData []dataset.FinalData, trainingM
 			}
 			totalTests++
 		}
+
+		// Update progress after processing each group
+		processedGroups++
+		progress := float64(processedGroups) / float64(totalGroups) * 100
+		fmt.Printf("Progress: %d/%d groups completed (%.1f%%)\n", processedGroups, totalGroups, progress)
 	}
+
+	fmt.Printf("✓ Accuracy testing completed! Processed %d groups with %d total tests\n", totalGroups, totalTests)
 	stats.TotalTests = totalTests
 	return correctPredictions, totalTests, stats, nil
 }
