@@ -2,12 +2,171 @@ package ui
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/delivery"
 	"github.com/forest-guardian/forest-guardian-api-poc/internal/notification"
+	"github.com/forest-guardian/forest-guardian-api-poc/internal/properties"
 )
+
+type AccuracyReport struct {
+	SourceModel           string
+	TrainingModel         string
+	TrainingRatio         int
+	TestStartTime         time.Time
+	TestEndTime           time.Time
+	TotalTests            int
+	CorrectPredictions    int
+	Accuracy              float64
+	AccuracyPercentage    float64
+	TrainingStats         interface{}
+	ValidationStats       interface{}
+	AccretionMissStats    interface{}
+	TrainingStatsFormatted string
+	ValidationStatsFormatted string
+	AccretionMissFormatted string
+	Error                 string
+}
+
+func generateAccuracyMarkdownReport(report *AccuracyReport) error {
+	reportPath := fmt.Sprintf("%s/data/reports/accuracy_analysis_%s.md", properties.RootPath(), 
+		report.TestStartTime.Format("2006-01-02_15-04-05"))
+	
+	// Ensure reports directory exists
+	reportsDir := fmt.Sprintf("%s/data/reports", properties.RootPath())
+	if err := os.MkdirAll(reportsDir, 0755); err != nil {
+		return fmt.Errorf("failed to create reports directory: %w", err)
+	}
+
+	file, err := os.Create(reportPath)
+	if err != nil {
+		return fmt.Errorf("failed to create report file: %w", err)
+	}
+	defer file.Close()
+
+	duration := report.TestEndTime.Sub(report.TestStartTime)
+	
+	content := fmt.Sprintf(`# Model Accuracy Analysis Report
+
+## Test Overview
+- **Source Model**: %s
+- **Training Model**: %s
+- **Training Ratio**: %d%%
+- **Test Started**: %s
+- **Test Completed**: %s
+- **Total Duration**: %s
+
+## Performance Results
+- **Total Tests**: %d
+- **Correct Predictions**: %d
+- **Accuracy**: %.4f (%.2f%%)
+- **Error Rate**: %.2f%%
+
+`, report.SourceModel, report.TrainingModel, report.TrainingRatio,
+		report.TestStartTime.Format("2006-01-02 15:04:05"),
+		report.TestEndTime.Format("2006-01-02 15:04:05"),
+		duration.String(),
+		report.TotalTests, report.CorrectPredictions, report.Accuracy, report.AccuracyPercentage,
+		100 - report.AccuracyPercentage)
+
+	// Add error information if present
+	if report.Error != "" {
+		content += fmt.Sprintf("## Error Information\n```\n%s\n```\n\n", report.Error)
+	}
+
+	// Add training statistics if available
+	if report.TrainingStatsFormatted != "" {
+		content += "## Training Dataset Statistics\n"
+		content += "```\n" + report.TrainingStatsFormatted + "\n```\n\n"
+	}
+
+	// Add validation statistics if available
+	if report.ValidationStatsFormatted != "" {
+		content += "## Validation Dataset Statistics\n"
+		content += "```\n" + report.ValidationStatsFormatted + "\n```\n\n"
+	}
+
+	// Add accretion/miss breakdown if available
+	if report.AccretionMissFormatted != "" {
+		content += "## Prediction Accuracy Breakdown\n"
+		content += "```\n" + report.AccretionMissFormatted + "\n```\n\n"
+	}
+
+	// Add AI analysis recommendations
+	content += `## Model Performance Analysis
+
+### Performance Assessment
+`
+	if report.AccuracyPercentage >= 90 {
+		content += "- **Excellent Performance**: Model shows very high accuracy (>90%)\n"
+	} else if report.AccuracyPercentage >= 80 {
+		content += "- **Good Performance**: Model shows good accuracy (80-90%)\n"
+	} else if report.AccuracyPercentage >= 70 {
+		content += "- **Moderate Performance**: Model shows moderate accuracy (70-80%)\n"
+	} else {
+		content += "- **Poor Performance**: Model shows low accuracy (<70%)\n"
+	}
+
+	content += `
+### AI Analysis Recommendations
+
+#### For Model Improvement:
+1. **Feature Engineering**: Review feature selection and engineering techniques
+2. **Data Quality**: Analyze training data quality and distribution
+3. **Hyperparameter Tuning**: Optimize model parameters for better performance
+4. **Cross-Validation**: Implement k-fold cross-validation for robust evaluation
+
+#### For Further Investigation:
+1. **Confusion Matrix**: Generate detailed confusion matrix for error analysis
+2. **Feature Importance**: Analyze which features contribute most to predictions
+3. **Error Analysis**: Investigate patterns in misclassified samples
+4. **Data Augmentation**: Consider expanding training dataset if accuracy is low
+
+#### Model Deployment Considerations:
+`
+	if report.AccuracyPercentage >= 85 {
+		content += "- **Ready for Production**: Model performance is suitable for production deployment\n"
+	} else if report.AccuracyPercentage >= 75 {
+		content += "- **Conditional Deployment**: Model may be suitable with additional validation\n"
+	} else {
+		content += "- **Not Recommended**: Model requires significant improvement before deployment\n"
+	}
+
+	content += fmt.Sprintf(`
+## Technical Metadata
+- **Evaluation Method**: Train-Validation Split (%d%% training, %d%% validation)
+- **Test Type**: Accuracy Assessment
+- **Generated on**: %s
+- **Model Validation Pipeline**: v1.0
+
+## Statistical Summary
+- **Sample Size**: %d test cases
+- **Success Rate**: %.2f%%
+- **Confidence Level**: Based on %d predictions
+- **Model Reliability**: %s
+
+---
+*Report generated automatically by Forest Guardian ML Pipeline*
+`, report.TrainingRatio, 100-report.TrainingRatio, 
+		time.Now().Format("2006-01-02 15:04:05"), 
+		report.TotalTests, report.AccuracyPercentage, report.TotalTests,
+		func() string {
+			if report.AccuracyPercentage >= 90 { return "High" }
+			if report.AccuracyPercentage >= 80 { return "Medium-High" }
+			if report.AccuracyPercentage >= 70 { return "Medium" }
+			return "Low"
+		}())
+
+	_, err = file.WriteString(content)
+	if err != nil {
+		return fmt.Errorf("failed to write report content: %w", err)
+	}
+
+	fmt.Printf("Accuracy analysis report generated: %s\n", reportPath)
+	return nil
+}
 
 // AccuracyTest handles the UI for testing model accuracy
 func AccuracyTest() {
@@ -46,6 +205,14 @@ func AccuracyTest() {
 	fmt.Printf("\033[32m- Training ratio: %d%%\033[0m\n", trainingRatio)
 	fmt.Printf("\033[32m- Training model will be: %s\033[0m\n", trainingModelFileName)
 
+	// Initialize accuracy report
+	report := &AccuracyReport{
+		SourceModel:    selectedModel,
+		TrainingModel:  trainingModelFileName,
+		TrainingRatio:  trainingRatio,
+		TestStartTime:  time.Now(),
+	}
+
 	accuracy, totalTests, correctPredictions, trainingStats, validationStats, accretionMissStats, err := delivery.RunAccuracyTest(
 		selectedModel,
 		trainingModelFileName,
@@ -54,13 +221,29 @@ func AccuracyTest() {
 
 	if err != nil {
 		fmt.Printf("\n\033[31mError during accuracy test: %s\033[0m\n", err.Error())
-		if !strings.Contains(err.Error(), "empty csv file given") {
-			notification.SendDiscordErrorNotification(fmt.Sprintf("Maxsatt CLI\n\nError during accuracy test: %s", err.Error()))
+		
+		// Populate error report
+		report.TestEndTime = time.Now()
+		report.Error = err.Error()
+		
+		// Generate error report
+		if reportErr := generateAccuracyMarkdownReport(report); reportErr != nil {
+			fmt.Printf("Error generating report: %v\n", reportErr)
 		}
 		return
 	}
 
 	accuracyPercentage := accuracy * 100
+
+	// Populate successful test results
+	report.TestEndTime = time.Now()
+	report.TotalTests = totalTests
+	report.CorrectPredictions = correctPredictions
+	report.Accuracy = accuracy
+	report.AccuracyPercentage = accuracyPercentage
+	report.TrainingStats = trainingStats
+	report.ValidationStats = validationStats
+	report.AccretionMissStats = accretionMissStats
 
 	fmt.Printf("\n\033[32mAccuracy test completed successfully!\033[0m\n")
 	fmt.Printf("\033[32m- Total tests: %d\033[0m\n", totalTests)
@@ -78,61 +261,34 @@ func AccuracyTest() {
 	fmt.Printf("\n\033[35mAccretion/Miss Breakdown:\033[0m\n")
 	fmt.Print(delivery.FormatAccretionMissStats(accretionMissStats))
 
-	// Format dataset statistics for Discord message (with percentages)
+	// Format dataset statistics for report
 	trainingStatsFormatted := delivery.FormatDatasetStatsWithPercent(trainingStats, "Training")
 	validationStatsFormatted := delivery.FormatDatasetStatsWithPercent(validationStats, "Validation")
 	accretionMissFormatted := delivery.FormatAccretionMissStats(accretionMissStats)
+	
+	// Store formatted strings in report
+	report.TrainingStatsFormatted = trainingStatsFormatted
+	report.ValidationStatsFormatted = validationStatsFormatted
+	report.AccretionMissFormatted = accretionMissFormatted
 
-	// Create comprehensive Discord message
-	headerMessage := fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n"+
+	// Generate comprehensive accuracy analysis report
+	if err := generateAccuracyMarkdownReport(report); err != nil {
+		fmt.Printf("Error generating accuracy report: %v\n", err)
+	}
+
+	// Send notification about test conclusion with accuracy percentage
+	conclusionMessage := fmt.Sprintf("Maxsatt CLI\n\nAccuracy test completed successfully!\n\n"+
 		"**Test Results:**\n"+
 		"- Source model: %s\n"+
 		"- Training ratio: %d%%\n"+
 		"- Total tests: %d\n"+
 		"- Correct predictions: %d\n"+
-		"- Accuracy: %.2f%%",
+		"- Accuracy: %.2f%%\n\n"+
+		"📊 Detailed analysis report generated in markdown format.",
 		selectedModel,
 		trainingRatio,
 		totalTests,
 		correctPredictions,
 		accuracyPercentage)
-	notification.SendDiscordSuccessNotification(headerMessage)
-
-	const maxDiscordMessageLength = 1800
-
-	// Send training stats
-	if len(trainingStatsFormatted) > 0 {
-		for start := 0; start < len(trainingStatsFormatted); start += maxDiscordMessageLength {
-			end := start + maxDiscordMessageLength
-			if end > len(trainingStatsFormatted) {
-				end = len(trainingStatsFormatted)
-			}
-			chunk := trainingStatsFormatted[start:end]
-			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\n%s", chunk))
-		}
-	}
-
-	// Send validation stats
-	if len(validationStatsFormatted) > 0 {
-		for start := 0; start < len(validationStatsFormatted); start += maxDiscordMessageLength {
-			end := start + maxDiscordMessageLength
-			if end > len(validationStatsFormatted) {
-				end = len(validationStatsFormatted)
-			}
-			chunk := validationStatsFormatted[start:end]
-			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\n%s", chunk))
-		}
-	}
-
-	// Send accretion/miss stats
-	if len(accretionMissFormatted) > 0 {
-		for start := 0; start < len(accretionMissFormatted); start += maxDiscordMessageLength {
-			end := start + maxDiscordMessageLength
-			if end > len(accretionMissFormatted) {
-				end = len(accretionMissFormatted)
-			}
-			chunk := accretionMissFormatted[start:end]
-			notification.SendDiscordSuccessNotification(fmt.Sprintf("Maxsatt CLI\n\nAccretion/Miss Breakdown:\n%s", chunk))
-		}
-	}
+	notification.SendDiscordSuccessNotification(conclusionMessage)
 }
