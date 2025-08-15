@@ -61,8 +61,13 @@ func FetchWeather(latitude, longitude float64, startDate, endDate time.Time, ret
 
 	// Try to read from cache
 	if cached, ok := weatherCache.Get(cacheKey); ok {
+		fmt.Printf("Weather cache HIT for key: %s (lat: %.6f, lon: %.6f, %s to %s)\n", 
+			cacheKey, latitude, longitude, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
 		return cached, nil
 	}
+	
+	fmt.Printf("Weather cache MISS for key: %s (lat: %.6f, lon: %.6f, %s to %s)\n", 
+		cacheKey, latitude, longitude, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
 
 	url := "https://archive-api.open-meteo.com/v1/archive"
 	params := fmt.Sprintf("?latitude=%f&longitude=%f&start_date=%s&end_date=%s&daily=temperature_2m_mean,precipitation_sum&hourly=relative_humidity_2m",
@@ -71,8 +76,12 @@ func FetchWeather(latitude, longitude float64, startDate, endDate time.Time, ret
 	var weatherData WeatherResponse
 	var attempt int
 
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
 	for attempt < retries {
-		resp, err := http.Get(url + params)
+		resp, err := client.Get(url + params)
 		if err != nil {
 			fmt.Printf("Failed to retrieve data: %v. Retrying... (%d/%d)\n", err, attempt+1, retries)
 			time.Sleep(10 * time.Second)
@@ -119,6 +128,9 @@ func FetchWeather(latitude, longitude float64, startDate, endDate time.Time, ret
 			// Write to cache
 			if err := weatherCache.Set(cacheKey, dataParsed); err != nil {
 				fmt.Printf("Warning: failed to write cache: %v\n", err)
+			} else {
+				fmt.Printf("Weather cache WRITTEN for key: %s (lat: %.6f, lon: %.6f, %s to %s)\n", 
+					cacheKey, latitude, longitude, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
 			}
 
 			return dataParsed, nil
